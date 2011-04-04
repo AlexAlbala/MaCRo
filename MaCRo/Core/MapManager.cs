@@ -23,6 +23,7 @@ namespace MaCRo.Core
 
         public MapManager()
         {
+            /*
             int cells = GlobalVal.initialMapSize_cm / GlobalVal.cellSize_cm;
 
             measure_mm = new float[cells][];
@@ -44,6 +45,7 @@ namespace MaCRo.Core
                     //map[i][j].isObject = false;
                 }
             }
+             */
         }
 
         public void SetObject(Position position)

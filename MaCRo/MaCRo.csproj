@@ -16,7 +16,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;MicroFramework</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -33,12 +33,15 @@
   </PropertyGroup>
   <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <ItemGroup>
+    <Compile Include="Communications\Coder.cs" />
+    <Compile Include="Communications\ITransportAddress.cs" />
+    <Compile Include="Communications\SerialCRC.cs" />
+    <Compile Include="Communications\SerialTransport.cs" />
+    <Compile Include="Communications\SerialTransportAddress.cs" />
     <Compile Include="Config\GlobalVal.cs" />
     <Compile Include="Config\PortMap.cs" />
     <Compile Include="Core\Engine.cs" />
-    <Compile Include="Core\KalmanFilter.cs" />
     <Compile Include="Core\NavigationManager.cs" />
-    <Compile Include="Core\MapManager.cs" />
     <Compile Include="Core\SensorManager.cs" />
     <Compile Include="Drivers\DCMotorDriver.cs" />
     <Compile Include="Drivers\DistanceDetector.cs" />
@@ -50,6 +53,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Tools\BitConverter.cs" />
+    <Compile Include="Tools\Dictionary.cs" />
     <Compile Include="Tools\Math.cs" />
     <Compile Include="Tools\Utils.cs" />
   </ItemGroup>
@@ -58,8 +63,10 @@
     <Reference Include="GHIElectronics.NETMF.Hardware, Version=4.1.3.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="GHIElectronics.NETMF.IO, Version=4.1.3.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.SPOT.Hardware" />
+    <Reference Include="Microsoft.SPOT.Hardware.SerialPort" />
     <Reference Include="Microsoft.SPOT.Native">
     </Reference>
+    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

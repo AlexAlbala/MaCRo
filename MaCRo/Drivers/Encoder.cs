@@ -29,7 +29,7 @@ namespace MaCRo.Drivers
             stepmm = GlobalVal.wheelPerimeter_mm / GlobalVal.interruptsWheel;
             lastLecture = new DateTime();
             this.resetDistance();
-            glitchFilterWidth_ms = 135;       
+            glitchFilterWidth_ms = 110;       
         }
 
         public void resetDistance()

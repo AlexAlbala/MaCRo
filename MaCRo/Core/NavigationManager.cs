@@ -39,7 +39,7 @@ namespace MaCRo.Core
             left.resetDistance();
             right.resetDistance();
             this.MoveForward();
-            while (sensors.getDistance(Sensor.Central) > 5) {}
+            while (sensors.getDistance(Sensor.Central) > GlobalVal.distanceToDetect) { Thread.Sleep(100); }
             this.brake();
         }
 
@@ -86,7 +86,7 @@ namespace MaCRo.Core
         public void turnRight(int angle)
         {
             double angleRad = angle * System.Math.PI / 180;
-            double lengthLeft = angleRad * ((GlobalVal.width_mm) + GlobalVal.turnRadius);
+            double lengthLeft = angleRad * GlobalVal.width_mm;
 
             turnRight();
 
@@ -108,7 +108,7 @@ namespace MaCRo.Core
         public void turnLeft(int angle)
         {
             double angleRad = angle * System.Math.PI / 180;
-            double lengthRight = 1.01 * angleRad * GlobalVal.width_mm;
+            double lengthRight = angleRad * GlobalVal.width_mm;
 
             turnLeft();
 

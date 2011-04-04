@@ -32,7 +32,7 @@ namespace MaCRo.Core
         public Engine()
         {
             currentMode = Mode.SearchingForWall;
-            map = new MapManager();
+            //map = new MapManager();
             navigation = new NavigationManager();
             sensors = new SensorManager();
 
@@ -56,93 +56,68 @@ namespace MaCRo.Core
                 {
                     navigation.MoveToObject(sensors);
 
-                    float central = 0;
-                    float left = 0;
-                    float right = 0;
-                    central = sensors.getDistance(Sensor.Central);
-                    left = sensors.getDistance(Sensor.Left);
-                    right = sensors.getDistance(Sensor.Right);
-                   
+                    float central = sensors.getDistance(Sensor.Central);
+                    float left = sensors.getDistance(Sensor.Left);
+                    float right = sensors.getDistance(Sensor.Right);
 
-
-                }
-
-                float central = 0;
-                float left = 0;
-                float right = 0;
-
-                for (int i = 0; i < 5; i++)
-                {
-                    central += sensors.getDistance(Sensor.Central);
-                    left += sensors.getDistance(Sensor.Left);
-                    right += sensors.getDistance(Sensor.Right);
-                }
-
-                central /= 5;
-                left /= 5;
-                right /= 5;
-
-                if (central <= 30 && central >= 4 && central >= GlobalVal.cellSize_cm)
-                {
-                    if (left > central && right > central)
+                    if (central <= GlobalVal.distanceToDetect)
                     {
-                        navigation.MoveToObject(sensors);
-                        double distanceMoved = navigation.distance_mm;
-                        int cellsMoved = (int)(distanceMoved / (GlobalVal.cellSize_cm * 10));
+                        //WALL FOUNDED
+                        navigation.MoveBackward(GlobalVal.width_mm - (int)central * 10, (sbyte)GlobalVal.speed);
+                        navigation.turnRight(90);
+                        currentMode = Mode.FollowWall;
+                    }
+                    continue;
+                }
+                else if (currentMode == Mode.FollowWall)
+                {
+                    float central = sensors.getDistance(Sensor.Central);
+                    float left = sensors.getDistance(Sensor.Left);
+                    float right = sensors.getDistance(Sensor.Right);
+                    //FOLLOW LEFT WALL
+                    while (true)
+                    {
+                        //debug LED !
+                        debug.Write(true);
+                        Thread.Sleep(100);
+                        debug.Write(false);
 
-                        switch (navigation.getActualOrientation())
+                        navigation.MoveForward();
+                        left = sensors.getDistance(Sensor.Left);
+
+                        if (left > (GlobalVal.distanceToFollowWall + GlobalVal.hysteresis))
                         {
-                            case Orientation.HorizontalPos:
-                                actualPosition.x += cellsMoved;
-                                break;
-                            case Orientation.HorizontalNeg:
-                                actualPosition.x -= cellsMoved;
-                                break;
-                            case Orientation.VerticalPos:
-                                actualPosition.y += cellsMoved;
-                                break;
-                            case Orientation.VerticalNeg:
-                                actualPosition.y -= cellsMoved;
-                                break;
+                            navigation.turnLeft();
+                            Thread.Sleep(100);
+                            continue;
                         }
+                        else if (left < GlobalVal.distanceToFollowWall - GlobalVal.hysteresis)
+                        {
+                            navigation.turnRight();
+                            Thread.Sleep(100);
+                            continue;
 
-                        //map.SetMapped(actualPosition);
-
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    right = sensors.getDistance(Sensor.Right);
+                    //MaCRo is approaching a new wall
+                    if (right > GlobalVal.distanceToContinue)
+                    {
+                        navigation.MoveBackward(GlobalVal.wheelPerimeter_mm - (int)central * 10, (sbyte)GlobalVal.speed);
+                        navigation.turnRight(90);
                         continue;
                     }
                     else
                     {
-                        //THERE ARE SURROUNDING OBJECTS
+                        //MACRO BLOCKED !!!
+                        //CHANGE MODE
                     }
                 }
-                else
-                {
-                    if (central <= GlobalVal.cellSize_cm)
-                    {
-                        //There is an object here. Mark it !
-                        //map.SetObject(actualPosition);
-                        //map.SetMapped(actualPosition);
-                        navigation.MoveBackward(GlobalVal.width_mm - (int)central * 10, (sbyte)GlobalVal.speed);
 
-                        if (right > GlobalVal.cellSize_cm)//AND THE RIGHT CELL IS NOT MAPPED
-                        {
-                            navigation.turnRight(90);
-                            navigation.orientationToRight();
-                            continue;
-                        }
-                        else if (left > GlobalVal.cellSize_cm)//AND THE LEFT CELL IS NOT MAPPED
-                        {
-                            navigation.turnLeft(90);
-                            navigation.orientationToLeft();
-                            continue;
-                        }
-                        else
-                        {
-                            //ROBOT IS BLOCKED. DO SOMETHING
-                            continue;
-                        }
-                    }
-                }
 
                 /*
                 if (central < 10)

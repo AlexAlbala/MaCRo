@@ -21,10 +21,10 @@ namespace MaCRo.Config
         public readonly static FEZ_Pin.Interrupt encoderL_interrupt = FEZ_Pin.Interrupt.Di7;
         public readonly static FEZ_Pin.Interrupt encoderR_interrupt = FEZ_Pin.Interrupt.Di6;
 
-        public readonly static FEZ_Pin.AnalogIn infraredS1_center = FEZ_Pin.AnalogIn.An0;
-        public readonly static FEZ_Pin.AnalogIn infraredS2_down = FEZ_Pin.AnalogIn.An1;
-        public readonly static FEZ_Pin.AnalogIn infraredL1_left = FEZ_Pin.AnalogIn.An3;
-        public readonly static FEZ_Pin.AnalogIn infraredL2_right = FEZ_Pin.AnalogIn.An2;
+        public readonly static FEZ_Pin.AnalogIn infraredS1 = FEZ_Pin.AnalogIn.An0;
+        public readonly static FEZ_Pin.AnalogIn infraredS2 = FEZ_Pin.AnalogIn.An1;
+        public readonly static FEZ_Pin.AnalogIn infraredL1 = FEZ_Pin.AnalogIn.An3;
+        public readonly static FEZ_Pin.AnalogIn infraredL2 = FEZ_Pin.AnalogIn.An2;
 
     }
 }

@@ -17,6 +17,21 @@ namespace MaCRo.Tools
         VerticalNeg
     }
 
+    public enum Message
+    {
+        MoveForward,
+        MoveBackward,
+        TurnRight,
+        TurnLeft,
+        Object,
+        SensorS1,
+        SensorS2,
+        SensorL1,
+        SensorL2,
+        Stop,
+        Mode
+    }
+
     public class Position
     {
         private int _x;

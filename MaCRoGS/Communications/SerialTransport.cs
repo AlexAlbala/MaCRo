@@ -3,22 +3,20 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.IO.Ports;
+using System.Collections.Generic;
 
-using MaCRo.Tools;
-
-namespace MaCRo.Communications
+namespace MaCRoGS.Communications
 {
     internal class SerialTransport
     {
-        //protected static readonly ILog log = LogManager.GetLogger("Marea.Transport.Serial");
         public enum MagicByte : byte
         {
             FAST = 171,
             SAFE = 018
         };
+        protected Dictionary<byte, SafeData> SendBuffer;
 
-        protected Dictionary SendBuffer;
-        protected bool end;
+        protected volatile bool end;
 
         protected Thread receive;
         protected Thread reSend;
@@ -33,8 +31,11 @@ namespace MaCRo.Communications
         {
             this.sta = sta;
             this.port = CreateSerialPort(sta, baudRate);
-
+#if MicroFramework
             SendBuffer = new Dictionary();
+#else
+            SendBuffer = new Dictionary<byte, SafeData>();
+#endif
             headerACK = new SafeSerialHeader();
         }
 
@@ -57,6 +58,7 @@ namespace MaCRo.Communications
         public virtual void Start(Coder coder)
         {
             this.coder = coder;
+
             ThreadStart ts = new ThreadStart(this.Receive);
             receive = new Thread(ts);
 
@@ -149,10 +151,8 @@ namespace MaCRo.Communications
                             {
                                 data = sd.data;
                                 WriteToPort(data, 0, data.Length, true);
-
                                 // TODO: improve delay calculation!
                                 sd.delay += (uint)(sd.delay / 2);
-
                                 sd.count = sd.delay;
                             }
                             else
@@ -184,7 +184,7 @@ namespace MaCRo.Communications
         public virtual void Receive()
         {
             int n;
-            byte[] buffer = new byte[1000]; // Max UDP Datagram ?????¿??
+            byte[] buffer = new byte[ushort.MaxValue]; // Max UDP Datagram
             SerialHeader sh;
 
             while (!end)

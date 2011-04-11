@@ -7,25 +7,25 @@ namespace MaCRo.Core
 {
     public enum Sensor
     {
-        Central,
-        Left,
-        Right,
-        Floor
+        Central, //S1
+        wall_back,//L1
+        Right,//L2
+        Wall//S2
     }
 
     public class SensorManager
     {
-        private DistanceDetector dds1;
-        private DistanceDetector dds2;
-        private DistanceDetector ddl1;
-        private DistanceDetector ddl2;
+        private DistanceDetector central;
+        private DistanceDetector wall;
+        private DistanceDetector wall_back;
+        private DistanceDetector right;
 
         public SensorManager()
         {
-            dds1 = new DistanceDetector(PortMap.infraredS1_center, DistanceDetector.SharpSensorType.GP2D120);
-            dds2 = new DistanceDetector(PortMap.infraredS2_down, DistanceDetector.SharpSensorType.GP2D120);
-            ddl1 = new DistanceDetector(PortMap.infraredL1_left, DistanceDetector.SharpSensorType.GP2Y0A21YK);
-            ddl2 = new DistanceDetector(PortMap.infraredL2_right, DistanceDetector.SharpSensorType.GP2Y0A21YK);
+            central = new DistanceDetector(PortMap.infraredL1, DistanceDetector.SharpSensorType.GP2Y0A21YK);
+            wall = new DistanceDetector(PortMap.infraredS2, DistanceDetector.SharpSensorType.GP2D120);
+            wall_back = new DistanceDetector(PortMap.infraredS1, DistanceDetector.SharpSensorType.GP2D120);
+            right = new DistanceDetector(PortMap.infraredL2, DistanceDetector.SharpSensorType.GP2Y0A21YK);
         }
 
         public float getDistance(Sensor type)
@@ -37,23 +37,23 @@ namespace MaCRo.Core
                 case Sensor.Central:
                     for (int i = 0; i < 5; i++)
                     {
-                        value += dds1.GetDistance_cm();
+                        value += central.GetDistance_cm();
                     }
                     break;
-                case Sensor.Floor:
+                case Sensor.Wall:
                     for (int i = 0; i < 5; i++)
                     {
-                        value += dds2.GetDistance_cm();
+                        value += wall.GetDistance_cm();
                     }
                     break;
-                case Sensor.Left: for (int i = 0; i < 5; i++)
+                case Sensor.wall_back: for (int i = 0; i < 5; i++)
                     {
-                        value += ddl1.GetDistance_cm();
+                        value += wall_back.GetDistance_cm();
                     }
                     break;
                 case Sensor.Right: for (int i = 0; i < 5; i++)
                     {
-                        value += ddl2.GetDistance_cm();
+                        value += right.GetDistance_cm();
                     }
                     break;
                 default:

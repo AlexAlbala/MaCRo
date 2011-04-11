@@ -1,0 +1,67 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="MaCRoGS.MainWindow"
+        Title="MainWindow" Height="776" Width="1296" Background="Black">
+    <Grid>
+    	<Grid.RowDefinitions>
+    		<RowDefinition Height="0.26*"/>
+    		<RowDefinition Height="0.74*"/>
+    	</Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+        	<ColumnDefinition Width="0.698*" />
+        	<ColumnDefinition Width="0.302*"/>
+        </Grid.ColumnDefinitions>
+    	<Grid Grid.Column="1">
+        	<Grid.ColumnDefinitions>
+        		<ColumnDefinition Width="0.58*"/>
+        		<ColumnDefinition Width="0.42*"/>
+        	</Grid.ColumnDefinitions>
+        	<StackPanel Orientation="Vertical" Grid.Column="0" Background="White" HorizontalAlignment="Right" Width="224.205" Panel.ZIndex="4">
+        		<Label Content="S1" x:Name="S1" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+        		<Label Content="S2" x:Name="S2" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+        		<Label Content="L1" x:Name="L1" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+        		<Label Content="L2" x:Name="L2" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+        		<Label Content="Mode" x:Name="Mode" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+        	</StackPanel>
+        </Grid>
+    	<Border HorizontalAlignment="Left" Height="730" Grid.RowSpan="2" VerticalAlignment="Top" Width="885.44" BorderThickness="6" CornerRadius="3" Background="Red" BorderBrush="#FF0800FF" >
+    		<Canvas x:Name="map" Background="#FFA5A5A5" Margin="2" />
+    	</Border>
+        <Rectangle Grid.Column="1" Margin="86.434,0,76.334,31.659" Grid.Row="1" Stroke="Black" RadiusY="2" RadiusX="2" Height="117.5" VerticalAlignment="Bottom" Panel.ZIndex="1" Width="74" Fill="#FF6A6A6A" Opacity="0.8"/>
+        <Rectangle Grid.Column="1" Margin="187.263,0,175.671,49.658" Grid.Row="1" Stroke="Black" Height="25.333" VerticalAlignment="Bottom" Panel.ZIndex="2" Fill="White" RenderTransformOrigin="-2.979,0.572"/>
+        <Canvas x:Name="robotMap" Grid.Column="1" Margin="8,57.024,0,0" Grid.Row="1" Background="#FFA5A5A5">
+        	<Rectangle x:Name="central_sensor" Fill="Red" Height="7" Canvas.Left="181.773" Stroke="Black" Canvas.Top="338.282" Width="18.5" Panel.ZIndex="2"/>
+        	<Rectangle x:Name="right_sensor" Fill="Red" Height="7" Canvas.Left="211.855" Stroke="Black" Canvas.Top="343.235" Width="18.5" Panel.ZIndex="2" RenderTransformOrigin="0.5,0.5">
+        		<Rectangle.RenderTransform>
+        			<TransformGroup>
+        				<ScaleTransform/>
+        				<SkewTransform/>
+        				<RotateTransform Angle="45"/>
+        				<TranslateTransform/>
+        			</TransformGroup>
+        		</Rectangle.RenderTransform>
+        	</Rectangle>
+        	<Rectangle x:Name="wallback_sensor" Fill="Red" Height="7" Canvas.Left="147.801" Stroke="Black" Canvas.Top="439.393" Width="18.5" Panel.ZIndex="2" RenderTransformOrigin="0.5,0.5">
+        		<Rectangle.RenderTransform>
+        			<TransformGroup>
+        				<ScaleTransform/>
+        				<SkewTransform/>
+        				<RotateTransform Angle="90"/>
+        				<TranslateTransform/>
+        			</TransformGroup>
+        		</Rectangle.RenderTransform>
+        	</Rectangle>
+        	<Rectangle x:Name="wall_sensor" Fill="Red" Height="7" Canvas.Left="147.718" Stroke="Black" Canvas.Top="348.783" Width="18.5" Panel.ZIndex="2" RenderTransformOrigin="0.5,0.5">
+        		<Rectangle.RenderTransform>
+        			<TransformGroup>
+        				<ScaleTransform/>
+        				<SkewTransform/>
+        				<RotateTransform Angle="90"/>
+        				<TranslateTransform/>
+        			</TransformGroup>
+        		</Rectangle.RenderTransform>
+        	</Rectangle>
+        </Canvas>
+    </Grid>
+</Window>

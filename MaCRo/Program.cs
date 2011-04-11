@@ -15,6 +15,7 @@ namespace MaCRo
     {
         public static void Main()
         {
+            Engine.getInstance().InitializeSystem();
             Engine.getInstance().Run();
         }
 

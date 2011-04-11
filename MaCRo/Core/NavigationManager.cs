@@ -17,6 +17,25 @@ namespace MaCRo.Core
 
         public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
 
+        public double lastTurnAngle
+        {
+            get
+            {
+                if (left.distance_mm < right.distance_mm)
+                {
+                    double angleRad = right.distance_mm / GlobalVal.width_mm;
+                    double angle = angleRad * 180 / System.Math.PI;
+                    return angle * -1;//TURN TO LEFT!
+                }
+                else
+                {
+                    double angleRad = left.distance_mm / GlobalVal.width_mm;
+                    double angle = angleRad * 180 / System.Math.PI;
+                    return angle;
+                }
+            }
+        }
+
         public NavigationManager()
         {
             actualOrientation = Orientation.HorizontalPos;
@@ -39,21 +58,17 @@ namespace MaCRo.Core
             left.resetDistance();
             right.resetDistance();
             this.MoveForward();
-            while (sensors.getDistance(Sensor.Central) > GlobalVal.distanceToDetect) { Thread.Sleep(100); }
+            while (sensors.getDistance(Sensor.Central) > GlobalVal.distanceToDetect) { Thread.Sleep(50); }
             this.brake();
         }
 
         public void MoveForward()
         {
-            left.resetDistance();
-            right.resetDistance();
             dcm.Move(GlobalVal.speed, GlobalVal.speed);
         }
 
         public void MoveForward(sbyte speed)
         {
-            left.resetDistance();
-            right.resetDistance();
             dcm.Move(speed, speed);
         }
 
@@ -71,15 +86,11 @@ namespace MaCRo.Core
 
         public void MoveBackward()
         {
-            left.resetDistance();
-            right.resetDistance();
             dcm.Move((sbyte)(GlobalVal.speed * -1), (sbyte)(GlobalVal.speed * -1));
         }
 
         public void MoveBackward(sbyte speed)
         {
-            left.resetDistance();
-            right.resetDistance();
             dcm.Move((sbyte)(speed * -1), (sbyte)(speed * -1));
         }
 
@@ -105,6 +116,13 @@ namespace MaCRo.Core
             dcm.Move(0, GlobalVal.turningSpeed);
         }
 
+        public void _turnRight()
+        {
+            left.resetDistance();
+            right.resetDistance();
+            dcm.Move((sbyte)(GlobalVal.turningSpeed*-1), GlobalVal.turningSpeed);
+        }
+
         public void turnLeft(int angle)
         {
             double angleRad = angle * System.Math.PI / 180;
@@ -123,12 +141,18 @@ namespace MaCRo.Core
         {
             left.resetDistance();
             right.resetDistance();
-            dcm.Move(GlobalVal.turningSpeed,0);
+            dcm.Move(GlobalVal.turningSpeed, 0);
         }
 
         public void brake()
         {
             dcm.Move(0, 0);
+        }
+
+        public void resetDistance()
+        {
+            left.resetDistance();
+            right.resetDistance();
         }
 
         public void orientationToRight()

@@ -41,7 +41,7 @@ namespace MaCRo.Config
         /// <summary>
         /// Distance for an object to be detected. In centimeters
         /// </summary>
-        public readonly static int distanceToDetect = 8;
+        public readonly static int distanceToDetect = 25;
         /// <summary>
         /// Minimum distance detected to continue moving. In centimeters
         /// </summary>
@@ -49,11 +49,11 @@ namespace MaCRo.Config
         /// <summary>
         /// Distance which has to be respected when following the wall. In centimeters
         /// </summary>
-        public readonly static int distanceToFollowWall = 13;//(int)exMath.Ceiling(length_mm / 10);
+        public readonly static int distanceToFollowWall = 7;//(int)exMath.Ceiling(length_mm / 10);
         /// <summary>
         /// Centimeters of hysteresis when following the wall. In centimeters
         /// </summary>
-        public readonly static int hysteresis = 1;
+        public readonly static int hysteresis = 2;
         /// <summary>
         /// Inclination of the right sensor
         /// </summary>
@@ -62,6 +62,10 @@ namespace MaCRo.Config
         /// Inclination of the left sensor
         /// </summary>
         public readonly static int leftAngle = 45;
+        /// <summary>
+        /// The periodicity of the telemetry transmission in milliseconds
+        /// </summary>
+        public readonly static int transmissionPeriod_ms = 100;
 
 
 

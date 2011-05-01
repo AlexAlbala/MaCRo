@@ -37,15 +37,11 @@ namespace MaCRo.Config
         /// <summary>
         /// Velocity of the wheel during a tur0
         /// </summary>
-        public readonly static sbyte turningSpeed = 28;
+        public readonly static sbyte turningSpeed = 30;
         /// <summary>
         /// Distance for an object to be detected. In centimeters
         /// </summary>
-        public readonly static int distanceToDetect = 25;
-        /// <summary>
-        /// Minimum distance detected to continue moving. In centimeters
-        /// </summary>
-        public readonly static int distanceToContinue = 20;
+        public readonly static int distanceToDetect = 24;       
         /// <summary>
         /// Distance which has to be respected when following the wall. In centimeters
         /// </summary>
@@ -53,7 +49,7 @@ namespace MaCRo.Config
         /// <summary>
         /// Centimeters of hysteresis when following the wall. In centimeters
         /// </summary>
-        public readonly static int hysteresis = 2;
+        public readonly static int hysteresis = 1;
         /// <summary>
         /// Inclination of the right sensor
         /// </summary>
@@ -66,6 +62,10 @@ namespace MaCRo.Config
         /// The periodicity of the telemetry transmission in milliseconds
         /// </summary>
         public readonly static int transmissionPeriod_ms = 100;
+        /// <summary>
+        /// Periodicity of the IMU data update 
+        /// </summary>
+        public readonly static int imuUpdate_ms = 50;
 
 
 

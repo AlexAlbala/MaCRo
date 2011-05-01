@@ -14,27 +14,29 @@ using System.Windows.Shapes;
 using MaCRoGS.Communications;
 
 namespace MaCRoGS
-{   
+{
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         private Coder coder;
-        private delegate void Updater(ushort value);
-
-        private int mapWidth;
-        private int mapHeight;
-
-        private double mmperpx_x;
-        private double mmperpx_y;
+        private delegate void Updater(short value);
 
         private Position central_robotmap;
         private Position right_robotmap;
         private Position wallback_robotmap;
         private Position wall_robotmap;
 
-        private int mmperpixel_robotmap;
+        private Position StartingPositionMap;
+        private Position actualPositionMap;
+
+        private Rectangle macro;
+
+        private double mmperpixel_robotmap;
+        private double mmperpixel_map;
+
+        private int mapHeight_mm;
 
         private Line central_line;
         private Line wall_line;
@@ -46,34 +48,12 @@ namespace MaCRoGS
         {
             InitializeComponent();
 
-            mapWidth = 2000;
-            mapHeight = 2000;
-
-            this.Init();
             coder = new Coder();
             coder.Start(this);
-
-
-
-
         }
 
-        public void Init()
+        public void StartupSensors()
         {
-            mmperpx_x = mapWidth / map.ActualWidth;
-            mmperpx_y = mapHeight / map.ActualHeight;
-
-            mmperpixel_robotmap = 2;
-
-            central_line = new Line();
-            central_line.Name = "c";
-            right_line = new Line();
-            right_line.Name = "r";
-            wall_line = new Line();
-            wall_line.Name = "w";
-            wallback_line = new Line();
-            wallback_line.Name = "l";
-
             IEnumerable<Rectangle> rect = robotMap.Children.OfType<Rectangle>();
             foreach (Rectangle r in rect)
             {
@@ -131,22 +111,70 @@ namespace MaCRoGS
 
                         break;
                     default:
-                        throw new Exception(r.Name);
+                        break;//throw new Exception(r.Name);
                 }
             }
         }
 
-        public void UpdateS1(ushort value)//LEFT
+        public void Init()
+        {
+
+            mmperpixel_robotmap = 2.0;
+            mapHeight_mm = 2000;
+
+
+            central_line = new Line();
+            central_line.Name = "c";
+            robotMap.Children.Add(central_line);
+            right_line = new Line();
+            right_line.Name = "r";
+            robotMap.Children.Add(right_line);
+            wall_line = new Line();
+            wall_line.Name = "w";
+            robotMap.Children.Add(wall_line);
+            wallback_line = new Line();
+            wallback_line.Name = "l";
+            robotMap.Children.Add(wallback_line);
+
+            mmperpixel_map = mapHeight_mm / map.ActualHeight;
+            macro = new Rectangle();
+            macro.Width = 148 / mmperpixel_map;
+            macro.Height = 235 / mmperpixel_map;
+            macro.Fill = Brushes.Yellow;
+            macro.Stroke = Brushes.Black;
+            macro.Visibility = Visibility.Visible;
+
+
+
+
+            map.Children.Add(macro);
+
+            Canvas.SetTop(macro, map.ActualHeight / 2 - macro.ActualHeight / 2);
+            Canvas.SetLeft(macro, map.ActualWidth / 2 - macro.ActualWidth / 2);
+
+            StartingPositionMap = new Position();
+            StartingPositionMap.x = (int)Canvas.GetLeft(macro);
+            StartingPositionMap.y = (int)Canvas.GetTop(macro);
+            StartingPositionMap.angle = 0;
+
+            actualPositionMap = new Position();
+            actualPositionMap.x = StartingPositionMap.x;
+            actualPositionMap.y = StartingPositionMap.y;
+            actualPositionMap.angle = StartingPositionMap.angle;
+
+            StartupSensors();
+
+        }
+
+        public void UpdateS1(short value)//LEFT
         {
             Updater d = new Updater(_UpdateS1);
             this.Dispatcher.Invoke(d, value);
         }
 
-        private void _UpdateS1(ushort value)//LEFT
+        private void _UpdateS1(short value)//WALL_BACK
         {
-            S1.Content = "WALL_BACK: " + value.ToString() + " mm";
-
-            robotMap.Children.Remove(wallback_line);
+            S1.Content = "WALL_BACK: " + value.ToString() + " mm";                       
 
             wallback_line.X1 = wallback_robotmap.x - (value / mmperpixel_robotmap);
             wallback_line.X2 = wallback_line.X1;
@@ -154,20 +182,17 @@ namespace MaCRoGS
             wallback_line.Y2 = wallback_robotmap.y - 10;
 
             wallback_line.Stroke = Brushes.Red;
-            robotMap.Children.Add(wallback_line);
         }
 
-        public void UpdateS2(ushort value)//WALL
+        public void UpdateS2(short value)//WALL
         {
             Updater d = new Updater(_UpdateS2);
             this.Dispatcher.Invoke(d, value);
         }
 
-        private void _UpdateS2(ushort value)//WALL
+        private void _UpdateS2(short value)//WALL
         {
             S2.Content = "WALL: " + value.ToString() + " mm";
-
-            robotMap.Children.Remove(wall_line);
 
             wall_line.X1 = wall_robotmap.x - (value / mmperpixel_robotmap);
             wall_line.X2 = wall_line.X1;
@@ -175,20 +200,20 @@ namespace MaCRoGS
             wall_line.Y2 = wall_robotmap.y - 10;
 
             wall_line.Stroke = Brushes.Blue;
-            robotMap.Children.Add(wall_line);
+
+            Rectangle r = new Rectangle();
+           
         }
 
-        public void UpdateL1(ushort value)//CENTRAL
+        public void UpdateL1(short value)//CENTRAL
         {
             Updater d = new Updater(_UpdateL1);
             this.Dispatcher.Invoke(d, value);
         }
 
-        private void _UpdateL1(ushort value)//CENTRAL
+        private void _UpdateL1(short value)//CENTRAL
         {
             L1.Content = "CENTRAL: " + value.ToString() + " mm";
-
-            robotMap.Children.Remove(central_line);
 
             central_line.X1 = central_robotmap.x - 10;
             central_line.X2 = central_robotmap.x + 10;
@@ -196,38 +221,33 @@ namespace MaCRoGS
             central_line.Y2 = central_line.Y1;
 
             central_line.Stroke = Brushes.Black;
-            robotMap.Children.Add(central_line);
         }
 
-        public void UpdateL2(ushort value)//RIGHT
+        public void UpdateL2(short value)//RIGHT
         {
             Updater d = new Updater(_UpdateL2);
             this.Dispatcher.Invoke(d, value);
         }
 
-        private void _UpdateL2(ushort value)//RIGHT
+        private void _UpdateL2(short value)//RIGHT
         {
             L2.Content = "RIGHT: " + value.ToString() + " mm";
-
-            //right_line = new Line();
-            robotMap.Children.Remove(right_line);
-
+            
             right_line.X1 = right_robotmap.x + (value / mmperpixel_robotmap - 10) * Math.Cos(right_robotmap.angle);
             right_line.X2 = right_robotmap.x + (value / mmperpixel_robotmap + 10) * Math.Cos(right_robotmap.angle);
             right_line.Y1 = right_robotmap.y - (value / mmperpixel_robotmap + 10) * Math.Sin(right_robotmap.angle);
             right_line.Y2 = right_robotmap.y - (value / mmperpixel_robotmap - 10) * Math.Sin(right_robotmap.angle);
 
             right_line.Stroke = Brushes.Brown;
-            robotMap.Children.Add(right_line);
         }
 
-        public void UpdateMode(ushort value)//RIGHT
+        public void UpdateMode(short value)//RIGHT
         {
             Updater d = new Updater(_UpdateMode);
             this.Dispatcher.Invoke(d, value);
         }
 
-        private void _UpdateMode(ushort value)
+        private void _UpdateMode(short value)
         {
             switch (value)
             {
@@ -244,30 +264,112 @@ namespace MaCRoGS
         }
 
 
-        public void MoveForward(ushort distance)
+        public void MoveForward(short distance)
         {
-
+            Updater d = new Updater(_MoveForward);
+            this.Dispatcher.Invoke(d, distance);
         }
 
-        public void MoveBackward(ushort distance)
+        public void _MoveForward(short distance)
+        {
+            actualPositionMap.x = actualPositionMap.x - (int)(Math.Sin(actualPositionMap.angle) * distance / mmperpixel_map);
+            actualPositionMap.y = actualPositionMap.y - (int)(Math.Cos(actualPositionMap.angle) * distance / mmperpixel_map);
+
+            Canvas.SetTop(macro, actualPositionMap.y);
+            Canvas.SetLeft(macro, actualPositionMap.x);
+        }
+
+        public void MoveBackward(short distance)
         {
         }
 
-        public void TurnLeft(ushort angle)
+        public void TurnLeft(short angle)
+        {
+            Updater d = new Updater(_TurnLeft);
+            this.Dispatcher.Invoke(d, angle);
+        }
+
+        public void _TurnLeft(short angle)
+        {
+            actualPositionMap.angle -= angle * Math.PI / 180;
+            RotateTransform rt = new RotateTransform(-1 * actualPositionMap.angle * 180 / Math.PI);
+            TransformGroup tg = new TransformGroup();
+            tg.Children.Add(rt);
+
+            macro.RenderTransform = rt;
+        }
+
+        public void TurnRight(short angle)
+        {
+            Updater d = new Updater(_TurnRight);
+            this.Dispatcher.Invoke(d, angle);
+        }
+
+        public void _TurnRight(short angle)
+        {
+            actualPositionMap.angle += angle * Math.PI / 180;
+            RotateTransform rt = new RotateTransform(-1 * actualPositionMap.angle * 180 / Math.PI);
+            TransformGroup tg = new TransformGroup();
+            tg.Children.Add(rt);
+
+            macro.RenderTransform = rt;
+        }
+
+        public void Object(short distance)
         {
         }
 
-        public void TurnRight(ushort angle)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Init();
+        }
+
+        public void SetAccX(short value)
         {
         }
 
-        public void Object(ushort distance)
+        public void SetAccY(short value)
         {
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        public void SetAccZ(short value)
         {
+        }
 
+        public void SetMagX(short value)
+        {
+        }
+
+        public void SetMagY(short value)
+        {
+        }
+
+        public void SetMagZ(short value)
+        {
+        }
+
+        public void SetTempX(short value)
+        {
+        }
+
+        public void SetTempY(short value)
+        {
+        }
+
+        public void SetTempZ(short value)
+        {
+        }
+
+        public void SetGyrX(short value)
+        {
+        }
+
+        public void SetGyrY(short value)
+        {
+        }
+
+        public void SetGyrZ(short value)
+        {
         }
     }
 

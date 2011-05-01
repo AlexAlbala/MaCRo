@@ -13,10 +13,73 @@ namespace MaCRo.Core
         private Encoder left = new Encoder(PortMap.encoderL_interrupt);
         private Encoder right = new Encoder(PortMap.encoderR_interrupt);
         private DCMotorDriver dcm = new DCMotorDriver();
-        private Orientation actualOrientation;
+        private nIMU imu = new nIMU();
 
         public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
 
+        public short getAccel(Axis axis)
+        {
+            short[] accel = imu.getAccel();
+            switch (axis)
+            {
+                case Axis.X:
+                    return accel[0];
+                case Axis.Y:
+                    return accel[1];
+                case Axis.Z:
+                    return accel[2];
+                default:
+                    return 0;
+            }
+        }
+
+        public short getGyro(Axis axis)
+        {
+            short[] gyro = imu.getGyro();
+            switch (axis)
+            {
+                case Axis.X:
+                    return gyro[0];
+                case Axis.Y:
+                    return gyro[1];
+                case Axis.Z:
+                    return gyro[2];
+                default:
+                    return 0;
+            }
+        }
+
+        public short getTemp(Axis axis)
+        {
+            short[] temp = imu.getTemp();
+            switch (axis)
+            {
+                case Axis.X:
+                    return temp[0];
+                case Axis.Y:
+                    return temp[1];
+                case Axis.Z:
+                    return temp[2];
+                default:
+                    return 0;
+            }
+        }
+
+        public short getMag(Axis axis)
+        {
+            short[] mag = imu.getMag();
+            switch (axis)
+            {
+                case Axis.X:
+                    return mag[0];
+                case Axis.Y:
+                    return mag[1];
+                case Axis.Z:
+                    return mag[2];
+                default:
+                    return 0;
+            }
+        }
         public double lastTurnAngle
         {
             get
@@ -38,7 +101,22 @@ namespace MaCRo.Core
 
         public NavigationManager()
         {
-            actualOrientation = Orientation.HorizontalPos;
+            //imu.Start();
+        }
+
+        public void TurnUntilWall(SensorManager sensors)
+        {
+            turnRight();
+            Thread.Sleep(600);
+            while (true)
+            {
+                float wall = sensors.getDistance(Sensor.Wall);
+                float wall_back = sensors.getDistance(Sensor.wall_back);
+
+                if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis)
+                    break;
+            }
+            brake();
         }
 
         public void MoveForward(int distancemm, sbyte speed)
@@ -103,7 +181,7 @@ namespace MaCRo.Core
 
             while (left.distance_mm < lengthLeft)
             {
-                Thread.Sleep(300);
+                Thread.Sleep(50);
             }
             this.brake();
 
@@ -120,7 +198,7 @@ namespace MaCRo.Core
         {
             left.resetDistance();
             right.resetDistance();
-            dcm.Move((sbyte)(GlobalVal.turningSpeed*-1), GlobalVal.turningSpeed);
+            dcm.Move((sbyte)(GlobalVal.turningSpeed * -1), GlobalVal.turningSpeed);
         }
 
         public void turnLeft(int angle)
@@ -132,7 +210,7 @@ namespace MaCRo.Core
 
             while (right.distance_mm < lengthRight)
             {
-                Thread.Sleep(300);
+                Thread.Sleep(50);
             }
             this.brake();
         }
@@ -154,49 +232,5 @@ namespace MaCRo.Core
             left.resetDistance();
             right.resetDistance();
         }
-
-        public void orientationToRight()
-        {
-            switch (actualOrientation)
-            {
-                case Orientation.HorizontalPos:
-                    actualOrientation = Orientation.VerticalPos;
-                    break;
-                case Orientation.HorizontalNeg:
-                    actualOrientation = Orientation.VerticalNeg;
-                    break;
-                case Orientation.VerticalPos:
-                    actualOrientation = Orientation.HorizontalNeg;
-                    break;
-                case Orientation.VerticalNeg:
-                    actualOrientation = Orientation.HorizontalPos; ;
-                    break;
-            }
-        }
-
-        public void orientationToLeft()
-        {
-            switch (actualOrientation)
-            {
-                case Orientation.HorizontalPos:
-                    actualOrientation = Orientation.VerticalNeg;
-                    break;
-                case Orientation.HorizontalNeg:
-                    actualOrientation = Orientation.VerticalPos;
-                    break;
-                case Orientation.VerticalPos:
-                    actualOrientation = Orientation.HorizontalPos;
-                    break;
-                case Orientation.VerticalNeg:
-                    actualOrientation = Orientation.HorizontalNeg; ;
-                    break;
-            }
-        }
-
-        public Orientation getActualOrientation()
-        {
-            return actualOrientation;
-        }
-
     }
 }

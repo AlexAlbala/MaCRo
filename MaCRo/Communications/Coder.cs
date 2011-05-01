@@ -15,7 +15,7 @@ namespace MaCRo.Communications
             transport = new SerialTransport(t, 9600);
             transport.Start(this);
         }
-        public void Send(Message message, ushort value)
+        public void Send(Message message, short value)
         {
             //1 byte: movement/telemtry
             //1 byte: right/left - forward/backward
@@ -67,11 +67,62 @@ namespace MaCRo.Communications
                     buffer[0] = (byte)'m';
                     buffer[1] = (byte)'m';
                     break;
+
+                case Message.IMUAccX:
+                    buffer[0] = (byte)'A';
+                    buffer[1] = (byte)'X';
+                    break;
+                case Message.IMUGyrX:
+                    buffer[0] = (byte)'G';
+                    buffer[1] = (byte)'X';
+                    break;
+                case Message.IMUMagX:
+                    buffer[0] = (byte)'M';
+                    buffer[1] = (byte)'X';
+                    break;
+                case Message.IMUTempX:
+                    buffer[0] = (byte)'T';
+                    buffer[1] = (byte)'X';
+                    break;
+
+                case Message.IMUAccY:
+                    buffer[0] = (byte)'A';
+                    buffer[1] = (byte)'Y';
+                    break;
+                case Message.IMUGyrY:
+                    buffer[0] = (byte)'G';
+                    buffer[1] = (byte)'Y';
+                    break;
+                case Message.IMUMagY:
+                    buffer[0] = (byte)'M';
+                    buffer[1] = (byte)'Y';
+                    break;
+                case Message.IMUTempY:
+                    buffer[0] = (byte)'T';
+                    buffer[1] = (byte)'Y';
+                    break;
+
+                case Message.IMUAccZ:
+                    buffer[0] = (byte)'A';
+                    buffer[1] = (byte)'Z';
+                    break;
+                case Message.IMUGyrZ:
+                    buffer[0] = (byte)'G';
+                    buffer[1] = (byte)'Z';
+                    break;
+                case Message.IMUMagZ:
+                    buffer[0] = (byte)'M';
+                    buffer[1] = (byte)'Z';
+                    break;
+                case Message.IMUTempZ:
+                    buffer[0] = (byte)'T';
+                    buffer[1] = (byte)'Z';
+                    break;
                 default:
                     break;
             }
 
-            this.FromUShort(value, buffer, 2);
+            this.FromShort(value, buffer, 2);
             transport.Send(t, buffer);
         }
 
@@ -79,18 +130,18 @@ namespace MaCRo.Communications
         {
         }
 
-        private void FromUShort(ushort theUShort, byte[] buffer, int offset)
+        private void FromShort(short theShort, byte[] buffer, int offset)
         {
             unchecked
             {
-                buffer[offset] = (byte)theUShort;
-                buffer[offset + 1] = (byte)(theUShort >> 8);
+                buffer[offset] = (byte)theShort;
+                buffer[offset + 1] = (byte)(theShort >> 8);
             }
         }
 
-        private ushort ToUShort(byte[] buffer, int offset)
+        private short ToShort(byte[] buffer, int offset)
         {
-            return (ushort)(
+            return (short)(
                (buffer[offset] & 0x000000FF) |
                (buffer[offset + 1] << 8 & 0x0000FF00)
                );

@@ -7,6 +7,7 @@ using GHIElectronics.NETMF.IO;
 using System.Threading;
 using MaCRo.Config;
 
+using MaCRo.Drivers;
 using MaCRo.Core;
 
 namespace MaCRo
@@ -17,6 +18,11 @@ namespace MaCRo
         {
             Engine.getInstance().InitializeSystem();
             Engine.getInstance().Run();
+            //nIMU n = new nIMU();
+            //n.Start();
+            //n.getAccel();
+
+            while (true) { }
         }
 
 

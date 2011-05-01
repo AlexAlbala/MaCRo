@@ -3,7 +3,7 @@ using System;
 namespace MaCRoGS.Communications
 {
     class Coder
-    {        
+    {
         SerialTransport transport;
         MainWindow display;
 
@@ -26,9 +26,9 @@ namespace MaCRoGS.Communications
                 tmpBuff[i] = buffer[offset + i];
             }
 
-            ushort value = ToUShort(tmpBuff, 2);
+            short value = ToShort(tmpBuff, 2);
             switch ((char)tmpBuff[0])
-            {             
+            {
                 case 'm':
                     switch ((char)tmpBuff[1])
                     {
@@ -70,12 +70,57 @@ namespace MaCRoGS.Communications
                             break;
                     }
                     break;
+                case 'A':
+                    switch ((char)tmpBuff[1])
+                    {
+                        case 'X':
+                            display.SetAccX(value);
+                            break;
+                        case 'Y':
+                            break;
+                        case 'Z':
+                            break;
+                    }
+                    break;
+                case 'G':
+                    switch ((char)tmpBuff[1])
+                    {
+                        case 'X':
+                            break;
+                        case 'Y':
+                            break;
+                        case 'Z':
+                            break;
+                    }
+                    break;
+                case 'T':
+                    switch ((char)tmpBuff[1])
+                    {
+                        case 'X':
+                            break;
+                        case 'Y':
+                            break;
+                        case 'Z':
+                            break;
+                    }
+                    break;
+                case 'M':
+                    switch ((char)tmpBuff[1])
+                    {
+                        case 'X':
+                            break;
+                        case 'Y':
+                            break;
+                        case 'Z':
+                            break;
+                    }
+                    break;
                 default:
                     break;
             }
         }
 
-        private void FromUShort(ushort theUShort, byte[] buffer, int offset)
+        private void FromShort(short theUShort, byte[] buffer, int offset)
         {
             unchecked
             {
@@ -84,9 +129,9 @@ namespace MaCRoGS.Communications
             }
         }
 
-        private ushort ToUShort(byte[] buffer, int offset)
+        private short ToShort(byte[] buffer, int offset)
         {
-            return (ushort)(
+            return (short)(
                (buffer[offset] & 0x000000FF) |
                (buffer[offset + 1] << 8 & 0x0000FF00)
                );

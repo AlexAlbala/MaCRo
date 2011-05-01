@@ -46,6 +46,7 @@
     <Compile Include="Drivers\DCMotorDriver.cs" />
     <Compile Include="Drivers\DistanceDetector.cs" />
     <Compile Include="Drivers\Encoder.cs" />
+    <Compile Include="Drivers\nIMU.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Resources.Designer.cs">

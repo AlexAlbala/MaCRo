@@ -9,12 +9,9 @@ namespace MaCRo.Tools
         FollowWall
     }
 
-    public enum Orientation
+    public enum Axis
     {
-        HorizontalPos,
-        VerticalPos,
-        HorizontalNeg,
-        VerticalNeg
+        X,Y,Z
     }
 
     public enum Message
@@ -29,7 +26,19 @@ namespace MaCRo.Tools
         SensorL1,
         SensorL2,
         Stop,
-        Mode
+        Mode,
+        IMUAccX,
+        IMUAccY,
+        IMUAccZ,
+        IMUGyrX,
+        IMUGyrY,
+        IMUGyrZ,
+        IMUMagX,
+        IMUMagY,
+        IMUMagZ,
+        IMUTempX,
+        IMUTempY,
+        IMUTempZ
     }
 
     public class Position

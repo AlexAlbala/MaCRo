@@ -13,29 +13,104 @@ namespace MaCRo.Core
         private Encoder left = new Encoder(PortMap.encoderL_interrupt);
         private Encoder right = new Encoder(PortMap.encoderR_interrupt);
         private DCMotorDriver dcm = new DCMotorDriver();
-        private nIMU imu = new nIMU();
+        private nIMU imu;
+        private Position actualPosition;
+        private Position actualVelocity;
+        private Timer integration;
+        private double integrationTimeConstant;
+        private double lastTime;
+
+        private double[] initialAcc;
 
         public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
 
-        public short getAccel(Axis axis)
+        public NavigationManager()
         {
-            short[] accel = imu.getAccel();
+            imu = new nIMU();
+            imu.Start();
+            integrationTimeConstant = GlobalVal.integrationPeriod / 1e3;
+            actualVelocity = new Position();
+            actualPosition = new Position();
+            
+            lastTime = 0.0;
+
+            initialAcc = new double[3];
+            Calibrate();
+
+            integration = new Timer(new TimerCallback(this.Integrate), new object(), 0, GlobalVal.integrationPeriod);
+        }
+
+        private void Calibrate()
+        {
+            Thread.Sleep(5 * GlobalVal.imuUpdate_ms);
+            double[] temp = imu.getAccel();
+
+            initialAcc[0] = temp[0];
+            initialAcc[1] = temp[1];
+            initialAcc[2] = temp[2];
+        }
+
+        private void Integrate(Object state)
+        {
+            //METERS
+            double accX = getAccel(Axis.X);
+            double accY = getAccel(Axis.Y);
+            double accZ = getAccel(Axis.Z);
+
+
+            double actualTime = imu.getTime();
+            if (lastTime != 0.0)
+            {
+                integrationTimeConstant = actualTime - lastTime;
+            }
+
+            lastTime = actualTime;
+
+
+            lock (actualPosition)
+            {
+                actualVelocity.x += ((9.807 * accX) * integrationTimeConstant);
+                actualVelocity.y += ((9.807 * accY) * integrationTimeConstant);
+
+                actualPosition.x += actualVelocity.x * integrationTimeConstant;
+                actualPosition.y += actualVelocity.y * integrationTimeConstant;
+            }
+        }
+
+        public Position getActualPosition()
+        {
+            return actualPosition;
+        }
+
+        public Position getActualVelocity()
+        {
+            return actualVelocity;
+        }
+
+        public double getTime()
+        {
+            return lastTime;
+        }
+
+        public double getAccel(Axis axis)
+        {
+            double[] accel = imu.getAccel();
             switch (axis)
             {
                 case Axis.X:
-                    return accel[0];
+                    return accel[0] - initialAcc[0];
                 case Axis.Y:
-                    return accel[1];
+                    return accel[1] - initialAcc[1];
                 case Axis.Z:
-                    return accel[2];
+                    return accel[2] - initialAcc[2];
                 default:
                     return 0;
             }
         }
 
-        public short getGyro(Axis axis)
+        public double getGyro(Axis axis)
         {
-            short[] gyro = imu.getGyro();
+            double[] gyro = imu.getGyro();
             switch (axis)
             {
                 case Axis.X:
@@ -49,9 +124,9 @@ namespace MaCRo.Core
             }
         }
 
-        public short getTemp(Axis axis)
+        public double getTemp(Axis axis)
         {
-            short[] temp = imu.getTemp();
+            double[] temp = imu.getTemp();
             switch (axis)
             {
                 case Axis.X:
@@ -65,9 +140,9 @@ namespace MaCRo.Core
             }
         }
 
-        public short getMag(Axis axis)
+        public double getMag(Axis axis)
         {
-            short[] mag = imu.getMag();
+            double[] mag = imu.getMag();
             switch (axis)
             {
                 case Axis.X:
@@ -80,32 +155,10 @@ namespace MaCRo.Core
                     return 0;
             }
         }
-        public double lastTurnAngle
-        {
-            get
-            {
-                if (left.distance_mm < right.distance_mm)
-                {
-                    double angleRad = right.distance_mm / GlobalVal.width_mm;
-                    double angle = angleRad * 180 / System.Math.PI;
-                    return angle * -1;//TURN TO LEFT!
-                }
-                else
-                {
-                    double angleRad = left.distance_mm / GlobalVal.width_mm;
-                    double angle = angleRad * 180 / System.Math.PI;
-                    return angle;
-                }
-            }
-        }
-
-        public NavigationManager()
-        {
-            //imu.Start();
-        }
 
         public void TurnUntilWall(SensorManager sensors)
         {
+            brake();
             turnRight();
             Thread.Sleep(600);
             while (true)

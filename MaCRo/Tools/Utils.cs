@@ -16,16 +16,16 @@ namespace MaCRo.Tools
 
     public enum Message
     {
-        MoveForward,
-        MoveBackward,
-        TurnRight,
-        TurnLeft,
-        Object,
+        PositionX,
+        PositionY,
+        VelocityX,
+        VelocityY,
+        Angle,
+        Time,
         SensorS1,
         SensorS2,
         SensorL1,
         SensorL2,
-        Stop,
         Mode,
         IMUAccX,
         IMUAccY,
@@ -43,9 +43,19 @@ namespace MaCRo.Tools
 
     public class Position
     {
-        private int _x;
-        private int _y;
-        public int x { get { return _x; } set { _x = value; } }
-        public int y { get { return _y; } set { _y = value; } }
+        private double _x;
+        private double _y;
+        private double _angle;
+
+        public Position() 
+        {
+            _x = 0; 
+            _y = 0; 
+            _angle = 0; 
+        }
+
+        public double x { get { return _x; } set { _x = value; } }
+        public double y { get { return _y; } set { _y = value; } }
+        public double angle { get { return _angle; } set { _angle = value; } }
     }
 }

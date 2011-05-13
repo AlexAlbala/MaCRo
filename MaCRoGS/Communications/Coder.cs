@@ -1,4 +1,6 @@
 using System;
+using System.Text;
+using System.Globalization;
 
 namespace MaCRoGS.Communications
 {
@@ -26,26 +28,15 @@ namespace MaCRoGS.Communications
                 tmpBuff[i] = buffer[offset + i];
             }
 
-            short value = ToShort(tmpBuff, 2);
+            object value;
             switch ((char)tmpBuff[0])
             {
                 case 'm':
                     switch ((char)tmpBuff[1])
                     {
-                        case 'f':
-                            display.MoveForward(value);
-                            break;
-                        case 'b':
-                            display.MoveBackward(value);
-                            break;
-                        case 'l':
-                            display.TurnLeft(value);
-                            break;
-                        case 'r':
-                            display.TurnRight(value);
-                            break;
                         case 'm':
-                            display.UpdateMode(value);
+                            value = ToShort(tmpBuff, 2);
+                            display.UpdateMode((short)value);
                             break;
                         default:
                             break;
@@ -55,18 +46,56 @@ namespace MaCRoGS.Communications
                     switch ((char)tmpBuff[1])
                     {
                         case 'S':
-                            display.UpdateS1(value);
+                            value = ToShort(tmpBuff, 2);
+                            display.UpdateS1((short)value);
                             break;
                         case 's':
-                            display.UpdateS2(value);
+                            value = ToShort(tmpBuff, 2);
+                            display.UpdateS2((short)value);
                             break;
                         case 'L':
-                            display.UpdateL1(value);
+                            value = ToShort(tmpBuff, 2);
+                            display.UpdateL1((short)value);
                             break;
                         case 'l':
-                            display.UpdateL2(value);
+                            value = ToShort(tmpBuff, 2);
+                            display.UpdateL2((short)value);
                             break;
                         default:
+                            break;
+                    }
+                    break;
+                case 'p':
+                    switch ((char)tmpBuff[1])
+                    {
+                        case 'x':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetPositionX((double)value);
+                            break;
+                        case 'y':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetPositionY((double)value);
+                            break;
+                        case 'a':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetPositionAngle((double)value);
+                            break;
+                    }
+                    break;
+                case 'v':
+                    switch ((char)tmpBuff[1])
+                    {
+                        case 'x':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetVelocityX((double)value);
+                            break;
+                        case 'y':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetVelocityY((double)value);
+                            break;
+                        case 't':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetTime((double)value);
                             break;
                     }
                     break;
@@ -74,11 +103,16 @@ namespace MaCRoGS.Communications
                     switch ((char)tmpBuff[1])
                     {
                         case 'X':
-                            display.SetAccX(value);
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetAccX((double)value);
                             break;
                         case 'Y':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetAccY((double)value);
                             break;
                         case 'Z':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetAccZ((double)value);
                             break;
                     }
                     break;
@@ -86,21 +120,16 @@ namespace MaCRoGS.Communications
                     switch ((char)tmpBuff[1])
                     {
                         case 'X':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetGyroX((double)value);
                             break;
                         case 'Y':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetGyroY((double)value);
                             break;
                         case 'Z':
-                            break;
-                    }
-                    break;
-                case 'T':
-                    switch ((char)tmpBuff[1])
-                    {
-                        case 'X':
-                            break;
-                        case 'Y':
-                            break;
-                        case 'Z':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetGyroZ((double)value);
                             break;
                     }
                     break;
@@ -108,10 +137,33 @@ namespace MaCRoGS.Communications
                     switch ((char)tmpBuff[1])
                     {
                         case 'X':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetMagX((double)value);
                             break;
                         case 'Y':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetMagY((double)value);
                             break;
                         case 'Z':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetMagZ((double)value);
+                            break;
+                    }
+                    break;
+                case 'T':
+                    switch ((char)tmpBuff[1])
+                    {
+                        case 'X':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetTempX((double)value);
+                            break;
+                        case 'Y':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetTempY((double)value);
+                            break;
+                        case 'Z':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetTempZ((double)value);
                             break;
                     }
                     break;
@@ -135,6 +187,33 @@ namespace MaCRoGS.Communications
                (buffer[offset] & 0x000000FF) |
                (buffer[offset + 1] << 8 & 0x0000FF00)
                );
+        }
+
+        private int ToString(byte[] buffer, int offset, out string theString)
+        {
+            // Strings are prefixed with an integer size
+            short len = ToShort(buffer, offset);
+
+            // Encoding's GetChars() converts an entire buffer, so extract just the string
+            //part
+            byte[] tmpBuffer = new byte[len];
+            int dst = offset + sizeof(int);
+
+            Array.Copy(buffer, dst, tmpBuffer, 0, len);
+
+            theString = new string(Encoding.UTF8.GetChars(tmpBuffer));
+
+            return (dst + len) - offset;
+        }
+
+        private double ToDouble(byte[] buffer, int offset)
+        {
+            string s;
+            ToString(buffer, offset, out s);
+
+            double d = double.Parse(s, CultureInfo.InvariantCulture);
+
+            return d;
         }
     }
 }

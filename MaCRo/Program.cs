@@ -18,9 +18,6 @@ namespace MaCRo
         {
             Engine.getInstance().InitializeSystem();
             Engine.getInstance().Run();
-            //nIMU n = new nIMU();
-            //n.Start();
-            //n.getAccel();
 
             while (true) { }
         }

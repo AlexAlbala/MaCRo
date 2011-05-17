@@ -58,21 +58,46 @@ namespace MaCRo.Config
         /// Inclination of the left sensor
         /// </summary>
         public readonly static short leftAngle = 45;
+
+
+
         /// <summary>
-        /// The periodicity of the telemetry transmission in milliseconds
+        /// The periodicity of the sensor telemetry transmission in milliseconds
         /// </summary>
-        public readonly static short transmissionPeriod_ms = 100;
+        public readonly static short transmissionPeriodSensor_ms = 500;
         /// <summary>
-        /// The periodicity of the telemetry transmission in milliseconds
+        /// The periodicity of the Position telemetry transmission in milliseconds
         /// </summary>
         public readonly static short transmissionPeriodPosition_ms = 500;
         /// <summary>
+        /// The periodicity of the IMU telemetry transmission in milliseconds
+        /// </summary>
+        public readonly static short transmissionPeriodIMU_ms = 20;
+        /// <summary>
+        /// The periodicity of the Temperature telemetry transmission in milliseconds
+        /// </summary>
+        public readonly static short transmissionPeriodTemp_ms = 15000;
+
+
+        /// <summary>
+        /// Time for the IMU to be setted 
+        /// </summary>
+        public readonly static short imuSettingTime = 15000;
+        /// <summary>
         /// Periodicity of the IMU data update 
         /// </summary>
-        public readonly static short imuUpdate_ms = 25;
+        public readonly static short imuUpdate_ms = 20;
         /// <summary>
         /// Time between samples of the integration of the IMU data
         /// </summary>
-        public readonly static short integrationPeriod = 30;
+        public readonly static short integrationPeriod = 25;
+        /// <summary>
+        /// Time between samples of the integration of the IMU data
+        /// </summary>
+        public readonly static double accelerationThreshold = 0.04;
+        /// <summary>
+        /// Coefficient of the low pass filter
+        /// </summary>
+        public readonly static float IIRFilterCoefficient = 0.1f;
     }
 }

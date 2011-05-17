@@ -25,8 +25,10 @@ namespace MaCRo.Core
 
         private Position actualPosition;
 
-        private Timer timer;
+        private Timer sensorTimer;
         private Timer positionTimer;
+        private Timer IMUTimer;
+        private Timer TempTimer;
 
         public static Engine getInstance()
         {
@@ -37,16 +39,44 @@ namespace MaCRo.Core
 
         public void InitializeSystem()
         {
+            debug = new OutputPort((Cpu.Pin)PortMap.debug, false);
+            debug.Write(true);
+
             navigation = new NavigationManager();
             sensors = new SensorManager();
             coder = new Coder();
             coder.Start();
 
             currentMode = Mode.SearchingForWall;
-            debug = new OutputPort((Cpu.Pin)PortMap.debug, false);
 
-            timer = new Timer(new TimerCallback(timer_tick), new object(), 0, GlobalVal.transmissionPeriod_ms);
+            sensorTimer = new Timer(new TimerCallback(sensorTimer_tick), new object(), 0, GlobalVal.transmissionPeriodSensor_ms);
             positionTimer = new Timer(new TimerCallback(posTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodPosition_ms);
+            IMUTimer = new Timer(new TimerCallback(imuTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodIMU_ms);
+            TempTimer = new Timer(new TimerCallback(tempTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodTemp_ms);
+            debug.Write(false);
+        }
+
+        void imuTimer_Tick(Object state)
+        {
+            //IMU Telemetry
+            coder.Send(Message.IMUMagX, navigation.getMag(Axis.X));
+            coder.Send(Message.IMUMagY, navigation.getMag(Axis.Y));
+            coder.Send(Message.IMUMagZ, navigation.getMag(Axis.Z));
+
+            coder.Send(Message.IMUGyrX, navigation.getGyro(Axis.X));
+            coder.Send(Message.IMUGyrY, navigation.getGyro(Axis.Y));
+            coder.Send(Message.IMUGyrZ, navigation.getGyro(Axis.Z));         
+
+            coder.Send(Message.IMUAccX, navigation.getAccel(Axis.X));
+            coder.Send(Message.IMUAccY, navigation.getAccel(Axis.Y));
+            coder.Send(Message.IMUAccZ, navigation.getAccel(Axis.Z));
+        }
+
+        void tempTimer_Tick(Object state)
+        {
+            coder.Send(Message.IMUTempX, navigation.getTemp(Axis.X));
+            coder.Send(Message.IMUTempY, navigation.getTemp(Axis.Y));
+            coder.Send(Message.IMUTempZ, navigation.getTemp(Axis.Z));
         }
 
         void posTimer_Tick(Object state)
@@ -68,10 +98,8 @@ namespace MaCRo.Core
             }
         }
 
-        void timer_tick(Object state)
+        void sensorTimer_tick(Object state)
         {
-            debug.Write(true);
-
             short l1 = (short)(sensors.getDistance(Sensor.Central) * 10);
             short s2 = (short)(sensors.getDistance(Sensor.Wall) * 10);
             short s1 = (short)(sensors.getDistance(Sensor.wall_back) * 10);
@@ -86,27 +114,8 @@ namespace MaCRo.Core
                 if (l1 > 100 && l1 < 800)
                     coder.Send(Message.SensorL1, l1);
                 if (l2 > 100 && l2 < 800)
-                    coder.Send(Message.SensorL2, l2);
-
-                //IMU Telemetry
-                coder.Send(Message.IMUMagX, navigation.getMag(Axis.X));
-                coder.Send(Message.IMUMagY, navigation.getMag(Axis.Y));
-                coder.Send(Message.IMUMagZ, navigation.getMag(Axis.Z));
-
-                coder.Send(Message.IMUGyrX, navigation.getGyro(Axis.X));
-                coder.Send(Message.IMUGyrY, navigation.getGyro(Axis.Y));
-                coder.Send(Message.IMUGyrZ, navigation.getGyro(Axis.Z));
-
-                coder.Send(Message.IMUTempX, navigation.getTemp(Axis.X));
-                coder.Send(Message.IMUTempY, navigation.getTemp(Axis.Y));
-                coder.Send(Message.IMUTempZ, navigation.getTemp(Axis.Z));
-
-                coder.Send(Message.IMUAccX, navigation.getAccel(Axis.X));
-                coder.Send(Message.IMUAccY, navigation.getAccel(Axis.Y));
-                coder.Send(Message.IMUAccZ, navigation.getAccel(Axis.Z));
+                    coder.Send(Message.SensorL2, l2);               
             }
-
-            debug.Write(false);
         }
 
         public Engine()

@@ -27,22 +27,23 @@ namespace MaCRo.Core
         public NavigationManager()
         {
             imu = new nIMU();
+            Thread.Sleep(GlobalVal.imuSettingTime);
             imu.Start();
             integrationTimeConstant = GlobalVal.integrationPeriod / 1e3;
             actualVelocity = new Position();
             actualPosition = new Position();
-            
+
             lastTime = 0.0;
 
             initialAcc = new double[3];
-            Calibrate();
+            //Calibrate();
 
             integration = new Timer(new TimerCallback(this.Integrate), new object(), 0, GlobalVal.integrationPeriod);
         }
 
         private void Calibrate()
         {
-            Thread.Sleep(5 * GlobalVal.imuUpdate_ms);
+            Thread.Sleep(GlobalVal.imuSettingTime);
             double[] temp = imu.getAccel();
 
             initialAcc[0] = temp[0];
@@ -98,11 +99,20 @@ namespace MaCRo.Core
             switch (axis)
             {
                 case Axis.X:
-                    return accel[0] - initialAcc[0];
+                    double accX = accel[0];// - initialAcc[0];
+                    if (exMath.Abs(accX) < GlobalVal.accelerationThreshold)
+                        accX = 0;
+                    return accX;
                 case Axis.Y:
-                    return accel[1] - initialAcc[1];
+                    double accY = accel[1];// - initialAcc[1];
+                    if (exMath.Abs(accY) < GlobalVal.accelerationThreshold)
+                        accY = 0;
+                    return accY;
                 case Axis.Z:
-                    return accel[2] - initialAcc[2];
+                    double accZ = accel[2];// - initialAcc[2];
+                    if (exMath.Abs(accZ) < GlobalVal.accelerationThreshold)
+                        accZ = 0;
+                    return accZ;
                 default:
                     return 0;
             }

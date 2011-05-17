@@ -14,7 +14,7 @@ namespace MaCRo.Drivers
         private double _distance;
         private double stepmm;
         private DateTime lastLecture;
-        private int glitchFilterWidth_ms;
+        //private int glitchFilterWidth_ms;
 
         public double distance_mm
         {
@@ -23,13 +23,13 @@ namespace MaCRo.Drivers
 
         public Encoder(FEZ_Pin.Interrupt pin)
         {
-            encoder = new InterruptPort((Cpu.Pin)pin, true, Port.ResistorMode.PullDown, Port.InterruptMode.InterruptEdgeBoth);
-            encoder.OnInterrupt += new NativeEventHandler(encoder_OnInterrupt);
+            encoder = new InterruptPort((Cpu.Pin)pin, true, Port.ResistorMode.PullDown, Port.InterruptMode.InterruptEdgeHigh);
+            //encoder.OnInterrupt += new NativeEventHandler(encoder_OnInterrupt);
 
             stepmm = GlobalVal.wheelPerimeter_mm / GlobalVal.interruptsWheel;
             lastLecture = new DateTime();
             this.resetDistance();
-            glitchFilterWidth_ms = 110;       
+            //glitchFilterWidth_ms = 110;       
         }
 
         public void resetDistance()
@@ -39,12 +39,16 @@ namespace MaCRo.Drivers
 
         void encoder_OnInterrupt(uint pin, uint value, DateTime time)
         {
-            TimeSpan ts = time - lastLecture;
-            if (ts.Milliseconds > glitchFilterWidth_ms)
-            {
-                lastLecture = time;
-                _distance += stepmm;
-            }
+            Debug.Print("Weba: " + pin + " " + time.ToString());
+            _distance += stepmm;
+
+            Debug.Print(_distance.ToString());
+            //TimeSpan ts = time - lastLecture;
+            //if (ts.Milliseconds > glitchFilterWidth_ms)
+            //{
+            //    lastLecture = time;
+            //    _distance += stepmm;
+            //}
         }
 
     }

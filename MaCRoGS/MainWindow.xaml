@@ -52,7 +52,7 @@
 				<AvalonDock:DocumentContent IsCloseable="False" Title="IMU Charts" TabIndex="2">
                     <d3:ChartPlotter Name="chart">
                         <d3:HorizontalAxisTitle>Time (seconds)</d3:HorizontalAxisTitle>
-                    </d3:ChartPlotter>
+                    </d3:ChartPlotter>					
                 </AvalonDock:DocumentContent>
             </AvalonDock:DocumentPane>
             <AvalonDock:ResizingPanel Orientation="Vertical" AvalonDock:ResizingPanel.ResizeWidth="0.32*" Margin="0,0,0,0">

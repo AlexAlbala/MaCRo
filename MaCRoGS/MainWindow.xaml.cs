@@ -37,121 +37,84 @@ namespace MaCRoGS
 
         public void StartupSensors()
         {
-            IEnumerable<Rectangle> rect = robot.Children.OfType<Rectangle>();
-            foreach (Rectangle r in rect)
-            {
-                switch (r.Name)
-                {
-                    case "central_sensor":
-                        central_robotmap = new Position();
+            central_robotmap = new Position();
 
-                        central_robotmap.angle = 0;
-                        central_robotmap.x = (int)(Canvas.GetLeft(r) + r.ActualWidth / 2);
-                        central_robotmap.y = (int)Canvas.GetTop(r);
-                        break;
-                    case "right_sensor":
-                        right_robotmap = new Position();
+            central_robotmap.angle = 0;
+            central_robotmap.x = (int)(Canvas.GetLeft(central_sensor) + central_sensor.ActualWidth / 2);
+            central_robotmap.y = (int)Canvas.GetTop(central_sensor);
 
-                        TransformGroup rotation1 = (TransformGroup)r.RenderTransform;
-                        IEnumerable<RotateTransform> rot1 = rotation1.Children.OfType<RotateTransform>();
+            right_robotmap = new Position();
 
-                        right_robotmap.angle = rot1.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+            TransformGroup t_rrmap = (TransformGroup)right_sensor.RenderTransform;
+            IEnumerable<RotateTransform> rot_rrmap = t_rrmap.Children.OfType<RotateTransform>();
 
-                        right_robotmap.x = (int)(Canvas.GetLeft(r));
-                        right_robotmap.y = (int)(Canvas.GetTop(r));
+            right_robotmap.angle = rot_rrmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
 
+            right_robotmap.x = (int)(Canvas.GetLeft(right_sensor));
+            right_robotmap.y = (int)(Canvas.GetTop(right_sensor));
 
-                        break;
-                    case "wallback_sensor":
-                        wallback_robotmap = new Position();
+            wallback_robotmap = new Position();
 
-                        TransformGroup rotation2 = (TransformGroup)r.RenderTransform;
-                        IEnumerable<RotateTransform> rot2 = rotation2.Children.OfType<RotateTransform>();
+            TransformGroup t_wbrmap = (TransformGroup)wallback_sensor.RenderTransform;
+            IEnumerable<RotateTransform> rot_wbrmap = t_wbrmap.Children.OfType<RotateTransform>();
 
-                        wallback_robotmap.angle = rot2.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+            wallback_robotmap.angle = rot_wbrmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
 
-                        wallback_robotmap.x = (int)Canvas.GetLeft(r);
-                        wallback_robotmap.y = (int)Canvas.GetTop(r);
+            wallback_robotmap.x = (int)Canvas.GetLeft(wallback_sensor);
+            wallback_robotmap.y = (int)Canvas.GetTop(wallback_sensor);
 
-                        break;
-                    case "wall_sensor":
-                        wall_robotmap = new Position();
+            wall_robotmap = new Position();
 
-                        TransformGroup rotation3 = (TransformGroup)r.RenderTransform;
-                        IEnumerable<RotateTransform> rot3 = rotation3.Children.OfType<RotateTransform>();
+            TransformGroup t_wrmap = (TransformGroup)wall_sensor.RenderTransform;
+            IEnumerable<RotateTransform> rot_wrmap = t_wrmap.Children.OfType<RotateTransform>();
 
-                        wall_robotmap.angle = rot3.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+            wall_robotmap.angle = rot_wrmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
 
 
-                        wall_robotmap.x = (int)(Canvas.GetLeft(r));
-                        wall_robotmap.y = (int)(Canvas.GetTop(r) + r.ActualWidth / 2);
+            wall_robotmap.x = (int)(Canvas.GetLeft(wall_sensor));
+            wall_robotmap.y = (int)(Canvas.GetTop(wall_sensor) + wall_sensor.ActualWidth / 2);
 
 
-                        break;
-                    default:
-                        break;//throw new Exception(r.Name);
-                }
-            }
+
+            central_map = new Position();
+
+            central_map.angle = 0;
+            central_map.x = (int)(Canvas.GetLeft(central_sensor1) + central_sensor1.ActualWidth / 2);
+            central_map.y = (int)Canvas.GetTop(central_sensor1);
+
+            right_map = new Position();
+
+            TransformGroup t_rmap = (TransformGroup)right_sensor1.RenderTransform;
+            IEnumerable<RotateTransform> rot_rmap = t_rmap.Children.OfType<RotateTransform>();
+
+            right_map.angle = rot_rmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+
+            right_map.x = (int)(Canvas.GetLeft(right_sensor1));
+            right_map.y = (int)(Canvas.GetTop(right_sensor1));
+
+            wallback_map = new Position();
+
+            TransformGroup t_wbmap = (TransformGroup)wallback_sensor1.RenderTransform;
+            IEnumerable<RotateTransform> rot_wbmap = t_wbmap.Children.OfType<RotateTransform>();
+
+            wallback_map.angle = rot_wbmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+
+            wallback_map.x = (int)Canvas.GetLeft(wallback_sensor1);
+            wallback_map.y = (int)Canvas.GetTop(wallback_sensor1);
+
+            wall_map = new Position();
+
+            TransformGroup t_wmap = (TransformGroup)wall_sensor1.RenderTransform;
+            IEnumerable<RotateTransform> rot_wmap = t_wmap.Children.OfType<RotateTransform>();
+
+            wall_map.angle = rot_wmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
 
 
-            IEnumerable<Rectangle> rects = macro.Children.OfType<Rectangle>();
-            foreach (Rectangle r in rects)
-            {
-                switch (r.Name)
-                {
-                    case "central_sensor1":
-                        central_map = new Position();
+            wall_map.x = (int)(Canvas.GetLeft(wall_sensor1));
+            wall_map.y = (int)(Canvas.GetTop(wall_sensor1) + wall_sensor1.ActualWidth / 2);
 
-                        central_map.angle = 0;
-                        central_map.x = (int)(Canvas.GetLeft(r) + r.ActualWidth / 2);
-                        central_map.y = (int)Canvas.GetTop(r);
-                        break;
-                    case "right_sensor1":
-                        right_map = new Position();
-
-                        TransformGroup rotation1 = (TransformGroup)r.RenderTransform;
-                        IEnumerable<RotateTransform> rot1 = rotation1.Children.OfType<RotateTransform>();
-
-                        right_map.angle = rot1.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
-
-                        right_map.x = (int)(Canvas.GetLeft(r));
-                        right_map.y = (int)(Canvas.GetTop(r));
-
-
-                        break;
-                    case "wallback_sensor1":
-                        wallback_map = new Position();
-
-                        TransformGroup rotation2 = (TransformGroup)r.RenderTransform;
-                        IEnumerable<RotateTransform> rot2 = rotation2.Children.OfType<RotateTransform>();
-
-                        wallback_map.angle = rot2.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
-
-                        wallback_map.x = (int)Canvas.GetLeft(r);
-                        wallback_map.y = (int)Canvas.GetTop(r);
-
-                        break;
-                    case "wall_sensor1":
-                        wall_map = new Position();
-
-                        TransformGroup rotation3 = (TransformGroup)r.RenderTransform;
-                        IEnumerable<RotateTransform> rot3 = rotation3.Children.OfType<RotateTransform>();
-
-                        wall_map.angle = rot3.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
-
-
-                        wall_map.x = (int)(Canvas.GetLeft(r));
-                        wall_map.y = (int)(Canvas.GetTop(r) + r.ActualWidth / 2);
-
-                        break;
-                    case "structure1":
-                        //MACRO WIDTH = 148
-                        mmperpixel_map = 148 / r.ActualWidth;
-                        break;
-                    default:
-                        break;//throw new Exception(r.Name);
-                }
-            }
+            //MACRO WIDTH = 148
+            mmperpixel_map = 148 / structure1.ActualWidth;
         }
 
         public void Init()

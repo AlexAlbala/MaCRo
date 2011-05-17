@@ -22,11 +22,12 @@ namespace MaCRoGS
         private List<double> AccelX;
         private List<double> AccelY;
 
-
         private List<double> timePX;
         private List<double> timePY;
+
         private List<double> timeVX;
         private List<double> timeVY;
+
         private List<double> timeAX;
         private List<double> timeAY;
 

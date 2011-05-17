@@ -31,7 +31,13 @@ namespace MaCRo.Drivers
         private double digitalSensitivityTime = 2.1701e-6;
 
         private double rangeTimer;
+        private double lastValueTimer;
         private long counter;
+        private long counterFilter;
+
+        private double oax;
+        private double oay;
+        private double oaz;
 
         private object monitor;
 
@@ -42,7 +48,10 @@ namespace MaCRo.Drivers
             lastTemp = new double[3];
             lastMag = new double[3];
             lastTime = 0.0;
+            lastValueTimer = 0.0;
             counter = 0;
+            counterFilter = 0;
+            oax = oay = oaz = 0.0;
 
             rangeTimer = ushort.MaxValue * digitalSensitivityTime;
             monitor = new object();
@@ -52,7 +61,7 @@ namespace MaCRo.Drivers
 
         public void Start()
         {
-            t = new Timer(new TimerCallback(t_Filter_Tick), new object(), 0, GlobalVal.imuUpdate_ms);
+            t = new Timer(new TimerCallback(t_Tick), new object(), 0, GlobalVal.imuUpdate_ms);
         }
 
         public void Stop()
@@ -82,7 +91,7 @@ namespace MaCRo.Drivers
                 double mz = 0.0;
 
                 int m = 0;
-                while (m < 5)
+                while (m < 3)
                 {
                     byte[] buffer = new byte[bufferSize];
                     I2CDevice.I2CReadTransaction transactionRead = I2CDevice.CreateReadTransaction(buffer);
@@ -94,10 +103,12 @@ namespace MaCRo.Drivers
                         {
                             double tempTime = digitalSensitivityTime * ToUShortC2(new byte[] { buffer[8], buffer[7] });
 
-                            if (tempTime < lastTime)
+                            if (tempTime < lastValueTimer)
                             {
                                 counter++;
                             }
+                                
+                            lastValueTimer = tempTime;
                             lastTime = tempTime + (rangeTimer * counter);
 
                             //X
@@ -155,6 +166,25 @@ namespace MaCRo.Drivers
             }
         }
 
+        double[] accel_filter(double ax, double ay, double az)
+        {           
+            double bx = ax;
+            double by = ay;
+            double bz = az;
+            if (counterFilter > 0)
+            {
+                ax = oax + (bx - oax) * GlobalVal.IIRFilterCoefficient;
+                ay = oay + (by - oay) * GlobalVal.IIRFilterCoefficient;
+                az = oaz + (bz - oaz) * GlobalVal.IIRFilterCoefficient;
+            }
+            oax = ax;
+            oay = ay;
+            oaz = az;
+            counterFilter++;
+
+            return new double[] { ax, ay, az };
+        }
+
         void t_Tick(Object state)
         {
             lock (monitor)
@@ -173,6 +203,8 @@ namespace MaCRo.Drivers
                         {
                             counter++;
                         }
+
+                        lastValueTimer = tempTime;
                         lastTime = tempTime + (rangeTimer * counter);
 
                         //X
@@ -181,6 +213,9 @@ namespace MaCRo.Drivers
                         lastAcc[1] = digitalSensitivtyAccel * ToShortC2(new byte[] { buffer[22], buffer[21] });
                         //Z
                         lastAcc[2] = digitalSensitivtyAccel * ToShortC2(new byte[] { buffer[24], buffer[23] });
+
+                        lastAcc = accel_filter(lastAcc[0], lastAcc[1], lastAcc[2]);
+                        Debug.Print(lastAcc[0].ToString() + " - " + lastAcc[1].ToString() + " - " + lastAcc[2].ToString());
 
                         //X
                         lastGyr[0] = digitalSensitivityGyro * ToShortC2(new byte[] { buffer[14], buffer[13] });

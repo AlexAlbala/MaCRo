@@ -137,7 +137,7 @@ namespace MaCRoGS
             e.Height = 3;
 
             e.Stroke = Brushes.Brown;
-            macro.Children.Add(e);
+            map.Children.Add(e);
             Canvas.SetLeft(e, Canvas.GetLeft(macro) + right_map.x + (value/mmperpixel_map) * Math.Cos(right_map.angle));
             Canvas.SetTop(e, Canvas.GetTop(macro) + right_map.y - (value / mmperpixel_map)*Math.Cos(right_map.angle));
         }

@@ -71,6 +71,27 @@ namespace MaCRo.Communications
                         buffer[1] = (byte)'a';
                         break;
 
+                    case Message.Pitch:
+                        buffer = new byte[6 + ((double)value).ToString().Length];
+                        buffer[0] = (byte)'a';
+                        buffer[1] = (byte)'p';
+                        break;
+                    case Message.Roll:
+                        buffer = new byte[6 + ((double)value).ToString().Length];
+                        buffer[0] = (byte)'a';
+                        buffer[1] = (byte)'r';
+                        break;
+                    case Message.Yaw:
+                        buffer = new byte[6 + ((double)value).ToString().Length];
+                        buffer[0] = (byte)'a';
+                        buffer[1] = (byte)'y';
+                        break;
+                    case Message.MAGHeading:
+                        buffer = new byte[6 + ((double)value).ToString().Length];
+                        buffer[0] = (byte)'a';
+                        buffer[1] = (byte)'m';
+                        break;
+
                     case Message.VelocityX:
                         buffer = new byte[6 + ((double)value).ToString().Length];
                         buffer[0] = (byte)'v';

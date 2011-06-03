@@ -184,6 +184,7 @@ namespace MaCRoGS
         private void _SetPositionAngle(double angle)
         {
             anglePos.Content = "Current angle: " + angle.ToString() + " rads";
+            this._SetHeading(angle);
         }
 
         public void SetTime(double time)

@@ -11,17 +11,21 @@ namespace MaCRo.Tools
 
     public enum Axis
     {
-        X,Y,Z
+        X, Y, Z
     }
 
     public enum Message
     {
         PositionX,
         PositionY,
+        Angle,
         VelocityX,
         VelocityY,
-        Angle,
         Time,
+        Pitch,
+        Roll,
+        Yaw,
+        MAGHeading,
         SensorS1,
         SensorS2,
         SensorL1,
@@ -47,11 +51,11 @@ namespace MaCRo.Tools
         private double _y;
         private double _angle;
 
-        public Position() 
+        public Position()
         {
-            _x = 0; 
-            _y = 0; 
-            _angle = 0; 
+            _x = 0;
+            _y = 0;
+            _angle = 0;
         }
 
         public double x { get { return _x; } set { _x = value; } }

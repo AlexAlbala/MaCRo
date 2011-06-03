@@ -18,7 +18,6 @@ namespace MaCRo
         {
             Debug.EnableGCMessages(false);
             Engine.getInstance().InitializeSystem();
-            Thread.Sleep(3000);
             Engine.getInstance().Run();
 
             while (true) { }

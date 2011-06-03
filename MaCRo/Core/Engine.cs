@@ -20,7 +20,6 @@ namespace MaCRo.Core
         private SensorManager sensors;
         private Coder coder;
 
-
         private Mode currentMode;
 
         private Position actualPosition;
@@ -43,6 +42,8 @@ namespace MaCRo.Core
             debug.Write(true);
 
             navigation = new NavigationManager();
+            Thread.Sleep(2000);
+
             sensors = new SensorManager();
             coder = new Coder();
             coder.Start();
@@ -53,6 +54,8 @@ namespace MaCRo.Core
             positionTimer = new Timer(new TimerCallback(posTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodPosition_ms);
             IMUTimer = new Timer(new TimerCallback(imuTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodIMU_ms);
             TempTimer = new Timer(new TimerCallback(tempTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodTemp_ms);
+
+
             debug.Write(false);
         }
 
@@ -65,7 +68,7 @@ namespace MaCRo.Core
 
             coder.Send(Message.IMUGyrX, navigation.getGyro(Axis.X));
             coder.Send(Message.IMUGyrY, navigation.getGyro(Axis.Y));
-            coder.Send(Message.IMUGyrZ, navigation.getGyro(Axis.Z));         
+            coder.Send(Message.IMUGyrZ, navigation.getGyro(Axis.Z));
 
             coder.Send(Message.IMUAccX, navigation.getAccel(Axis.X));
             coder.Send(Message.IMUAccY, navigation.getAccel(Axis.Y));
@@ -95,6 +98,11 @@ namespace MaCRo.Core
 
                 coder.Send(Message.Time, navigation.getTime());
 
+                //coder.Send(Message.Pitch, navigation.Pitch);
+                //coder.Send(Message.Roll, navigation.Roll);
+                //coder.Send(Message.Yaw, navigation.Yaw);
+                coder.Send(Message.MAGHeading, (double)exMath.ToDeg((float)navigation.MAG_Heading));
+
             }
         }
 
@@ -114,34 +122,33 @@ namespace MaCRo.Core
                 if (l1 > 100 && l1 < 800)
                     coder.Send(Message.SensorL1, l1);
                 if (l2 > 100 && l2 < 800)
-                    coder.Send(Message.SensorL2, l2);               
+                    coder.Send(Message.SensorL2, l2);
             }
         }
 
         public Engine()
         {
             actualPosition = new Position();
-            actualPosition.x = 0;
-            actualPosition.y = 0;
         }
 
         public void Run()
         {
             while (true)
             {
+                debug.Write(true);
+                Thread.Sleep(50);
+                debug.Write(false);
+
                 if (currentMode == Mode.SearchingForWall)
                 {
                     coder.Send(Message.Mode, 0);
                     navigation.MoveToObject(sensors);
 
                     float central = sensors.getDistance(Sensor.Central);
-                    float left = sensors.getDistance(Sensor.wall_back);
-                    float right = sensors.getDistance(Sensor.Right);
 
                     if (central <= GlobalVal.distanceToDetect)
                     {
                         //WALL FOUNDED
-                        navigation.resetDistance();
                         navigation.TurnUntilWall(sensors);
                         currentMode = Mode.FollowWall;
                     }
@@ -150,10 +157,10 @@ namespace MaCRo.Core
                 else if (currentMode == Mode.FollowWall)
                 {
                     coder.Send(Message.Mode, 1);
-                    float central = sensors.getDistance(Sensor.Central);
-                    float right = sensors.getDistance(Sensor.Right);
-                    float wall = sensors.getDistance(Sensor.Wall);
-                    float wallback = sensors.getDistance(Sensor.wall_back);
+                    float central;// = sensors.getDistance(Sensor.Central);
+                    //float right;// = sensors.getDistance(Sensor.Right);
+                    float wall;// = sensors.getDistance(Sensor.Wall);
+                    float wallback;// = sensors.getDistance(Sensor.wall_back);
 
                     //FOLLOW LEFT WALL
                     while (true)
@@ -169,34 +176,45 @@ namespace MaCRo.Core
 
                         if (exMath.Abs(wall - wallback) < GlobalVal.hysteresis)
                         {
+                            /*
                             if (wall > (GlobalVal.distanceToFollowWall + GlobalVal.hysteresis))
                             {
-                                navigation.turnLeft();
-                                Thread.Sleep(50);
+                                navigation.turnLeft(5);
                                 continue;
                             }
                             else if (wall < (GlobalVal.distanceToFollowWall - GlobalVal.hysteresis))
                             {
-                                navigation.turnRight();
-                                Thread.Sleep(50);
+                                navigation.turnRight(5);
                                 continue;
                             }
                             else
                             {
                                 navigation.MoveForward();
                             }
+                            */
+                            if (wall < 300)
+                            {
+                                navigation.MoveForward(50, GlobalVal.speed);
+                            }
+                            else
+                            {
+                                continue;
+                            }
                         }
                         else if (wall < wallback)
                         {
-                            navigation.turnRight();
-                            Thread.Sleep(50);
+                            //navigation.UpdatePosition();
+                            navigation.turnRight(1);
+                            //Thread.Sleep(50);
                         }
                         else if (wall > wallback)
                         {
-                            navigation.turnLeft();
-                            Thread.Sleep(50);
+                            //navigation.UpdatePosition();
+                            navigation.turnLeft(1);
+                            //Thread.Sleep(50);
                         }
                     }
+                    //navigation.UpdatePosition();
                     navigation.TurnUntilWall(sensors);
                     continue;
                 }

@@ -111,6 +111,20 @@ namespace MaCRo.Tools
             return (sign * temp);
         }
 
+
+
+        public static float ToRad(float angle)
+        {
+            //return angle * (float)exMath.PI/180;
+            return angle * 0.01745329252f;
+        }
+
+        public static float ToDeg(float angle)
+        {
+            //return angle*180/(float)exMath.PI;
+            return angle * 57.2957795131f;
+        }
+
         /// <summary>
         /// Returns the angle whose tangent is the specified number
         /// </summary>

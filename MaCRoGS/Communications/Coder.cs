@@ -82,6 +82,27 @@ namespace MaCRoGS.Communications
                             break;
                     }
                     break;
+                case 'a':
+                    switch ((char)tmpBuff[1])
+                    {
+                        case 'p':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetPitch((double)value);
+                            break;
+                        case 'y':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetYaw((double)value);
+                            break;
+                        case 'r':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetRoll((double)value);
+                            break;
+                        case 'm':
+                            value = ToDouble(tmpBuff, 2);
+                            display.SetMHead((double)value);
+                            break;
+                    }
+                    break;
                 case 'v':
                     switch ((char)tmpBuff[1])
                     {

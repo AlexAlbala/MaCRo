@@ -90,6 +90,7 @@
     <Compile Include="Controls\3AxisAccelerometer.xaml.cs">
       <DependentUpon>3AxisAccelerometer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DisplayAngles.cs" />
     <Compile Include="DisplayIMU.cs" />
     <Compile Include="DisplaySensors.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -98,6 +99,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Navigation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

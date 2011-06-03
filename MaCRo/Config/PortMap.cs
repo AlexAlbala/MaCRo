@@ -18,8 +18,8 @@ namespace MaCRo.Config
         public readonly static FEZ_Pin.Digital motor2_DirA = FEZ_Pin.Digital.Di12;
         public readonly static FEZ_Pin.Digital motor2_DirB = FEZ_Pin.Digital.Di13;
 
-        public readonly static FEZ_Pin.Interrupt encoderL_interrupt = FEZ_Pin.Interrupt.Di7;
-        public readonly static FEZ_Pin.Interrupt encoderR_interrupt = FEZ_Pin.Interrupt.Di6;
+        public readonly static FEZ_Pin.Digital encoderL_interrupt = FEZ_Pin.Digital.Di7;
+        public readonly static FEZ_Pin.Digital encoderR_interrupt = FEZ_Pin.Digital.Di6;
 
         public readonly static FEZ_Pin.AnalogIn infraredS1 = FEZ_Pin.AnalogIn.An0;
         public readonly static FEZ_Pin.AnalogIn infraredS2 = FEZ_Pin.AnalogIn.An1;

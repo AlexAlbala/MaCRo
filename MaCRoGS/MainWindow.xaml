@@ -8,7 +8,7 @@
         <AvalonDock:ResizingPanel>
             <AvalonDock:DocumentPane SelectedIndex="0">
                 <AvalonDock:DocumentContent IsCloseable="False" Title="Map" TabIndex="0">
-                    <Canvas x:Name="map" Background="#FF9B9B9B">
+                    <Canvas x:Name="map" Background="#FFCACACA">
                         <Canvas x:Name="macro"  Height="78.2" Canvas.Left="454.106" Canvas.Top="370.931" Width="57.267">
                             <Rectangle x:Name="central_sensor1" Fill="Red" Height="3.692" Canvas.Left="24.411" Stroke="Black" Width="9.756" Panel.ZIndex="1" Canvas.Top="7.037"/>
                             <Rectangle x:Name="right_sensor1" Fill="Red" Height="3.692" Canvas.Left="40.275" Stroke="Black" Canvas.Top="9.649" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
@@ -106,6 +106,14 @@
 							<Label Content="timeL" x:Name="labelTime" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             
                             </StackPanel>
+                    </AvalonDock:DockableContent>
+					<AvalonDock:DockableContent IsCloseable="False" Title="Angle Values" >
+                        <StackPanel Orientation="Vertical" Background="White" Panel.ZIndex="4" Margin="0" >
+                            <Label Content="Yaw" x:Name="aYaw" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+                            <Label Content="Pitch" x:Name="aPitch" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+                            <Label Content="Roll" x:Name="aRoll" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+                            <Label Content="MAGHeading" x:Name="aMH" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />                            
+                        </StackPanel>
                     </AvalonDock:DockableContent>
                 </AvalonDock:DockablePane>
                 <AvalonDock:DockablePane  AvalonDock:ResizingPanel.ResizeHeight="0.7*" ClipToBounds="True" Background="White" Foreground="Black" >

@@ -33,7 +33,7 @@ namespace MaCRo.Config
         /// <summary>
         /// Natural speed of the rover
         /// </summary>
-        public readonly static sbyte speed = 24;
+        public readonly static sbyte speed = 25;
         /// <summary>
         /// Velocity of the wheel during a turn
         /// </summary>
@@ -41,7 +41,7 @@ namespace MaCRo.Config
         /// <summary>
         /// Distance for an object to be detected. In centimeters
         /// </summary>
-        public readonly static short distanceToDetect = 23;       
+        public readonly static short distanceToDetect = 25;       
         /// <summary>
         /// Distance which has to be respected when following the wall. In centimeters
         /// </summary>
@@ -58,8 +58,10 @@ namespace MaCRo.Config
         /// Inclination of the left sensor
         /// </summary>
         public readonly static short leftAngle = 45;
-
-
+        /// <summary>
+        /// Value of acceleration in m/s of 1g
+        /// </summary>
+        public readonly static float gravity = 9.807f;
 
         /// <summary>
         /// The periodicity of the sensor telemetry transmission in milliseconds
@@ -72,7 +74,7 @@ namespace MaCRo.Config
         /// <summary>
         /// The periodicity of the IMU telemetry transmission in milliseconds
         /// </summary>
-        public readonly static short transmissionPeriodIMU_ms = 20;
+        public readonly static short transmissionPeriodIMU_ms = 100;
         /// <summary>
         /// The periodicity of the Temperature telemetry transmission in milliseconds
         /// </summary>
@@ -86,7 +88,7 @@ namespace MaCRo.Config
         /// <summary>
         /// Periodicity of the IMU data update 
         /// </summary>
-        public readonly static short imuUpdate_ms = 20;
+        public readonly static short imuUpdate_ms = 40;
         /// <summary>
         /// Time between samples of the integration of the IMU data
         /// </summary>
@@ -94,10 +96,15 @@ namespace MaCRo.Config
         /// <summary>
         /// Time between samples of the integration of the IMU data
         /// </summary>
-        public readonly static double accelerationThreshold = 0.04;
+        public readonly static double accelerationThreshold = 0.1;
         /// <summary>
         /// Coefficient of the low pass filter
         /// </summary>
-        public readonly static float IIRFilterCoefficient = 0.1f;
+        public readonly static float IIRFilterCoefficient = 0.75f;
+
+        /// <summary>
+        /// Periodicity of the main loop of the DCM algorithm
+        /// </summary>
+        public readonly static int DCMLoopPeriodicity = 20;
     }
 }

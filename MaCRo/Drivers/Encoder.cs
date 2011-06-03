@@ -9,47 +9,66 @@ namespace MaCRo.Drivers
 {
     public class Encoder
     {
-        private InterruptPort encoder;
+        private InputPort encoder;
 
         private double _distance;
         private double stepmm;
-        private DateTime lastLecture;
-        //private int glitchFilterWidth_ms;
+        private bool lastValue;
 
         public double distance_mm
         {
             get { return _distance; }
         }
 
-        public Encoder(FEZ_Pin.Interrupt pin)
+        public Encoder(FEZ_Pin.Digital pin)
         {
-            encoder = new InterruptPort((Cpu.Pin)pin, true, Port.ResistorMode.PullDown, Port.InterruptMode.InterruptEdgeHigh);
+            //encoder = new InterruptPort((Cpu.Pin)pin, true, Port.ResistorMode.PullDown, Port.InterruptMode.InterruptEdgeHigh);
             //encoder.OnInterrupt += new NativeEventHandler(encoder_OnInterrupt);
-
+            encoder = new InputPort((Cpu.Pin)pin, true, Port.ResistorMode.PullDown);
             stepmm = GlobalVal.wheelPerimeter_mm / GlobalVal.interruptsWheel;
-            lastLecture = new DateTime();
             this.resetDistance();
-            //glitchFilterWidth_ms = 110;       
+
+            Thread th = new Thread(new ThreadStart(this.Run));
+            th.Start();
+
+            lastValue = encoder.Read();
         }
 
-        public void resetDistance()
+        private void Run()
         {
+            while (true)
+            {
+                bool actualValue = encoder.Read();
+                if (actualValue == lastValue)
+                {
+                    continue;
+                }
+                else
+                {
+                    _distance += stepmm;
+                    lastValue = actualValue;
+                    Debug.Print("PIN: " + encoder.ToString() + " - " + _distance.ToString());
+                }
+            }
+        }
+        public void resetDistance()
+        {            
             _distance = 0;
         }
 
-        void encoder_OnInterrupt(uint pin, uint value, DateTime time)
-        {
-            Debug.Print("Weba: " + pin + " " + time.ToString());
-            _distance += stepmm;
+        //void encoder_OnInterrupt(uint pin, uint value, DateTime time)
+        //{
+        //    //Debug.Print("Weba: " + pin + " " + time.ToString());
+        //    _distance += stepmm;
 
-            Debug.Print(_distance.ToString());
-            //TimeSpan ts = time - lastLecture;
-            //if (ts.Milliseconds > glitchFilterWidth_ms)
-            //{
-            //    lastLecture = time;
-            //    _distance += stepmm;
-            //}
-        }
+        //    Debug.Print("PIN: " + pin.ToString() + " - " + _distance.ToString());
+        //    //TimeSpan ts = time - lastLecture;
+        //    //if (ts.Milliseconds > glitchFilterWidth_ms)
+        //    //{
+        //    //    lastLecture = time;
+        //    //    _distance += stepmm;
+        //    //}
+        //}
 
     }
 }

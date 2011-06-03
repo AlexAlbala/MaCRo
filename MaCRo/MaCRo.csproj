@@ -46,7 +46,9 @@
     <Compile Include="Drivers\DCMotorDriver.cs" />
     <Compile Include="Drivers\DistanceDetector.cs" />
     <Compile Include="Drivers\Encoder.cs" />
-    <Compile Include="Drivers\nIMU.cs" />
+    <Compile Include="Drivers\IMU\Matrix.cs" />
+    <Compile Include="Drivers\IMU\nIMU.cs" />
+    <Compile Include="Drivers\IMU\Vector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -55,6 +57,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Tools\BitConverter.cs" />
+    <Compile Include="Drivers\IMU\DCM.cs" />
     <Compile Include="Tools\Dictionary.cs" />
     <Compile Include="Tools\Math.cs" />
     <Compile Include="Tools\Utils.cs" />

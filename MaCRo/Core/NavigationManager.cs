@@ -215,6 +215,7 @@ namespace MaCRo.Core
             //angle respect of axis Y !!!
             actualPosition.x += (right.distance_mm + left.distance_mm) * exMath.Sin(actualPosition.angle) / 2000;
             actualPosition.y -= (right.distance_mm + left.distance_mm) * exMath.Cos(actualPosition.angle) / 2000;
+            this.resetDistance();
         }
 
         public void MoveForward()
@@ -254,7 +255,7 @@ namespace MaCRo.Core
             double angleRad = exMath.ToRad(angle);
 
             //Let's suppose the mass center is in the geometrical center of the rover
-            double lengthRight = exMath.Tan(angleRad) * GlobalVal.width_mm / 2;
+            double lengthRight = angleRad    * GlobalVal.width_mm / 2;
             double lengthLeft = lengthRight;
 
             turnRight();
@@ -267,7 +268,7 @@ namespace MaCRo.Core
 
             //actualPosition.angle += exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
             //actualPosition.angle = this.MAG_Heading - initialHeading;
-            actualPosition.angle += (360 * (left.distance_mm + right.distance_mm) / 2) / (exMath.PI * GlobalVal.width_mm);
+            actualPosition.angle += (left.distance_mm + right.distance_mm) / GlobalVal.width_mm;
         }
 
         public void _turnRight()
@@ -287,7 +288,7 @@ namespace MaCRo.Core
             double angleRad = exMath.ToRad(angle);
 
             //Let's suppose the mass center is in the geometrical center of the rover
-            double lengthRight = exMath.Tan(angleRad) * GlobalVal.width_mm / 2;
+            double lengthRight = angleRad * GlobalVal.width_mm / 2;
             double lengthLeft = lengthRight;
 
             turnLeft();
@@ -300,7 +301,7 @@ namespace MaCRo.Core
 
             //actualPosition.angle -= exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
             //actualPosition.angle = initialHeading - MAG_Heading;
-            actualPosition.angle -= (360 * (left.distance_mm + right.distance_mm) / 2) / (exMath.PI * GlobalVal.width_mm);
+            actualPosition.angle -= (left.distance_mm + right.distance_mm) / GlobalVal.width_mm;
         }
 
         public void _turnLeft()

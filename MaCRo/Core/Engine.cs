@@ -157,10 +157,9 @@ namespace MaCRo.Core
                 else if (currentMode == Mode.FollowWall)
                 {
                     coder.Send(Message.Mode, 1);
-                    float central;// = sensors.getDistance(Sensor.Central);
-                    //float right;// = sensors.getDistance(Sensor.Right);
-                    float wall;// = sensors.getDistance(Sensor.Wall);
-                    float wallback;// = sensors.getDistance(Sensor.wall_back);
+                    float central;
+                    float wall;
+                    float wallback;
 
                     //FOLLOW LEFT WALL
                     while (true)
@@ -192,7 +191,7 @@ namespace MaCRo.Core
                                 navigation.MoveForward();
                             }
                             */
-                            if (wall < 300)
+                            if (wall < 30)
                             {
                                 navigation.MoveForward(50, GlobalVal.speed);
                             }
@@ -200,18 +199,38 @@ namespace MaCRo.Core
                             {
                                 continue;
                             }
-                        }
+                        }//CORRECT THE DEVIATION RESPECT TO THE WALL
                         else if (wall < wallback)
                         {
-                            //navigation.UpdatePosition();
                             navigation.turnRight(1);
-                            //Thread.Sleep(50);
-                        }
+                            navigation.MoveForward(50, GlobalVal.speed);
+                        }//IN THE FOLLOWING CASE:
+                            //1-IS A SIMPLE DEVIATION
+                            //2-THERE IS A CORNER
                         else if (wall > wallback)
                         {
-                            //navigation.UpdatePosition();
-                            navigation.turnLeft(1);
-                            //Thread.Sleep(50);
+                            if ((wall - wallback) < 5)
+                            {
+                                navigation.turnLeft(1);
+                                navigation.MoveForward(50, GlobalVal.speed);
+                            }
+                            else//THERE IS A CORNER
+                            {                               
+                                navigation.turnLeft(45);
+                                navigation.MoveForward(100, GlobalVal.speed);
+
+                                if (sensors.getDistance(Sensor.Wall) > 10)
+                                {
+                                    navigation.MoveForward(30, GlobalVal.speed);
+                                    navigation.turnLeft(30);
+                                }
+
+                                /*if (sensors.getDistance(Sensor.Central) > GlobalVal.distanceToDetect)
+                                {
+                                    navigation.MoveForward(30, GlobalVal.speed);
+                                    navigation.turnLeft(30);
+                                }*/
+                            }
                         }
                     }
                     //navigation.UpdatePosition();

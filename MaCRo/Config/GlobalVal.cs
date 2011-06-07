@@ -66,11 +66,11 @@ namespace MaCRo.Config
         /// <summary>
         /// The periodicity of the sensor telemetry transmission in milliseconds
         /// </summary>
-        public readonly static short transmissionPeriodSensor_ms = 500;
+        public readonly static short transmissionPeriodSensor_ms = 300;
         /// <summary>
         /// The periodicity of the Position telemetry transmission in milliseconds
         /// </summary>
-        public readonly static short transmissionPeriodPosition_ms = 500;
+        public readonly static short transmissionPeriodPosition_ms = 250;
         /// <summary>
         /// The periodicity of the IMU telemetry transmission in milliseconds
         /// </summary>
@@ -78,7 +78,7 @@ namespace MaCRo.Config
         /// <summary>
         /// The periodicity of the Temperature telemetry transmission in milliseconds
         /// </summary>
-        public readonly static short transmissionPeriodTemp_ms = 15000;
+        public readonly static short transmissionPeriodTemp_ms = 30000;
 
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace MaCRo.Config
         /// </summary>
         public readonly static short integrationPeriod = 25;
         /// <summary>
-        /// Time between samples of the integration of the IMU data
+        /// Minimum value of acceleration (m/s^2) to take into account
         /// </summary>
         public readonly static double accelerationThreshold = 0.1;
         /// <summary>

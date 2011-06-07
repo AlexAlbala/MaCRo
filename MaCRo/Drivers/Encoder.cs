@@ -31,11 +31,11 @@ namespace MaCRo.Drivers
             Thread th = new Thread(new ThreadStart(this.Run));
             th.Start();
 
-            lastValue = encoder.Read();
         }
 
         private void Run()
         {
+            lastValue = encoder.Read();
             while (true)
             {
                 bool actualValue = encoder.Read();
@@ -47,7 +47,7 @@ namespace MaCRo.Drivers
                 {
                     _distance += stepmm;
                     lastValue = actualValue;
-                    Debug.Print("PIN: " + encoder.ToString() + " - " + _distance.ToString());
+                    Debug.Print("PIN: " + this.encoder.Id.ToString() + " - Distance: " + _distance.ToString());
                 }
             }
         }

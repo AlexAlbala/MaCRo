@@ -45,30 +45,27 @@ namespace MaCRoGS
 
             right_robotmap = new Position();
 
-            TransformGroup t_rrmap = (TransformGroup)right_sensor.RenderTransform;
-            IEnumerable<RotateTransform> rot_rrmap = t_rrmap.Children.OfType<RotateTransform>();
+            RotateTransform t_rrmap = (RotateTransform)right_sensor.RenderTransform;
 
-            right_robotmap.angle = rot_rrmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+            right_robotmap.angle = t_rrmap.Angle * Math.PI / 180;
 
             right_robotmap.x = (int)(Canvas.GetLeft(right_sensor));
             right_robotmap.y = (int)(Canvas.GetTop(right_sensor));
 
             wallback_robotmap = new Position();
 
-            TransformGroup t_wbrmap = (TransformGroup)wallback_sensor.RenderTransform;
-            IEnumerable<RotateTransform> rot_wbrmap = t_wbrmap.Children.OfType<RotateTransform>();
+            RotateTransform t_wbrmap = (RotateTransform)wallback_sensor.RenderTransform;
 
-            wallback_robotmap.angle = rot_wbrmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+            wallback_robotmap.angle = t_wbrmap.Angle * Math.PI / 180;
 
             wallback_robotmap.x = (int)Canvas.GetLeft(wallback_sensor);
             wallback_robotmap.y = (int)Canvas.GetTop(wallback_sensor);
 
             wall_robotmap = new Position();
 
-            TransformGroup t_wrmap = (TransformGroup)wall_sensor.RenderTransform;
-            IEnumerable<RotateTransform> rot_wrmap = t_wrmap.Children.OfType<RotateTransform>();
+            RotateTransform t_wrmap = (RotateTransform)wall_sensor.RenderTransform;
 
-            wall_robotmap.angle = rot_wrmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+            wall_robotmap.angle = t_wrmap.Angle * Math.PI / 180;
 
 
             wall_robotmap.x = (int)(Canvas.GetLeft(wall_sensor));
@@ -84,30 +81,27 @@ namespace MaCRoGS
 
             right_map = new Position();
 
-            TransformGroup t_rmap = (TransformGroup)right_sensor1.RenderTransform;
-            IEnumerable<RotateTransform> rot_rmap = t_rmap.Children.OfType<RotateTransform>();
+            RotateTransform t_rmap = (RotateTransform)right_sensor1.RenderTransform;
 
-            right_map.angle = rot_rmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+            right_map.angle = t_rmap.Angle * Math.PI / 180;
 
             right_map.x = (int)(Canvas.GetLeft(right_sensor1));
             right_map.y = (int)(Canvas.GetTop(right_sensor1));
 
             wallback_map = new Position();
 
-            TransformGroup t_wbmap = (TransformGroup)wallback_sensor1.RenderTransform;
-            IEnumerable<RotateTransform> rot_wbmap = t_wbmap.Children.OfType<RotateTransform>();
+            RotateTransform t_wbmap = (RotateTransform)wallback_sensor1.RenderTransform;
 
-            wallback_map.angle = rot_wbmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+            wallback_map.angle = t_wbmap.Angle * Math.PI / 180;
 
             wallback_map.x = (int)Canvas.GetLeft(wallback_sensor1);
             wallback_map.y = (int)Canvas.GetTop(wallback_sensor1);
 
             wall_map = new Position();
 
-            TransformGroup t_wmap = (TransformGroup)wall_sensor1.RenderTransform;
-            IEnumerable<RotateTransform> rot_wmap = t_wmap.Children.OfType<RotateTransform>();
+            RotateTransform t_wmap = (RotateTransform)wall_sensor1.RenderTransform;
 
-            wall_map.angle = rot_wmap.ElementAt<RotateTransform>(0).Angle * Math.PI / 180;
+            wall_map.angle = t_wmap.Angle * Math.PI / 180;
 
 
             wall_map.x = (int)(Canvas.GetLeft(wall_sensor1));

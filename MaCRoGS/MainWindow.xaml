@@ -10,49 +10,37 @@
                 <AvalonDock:DocumentContent IsCloseable="False" Title="Map" TabIndex="0">
                     <Canvas x:Name="map" Background="#FFCACACA">
                         <Canvas x:Name="macro"  Height="78.2" Canvas.Left="454.106" Canvas.Top="370.931" Width="57.267">
+                            <Canvas.RenderTransform>
+                                <RotateTransform Angle="0"/>
+                            </Canvas.RenderTransform>
                             <Rectangle x:Name="central_sensor1" Fill="Red" Height="3.692" Canvas.Left="24.411" Stroke="Black" Width="9.756" Panel.ZIndex="1" Canvas.Top="7.037"/>
                             <Rectangle x:Name="right_sensor1" Fill="Red" Height="3.692" Canvas.Left="40.275" Stroke="Black" Canvas.Top="9.649" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
                                 <Rectangle.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform/>
-                                        <SkewTransform/>
-                                        <RotateTransform Angle="45"/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
+                                    <RotateTransform Angle="45"/>
                                 </Rectangle.RenderTransform>
                             </Rectangle>
                             <Rectangle x:Name="wallback_sensor1" Fill="Red" Height="3.692" Canvas.Left="6.496" Stroke="Black" Canvas.Top="60.358" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
                                 <Rectangle.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform/>
-                                        <SkewTransform/>
-                                        <RotateTransform Angle="90"/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
+                                    <RotateTransform Angle="90"/>
                                 </Rectangle.RenderTransform>
                             </Rectangle>
                             <Rectangle x:Name="wall_sensor1" Fill="Red" Height="3.692" Stroke="Black" Canvas.Top="12.575" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" Canvas.Left="6.453">
                                 <Rectangle.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform/>
-                                        <SkewTransform/>
-                                        <RotateTransform Angle="90"/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
+                                    <RotateTransform Angle="90"/>
                                 </Rectangle.RenderTransform>
                             </Rectangle>
                             <Rectangle x:Name="Panda1" Stroke="Black" Height="15.117" Panel.ZIndex="3" Fill="White" RenderTransformOrigin="-2.979,0.572" Canvas.Left="23.093" Canvas.Top="42.577" Width="13.953"/>
                             <Rectangle x:Name="structure1" Stroke="Black" RadiusY="2" RadiusX="2" Height="61.964" Panel.ZIndex="2" Width="39.024" Fill="#FF6A6A6A" Opacity="0.8" Canvas.Left="9.369" Canvas.Top="7.96"/>
-                        </Canvas>                       
+                        </Canvas>
                     </Canvas>
                 </AvalonDock:DocumentContent>
                 <AvalonDock:DocumentContent IsCloseable="False" Title="Telemetry" TabIndex="1">
                     <Canvas x:Name="telemetryTab" Background="#FF9B9B9B"/>
                 </AvalonDock:DocumentContent>
-				<AvalonDock:DocumentContent IsCloseable="False" Title="IMU Charts" TabIndex="2">
+                <AvalonDock:DocumentContent IsCloseable="False" Title="IMU Charts" TabIndex="2">
                     <d3:ChartPlotter Name="chart">
                         <d3:HorizontalAxisTitle>Time (seconds)</d3:HorizontalAxisTitle>
-                    </d3:ChartPlotter>					
+                    </d3:ChartPlotter>
                 </AvalonDock:DocumentContent>
             </AvalonDock:DocumentPane>
             <AvalonDock:ResizingPanel Orientation="Vertical" AvalonDock:ResizingPanel.ResizeWidth="0.32*" Margin="0,0,0,0">
@@ -96,23 +84,23 @@
                             </StackPanel>
                         </Grid>
                     </AvalonDock:DockableContent>
-					 <AvalonDock:DockableContent IsCloseable="False" Title="Position" >
+                    <AvalonDock:DockableContent IsCloseable="False" Title="Position" >
                         <StackPanel Orientation="Vertical" Background="White" Panel.ZIndex="4" Margin="0" >
                             <Label Content="xPos" x:Name="xPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="yPos" x:Name="yPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="anglePos" x:Name="anglePos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-							<Label Content="xVel" x:Name="xVel" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+                            <Label Content="xVel" x:Name="xVel" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="yVel" x:Name="yVel" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-							<Label Content="timeL" x:Name="labelTime" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                            
-                            </StackPanel>
+                            <Label Content="timeL" x:Name="labelTime" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+
+                        </StackPanel>
                     </AvalonDock:DockableContent>
-					<AvalonDock:DockableContent IsCloseable="False" Title="Angle Values" >
+                    <AvalonDock:DockableContent IsCloseable="False" Title="Angle Values" >
                         <StackPanel Orientation="Vertical" Background="White" Panel.ZIndex="4" Margin="0" >
                             <Label Content="Yaw" x:Name="aYaw" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="Pitch" x:Name="aPitch" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="Roll" x:Name="aRoll" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                            <Label Content="MAGHeading" x:Name="aMH" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />                            
+                            <Label Content="MAGHeading" x:Name="aMH" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                         </StackPanel>
                     </AvalonDock:DockableContent>
                 </AvalonDock:DockablePane>
@@ -124,32 +112,17 @@
                                     <Rectangle x:Name="central_sensor" Fill="Red" Height="7" Canvas.Left="34.89" Stroke="Black" Width="18.5" Panel.ZIndex="1" Canvas.Top="6"/>
                                     <Rectangle x:Name="right_sensor" Fill="Red" Height="7" Canvas.Left="64.972" Stroke="Black" Canvas.Top="10.953" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
                                         <Rectangle.RenderTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform/>
-                                                <SkewTransform/>
-                                                <RotateTransform Angle="45"/>
-                                                <TranslateTransform/>
-                                            </TransformGroup>
+                                            <RotateTransform Angle="45"/>
                                         </Rectangle.RenderTransform>
                                     </Rectangle>
                                     <Rectangle x:Name="wallback_sensor" Fill="Red" Height="7" Canvas.Left="0.918" Stroke="Black" Canvas.Top="107.111" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
                                         <Rectangle.RenderTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform/>
-                                                <SkewTransform/>
                                                 <RotateTransform Angle="90"/>
-                                                <TranslateTransform/>
-                                            </TransformGroup>
                                         </Rectangle.RenderTransform>
                                     </Rectangle>
                                     <Rectangle x:Name="wall_sensor" Fill="Red" Height="7" Stroke="Black" Canvas.Top="16.501" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" Canvas.Left="0.835">
                                         <Rectangle.RenderTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform/>
-                                                <SkewTransform/>
                                                 <RotateTransform Angle="90"/>
-                                                <TranslateTransform/>
-                                            </TransformGroup>
                                         </Rectangle.RenderTransform>
                                     </Rectangle>
                                     <Rectangle x:Name="Panda" Stroke="Black" Height="28.666" Panel.ZIndex="3" Fill="White" RenderTransformOrigin="-2.979,0.572" Canvas.Left="32.389" Canvas.Top="73.393" Width="26.459"/>

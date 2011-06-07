@@ -148,7 +148,7 @@ namespace MaCRo.Core
 
                     if (central <= GlobalVal.distanceToDetect)
                     {
-                        //WALL FOUNDED
+                        //WALL FOUND
                         navigation.TurnUntilWall(sensors);
                         currentMode = Mode.FollowWall;
                     }
@@ -175,23 +175,7 @@ namespace MaCRo.Core
 
                         if (exMath.Abs(wall - wallback) < GlobalVal.hysteresis)
                         {
-                            /*
-                            if (wall > (GlobalVal.distanceToFollowWall + GlobalVal.hysteresis))
-                            {
-                                navigation.turnLeft(5);
-                                continue;
-                            }
-                            else if (wall < (GlobalVal.distanceToFollowWall - GlobalVal.hysteresis))
-                            {
-                                navigation.turnRight(5);
-                                continue;
-                            }
-                            else
-                            {
-                                navigation.MoveForward();
-                            }
-                            */
-                            if (wall < 30)
+                            if (wall < 30 && wallback < 30)
                             {
                                 navigation.MoveForward(50, GlobalVal.speed);
                             }
@@ -205,8 +189,8 @@ namespace MaCRo.Core
                             navigation.turnRight(1);
                             navigation.MoveForward(50, GlobalVal.speed);
                         }//IN THE FOLLOWING CASE:
-                            //1-IS A SIMPLE DEVIATION
-                            //2-THERE IS A CORNER
+                        //1-IS A SIMPLE DEVIATION
+                        //2-THERE IS A CORNER
                         else if (wall > wallback)
                         {
                             if ((wall - wallback) < 5)
@@ -215,21 +199,8 @@ namespace MaCRo.Core
                                 navigation.MoveForward(50, GlobalVal.speed);
                             }
                             else//THERE IS A CORNER
-                            {                               
-                                navigation.turnLeft(45);
-                                navigation.MoveForward(100, GlobalVal.speed);
-
-                                if (sensors.getDistance(Sensor.Wall) > 10)
-                                {
-                                    navigation.MoveForward(30, GlobalVal.speed);
-                                    navigation.turnLeft(30);
-                                }
-
-                                /*if (sensors.getDistance(Sensor.Central) > GlobalVal.distanceToDetect)
-                                {
-                                    navigation.MoveForward(30, GlobalVal.speed);
-                                    navigation.turnLeft(30);
-                                }*/
+                            {
+                                navigation.TurnLeftUntilWall(sensors);
                             }
                         }
                     }

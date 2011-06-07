@@ -34,7 +34,6 @@ namespace MaCRo.Core
         public NavigationManager()
         {
             imu = new nIMU();
-            //Thread.Sleep(GlobalVal.imuSettingTime);
             imu.Start();
             integrationTimeConstant = GlobalVal.integrationPeriod / 1e3;
             actualVelocity = new Position();
@@ -187,13 +186,82 @@ namespace MaCRo.Core
             //brake();
         }
 
+        public void TurnLeftUntilWall(SensorManager sensors)
+        {
+            float totalAngle = 0;
+            brake();
+            float distanceToWall = sensors.getDistance(Sensor.wall_back) * 10;
+
+            turnLeft(45);
+            MoveForward(100, GlobalVal.speed);
+
+            while (sensors.getDistance(Sensor.Central) < GlobalVal.distanceToDetect)
+            {
+                float wall = sensors.getDistance(Sensor.Wall);
+                float wall_back = sensors.getDistance(Sensor.wall_back);                
+
+                if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis)
+                { break; }
+                else
+                {
+                    if (wall < wall_back)
+                    {
+                        turnRight(5);
+                        MoveForward(10, GlobalVal.speed);
+                        continue;
+                    }
+                    else
+                    {
+                        turnLeft(5);
+                        MoveForward(10, GlobalVal.speed);
+                        continue;
+                    }
+
+
+                    //MoveForward((int)(exMath.ToRad(10.0f) * turnRadius), GlobalVal.speed);
+                    MoveForward(30, GlobalVal.speed);
+                    if (wall > 5)
+                    {
+                        turnLeft(6);
+                        totalAngle += 6;
+
+                        if (totalAngle > 180)
+                        {
+                            //SOMETHING IS HAPPENING
+                        }
+                    }                    
+                }
+            }
+
+            //TurnUntilWall(sensors);
+
+            //MoveForward(GlobalVal.length_mm / 2, GlobalVal.speed);
+
+            ////Turn left until macro is parallel to the wall
+            //while (true)
+            //{
+            //    float wall = sensors.getDistance(Sensor.Wall);
+            //    float wall_back = sensors.getDistance(Sensor.wall_back);
+
+            //    if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis)
+            //        break;
+            //    else
+            //    {
+            //        turnLeft(5);
+            //        //MoveForward(50, GlobalVal.speed);
+            //    }
+            //}
+            ////brake();
+        }
+
+
         public void MoveForward(int distancemm, sbyte speed)
         {
             this.resetDistance();
 
             MoveForward(speed);
 
-            while (left.distance_mm < distancemm && right.distance_mm < distancemm)
+            while ((left.distance_mm + right.distance_mm) < distancemm * 2)
             {
                 Thread.Sleep(50);
             }
@@ -223,7 +291,7 @@ namespace MaCRo.Core
             dcm.Move(GlobalVal.speed, GlobalVal.speed);
         }
 
-        public void MoveForward(sbyte speed)
+        private void MoveForward(sbyte speed)
         {
             dcm.Move(speed, speed);
         }
@@ -255,7 +323,7 @@ namespace MaCRo.Core
             double angleRad = exMath.ToRad(angle);
 
             //Let's suppose the mass center is in the geometrical center of the rover
-            double lengthRight = angleRad    * GlobalVal.width_mm / 2;
+            double lengthRight = angleRad * GlobalVal.width_mm / 2;
             double lengthLeft = lengthRight;
 
             turnRight();

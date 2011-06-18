@@ -23,7 +23,7 @@ namespace MaCRoGS
 
         private Position StartingPositionMap;
         private Position actualPositionMap;
-        private Position actualPosition;  
+        private Position actualPosition;
 
         private double mmperpixel_robotmap;
         private double mmperpixel_map;
@@ -56,8 +56,9 @@ namespace MaCRoGS
 
             e.Stroke = Brushes.Red;
             map.Children.Add(e);
-            Canvas.SetLeft(e,Canvas.GetLeft(macro) +  wallback_map.x - (value / mmperpixel_map));
-            Canvas.SetTop(e, Canvas.GetTop(macro) + wallback_map.y);
+
+            Canvas.SetLeft(e, Canvas.GetLeft(macro) + wallback_map.x - Math.Sin(actualPositionMap.angle) * (wallback_map.y) - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
+            Canvas.SetTop(e, Canvas.GetTop(macro) + wallback_map.y - Math.Cos(actualPositionMap.angle) * wallback_map.y - Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
         }
 
         public void UpdateS2(short value)//WALL
@@ -83,8 +84,9 @@ namespace MaCRoGS
 
             e.Stroke = Brushes.Blue;
             map.Children.Add(e);
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + wall_map.x - (value / mmperpixel_map));
-            Canvas.SetTop(e, Canvas.GetTop(macro) + wall_map.y);
+
+            Canvas.SetLeft(e, Canvas.GetLeft(macro) + wall_map.x - Math.Sin(actualPositionMap.angle) * wall_map.y - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
+            Canvas.SetTop(e, Canvas.GetTop(macro) + wall_map.y - Math.Cos(actualPositionMap.angle) * wall_map.y - Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
 
         }
 
@@ -111,8 +113,9 @@ namespace MaCRoGS
 
             e.Stroke = Brushes.Black;
             map.Children.Add(e);
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + central_map.x);
-            Canvas.SetTop(e, Canvas.GetTop(macro) + central_map.y - (value / mmperpixel_map));
+
+            Canvas.SetLeft(e, Canvas.GetLeft(macro) + central_map.x* Math.Cos(actualPositionMap.angle) + Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
+            Canvas.SetTop(e, Canvas.GetTop(macro) + central_map.y + Math.Sin(actualPositionMap.angle) * central_map.x - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
         }
 
         public void UpdateL2(short value)//RIGHT
@@ -138,8 +141,9 @@ namespace MaCRoGS
 
             e.Stroke = Brushes.Brown;
             map.Children.Add(e);
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + right_map.x + (value/mmperpixel_map) * Math.Cos(right_map.angle));
-            Canvas.SetTop(e, Canvas.GetTop(macro) + right_map.y - (value / mmperpixel_map)*Math.Cos(right_map.angle));
+
+            Canvas.SetLeft(e, Canvas.GetLeft(macro) + right_map.x - Math.Sin(actualPositionMap.angle) * right_map.y + Math.Sin(actualPositionMap.angle + right_map.angle) * (value / mmperpixel_map));
+            Canvas.SetTop(e, Canvas.GetTop(macro) + right_map.y - Math.Sin(actualPositionMap.angle) * right_map.y - Math.Cos(actualPositionMap.angle + right_map.angle) * (value / mmperpixel_map));
         }
 
         public void UpdateMode(short value)//RIGHT
@@ -161,56 +165,6 @@ namespace MaCRoGS
                 default:
                     break;
             }
-
         }
-
-        //public void MoveForward(short distance)
-        //{
-        //    Updater d = new Updater(_MoveForward);
-        //    this.Dispatcher.Invoke(d, distance);
-        //}
-
-        //public void _MoveForward(short distance)
-        //{
-        //    actualPositionMap.x = actualPositionMap.x - (int)(Math.Sin(actualPositionMap.angle) * distance / mmperpixel_map);
-        //    actualPositionMap.y = actualPositionMap.y - (int)(Math.Cos(actualPositionMap.angle) * distance / mmperpixel_map);
-
-        //    Canvas.SetTop(macro, actualPositionMap.y);
-        //    Canvas.SetLeft(macro, actualPositionMap.x);
-        //}
-
-
-
-        //public void TurnLeft(short angle)
-        //{
-        //    Updater d = new Updater(_TurnLeft);
-        //    this.Dispatcher.Invoke(d, angle);
-        //}
-
-        //public void _TurnLeft(short angle)
-        //{
-        //    actualPositionMap.angle -= angle * Math.PI / 180;
-        //    RotateTransform rt = new RotateTransform(-1 * actualPositionMap.angle * 180 / Math.PI);
-        //    TransformGroup tg = new TransformGroup();
-        //    tg.Children.Add(rt);
-
-        //    macro.RenderTransform = rt;
-        //}
-
-        //public void TurnRight(short angle)
-        //{
-        //    Updater d = new Updater(_TurnRight);
-        //    this.Dispatcher.Invoke(d, angle);
-        //}
-
-        //public void _TurnRight(short angle)
-        //{
-        //    actualPositionMap.angle += angle * Math.PI / 180;
-        //    RotateTransform rt = new RotateTransform(-1 * actualPositionMap.angle * 180 / Math.PI);
-        //    TransformGroup tg = new TransformGroup();
-        //    tg.Children.Add(rt);
-
-        //    macro.RenderTransform = rt;
-        //}
     }
 }

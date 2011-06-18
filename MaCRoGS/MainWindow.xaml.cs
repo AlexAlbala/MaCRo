@@ -37,73 +37,58 @@ namespace MaCRoGS
 
         public void StartupSensors()
         {
+            //CENTRAL SENSOR *******************************
             central_robotmap = new Position();
-
             central_robotmap.angle = 0;
             central_robotmap.x = (int)(Canvas.GetLeft(central_sensor) + central_sensor.ActualWidth / 2);
             central_robotmap.y = (int)Canvas.GetTop(central_sensor);
 
+            //RIGHT SENSOR *********************************
             right_robotmap = new Position();
-
             RotateTransform t_rrmap = (RotateTransform)right_sensor.RenderTransform;
-
             right_robotmap.angle = t_rrmap.Angle * Math.PI / 180;
-
             right_robotmap.x = (int)(Canvas.GetLeft(right_sensor));
             right_robotmap.y = (int)(Canvas.GetTop(right_sensor));
 
+            //WALL BACK SENSOR *****************************
             wallback_robotmap = new Position();
-
             RotateTransform t_wbrmap = (RotateTransform)wallback_sensor.RenderTransform;
-
             wallback_robotmap.angle = t_wbrmap.Angle * Math.PI / 180;
-
             wallback_robotmap.x = (int)Canvas.GetLeft(wallback_sensor);
             wallback_robotmap.y = (int)Canvas.GetTop(wallback_sensor);
 
+            //WALL SENSOR ***********************************
             wall_robotmap = new Position();
-
             RotateTransform t_wrmap = (RotateTransform)wall_sensor.RenderTransform;
-
             wall_robotmap.angle = t_wrmap.Angle * Math.PI / 180;
-
-
             wall_robotmap.x = (int)(Canvas.GetLeft(wall_sensor));
             wall_robotmap.y = (int)(Canvas.GetTop(wall_sensor) + wall_sensor.ActualWidth / 2);
 
 
-
+            //CENTRAL MAP SENSOR *****************************
             central_map = new Position();
-
             central_map.angle = 0;
             central_map.x = (int)(Canvas.GetLeft(central_sensor1) + central_sensor1.ActualWidth / 2);
             central_map.y = (int)Canvas.GetTop(central_sensor1);
 
+            //RIGHT MAP SENSOR *******************************
             right_map = new Position();
-
             RotateTransform t_rmap = (RotateTransform)right_sensor1.RenderTransform;
-
             right_map.angle = t_rmap.Angle * Math.PI / 180;
-
             right_map.x = (int)(Canvas.GetLeft(right_sensor1));
             right_map.y = (int)(Canvas.GetTop(right_sensor1));
 
+            //WALL BACK MAP SENSOR *******************************
             wallback_map = new Position();
-
             RotateTransform t_wbmap = (RotateTransform)wallback_sensor1.RenderTransform;
-
             wallback_map.angle = t_wbmap.Angle * Math.PI / 180;
-
             wallback_map.x = (int)Canvas.GetLeft(wallback_sensor1);
             wallback_map.y = (int)Canvas.GetTop(wallback_sensor1);
 
+            //WALL MAP SENSOR *************************************
             wall_map = new Position();
-
             RotateTransform t_wmap = (RotateTransform)wall_sensor1.RenderTransform;
-
             wall_map.angle = t_wmap.Angle * Math.PI / 180;
-
-
             wall_map.x = (int)(Canvas.GetLeft(wall_sensor1));
             wall_map.y = (int)(Canvas.GetTop(wall_sensor1) + wall_sensor1.ActualWidth / 2);
 
@@ -169,8 +154,10 @@ namespace MaCRoGS
         }
 
         void macro_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
+        {            
+            mmperpixel_map = 148 / structure1.ActualWidth;
 
+            //RE CENTER ALL THE MAP !!!!
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

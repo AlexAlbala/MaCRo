@@ -17,7 +17,7 @@ namespace MaCRoGS
             //Save the central point of the element.
             RotateTransform t_macro = (RotateTransform)macro.RenderTransform;
             //IEnumerable<RotateTransform> transf = t_macro.Children.OfType<RotateTransform>();
-            double angleRad = (t_macro.Angle) * Math.PI / 180;
+            double angleRad = (t_macro.Angle) * Math.PI / 180;            
 
             double centralPointX = Canvas.GetLeft(macro) + Canvas.GetLeft(structure1) + structure1.ActualWidth / 2 - structure1.ActualHeight * Math.Sin(angleRad) / 2;
             double centralPointY = Canvas.GetTop(macro) + Canvas.GetTop(structure1) + structure1.ActualHeight / 2 + structure1.ActualWidth * Math.Cos(angleRad) / 2;
@@ -29,6 +29,8 @@ namespace MaCRoGS
             Canvas.SetTop(macro, centralPointY - Canvas.GetTop(structure1) - structure1.ActualHeight / 2 - structure1.ActualWidth * Math.Cos(heading) / 2);
 
             macro.UpdateLayout();
+
+            actualPositionMap.angle = heading;
         }
     }
 

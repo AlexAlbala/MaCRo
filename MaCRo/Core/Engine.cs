@@ -189,7 +189,7 @@ namespace MaCRo.Core
                             navigation.turnRight(1);
                             navigation.MoveForward(50, GlobalVal.speed);
                         }//IN THE FOLLOWING CASE:
-                        //1-IS A SIMPLE DEVIATION
+                        //1-IS A WALL DEVIATION
                         //2-THERE IS A CORNER
                         else if (wall > wallback)
                         {

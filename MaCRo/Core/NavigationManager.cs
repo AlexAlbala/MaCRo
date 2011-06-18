@@ -188,17 +188,14 @@ namespace MaCRo.Core
 
         public void TurnLeftUntilWall(SensorManager sensors)
         {
-            float totalAngle = 0;
             brake();
-            float distanceToWall = sensors.getDistance(Sensor.wall_back) * 10;
 
-            turnLeft(45);
             MoveForward(100, GlobalVal.speed);
 
             while (sensors.getDistance(Sensor.Central) < GlobalVal.distanceToDetect)
             {
                 float wall = sensors.getDistance(Sensor.Wall);
-                float wall_back = sensors.getDistance(Sensor.wall_back);                
+                float wall_back = sensors.getDistance(Sensor.wall_back);
 
                 if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis)
                 { break; }
@@ -212,48 +209,13 @@ namespace MaCRo.Core
                     }
                     else
                     {
-                        turnLeft(5);
+                        _turnLeft(10);
                         MoveForward(10, GlobalVal.speed);
                         continue;
                     }
-
-
-                    //MoveForward((int)(exMath.ToRad(10.0f) * turnRadius), GlobalVal.speed);
-                    MoveForward(30, GlobalVal.speed);
-                    if (wall > 5)
-                    {
-                        turnLeft(6);
-                        totalAngle += 6;
-
-                        if (totalAngle > 180)
-                        {
-                            //SOMETHING IS HAPPENING
-                        }
-                    }                    
                 }
-            }
-
-            //TurnUntilWall(sensors);
-
-            //MoveForward(GlobalVal.length_mm / 2, GlobalVal.speed);
-
-            ////Turn left until macro is parallel to the wall
-            //while (true)
-            //{
-            //    float wall = sensors.getDistance(Sensor.Wall);
-            //    float wall_back = sensors.getDistance(Sensor.wall_back);
-
-            //    if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis)
-            //        break;
-            //    else
-            //    {
-            //        turnLeft(5);
-            //        //MoveForward(50, GlobalVal.speed);
-            //    }
-            //}
-            ////brake();
+            }            
         }
-
 
         public void MoveForward(int distancemm, sbyte speed)
         {
@@ -372,6 +334,26 @@ namespace MaCRo.Core
             actualPosition.angle -= (left.distance_mm + right.distance_mm) / GlobalVal.width_mm;
         }
 
+        public void _turnLeft(int angle)
+        {
+            double angleRad = exMath.ToRad(angle);
+
+            //Let's suppose the mass center is in the geometrical center of the rover
+            double lengthRight = angleRad * GlobalVal.width_mm / 2;
+            double lengthLeft = lengthRight;
+
+            _turnLeft();
+
+            while (right.distance_mm < lengthRight || left.distance_mm < lengthLeft)
+            {
+                Thread.Sleep(50);
+            }
+            this.brake();
+
+            //actualPosition.angle -= exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
+            //actualPosition.angle = initialHeading - MAG_Heading;
+            actualPosition.angle -= (left.distance_mm + right.distance_mm) / GlobalVal.width_mm;
+        }
         public void _turnLeft()
         {
             this.resetDistance();

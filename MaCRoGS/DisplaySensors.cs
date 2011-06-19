@@ -57,8 +57,8 @@ namespace MaCRoGS
             e.Stroke = Brushes.Red;
             map.Children.Add(e);
 
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + wallback_map.x - Math.Sin(actualPositionMap.angle) * (wallback_map.y) - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
-            Canvas.SetTop(e, Canvas.GetTop(macro) + wallback_map.y - Math.Cos(actualPositionMap.angle) * wallback_map.y - Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
+            Canvas.SetLeft(e, Canvas.GetLeft(macro) + Math.Cos(actualPositionMap.angle) *wallback_map.x - Math.Sin(actualPositionMap.angle) * (wallback_map.y) - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
+            Canvas.SetTop(e, Canvas.GetTop(macro) + Math.Cos(actualPosition.angle) * wallback_map.y + Math.Sin(actualPositionMap.angle) * wallback_map.x - Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
         }
 
         public void UpdateS2(short value)//WALL
@@ -85,8 +85,9 @@ namespace MaCRoGS
             e.Stroke = Brushes.Blue;
             map.Children.Add(e);
 
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + wall_map.x - Math.Sin(actualPositionMap.angle) * wall_map.y - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
-            Canvas.SetTop(e, Canvas.GetTop(macro) + wall_map.y - Math.Cos(actualPositionMap.angle) * wall_map.y - Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
+
+            Canvas.SetLeft(e, Canvas.GetLeft(macro) + Math.Cos(actualPositionMap.angle) * wall_map.x - Math.Sin(actualPositionMap.angle) * wall_map.y - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
+            Canvas.SetTop(e, Canvas.GetTop(macro) + Math.Cos(actualPosition.angle) * wall_map.y + Math.Sin(actualPositionMap.angle) * wall_map.x - Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
 
         }
 
@@ -114,7 +115,7 @@ namespace MaCRoGS
             e.Stroke = Brushes.Black;
             map.Children.Add(e);
 
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + central_map.x* Math.Cos(actualPositionMap.angle) + Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
+            Canvas.SetLeft(e, Canvas.GetLeft(macro) + central_map.x * Math.Cos(actualPositionMap.angle) + Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
             Canvas.SetTop(e, Canvas.GetTop(macro) + central_map.y + Math.Sin(actualPositionMap.angle) * central_map.x - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
         }
 
@@ -142,7 +143,7 @@ namespace MaCRoGS
             e.Stroke = Brushes.Brown;
             map.Children.Add(e);
 
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + right_map.x - Math.Sin(actualPositionMap.angle) * right_map.y + Math.Sin(actualPositionMap.angle + right_map.angle) * (value / mmperpixel_map));
+            Canvas.SetLeft(e, Canvas.GetLeft(macro) + right_map.x * Math.Cos(actualPositionMap.angle) - Math.Sin(actualPositionMap.angle) * right_map.y + Math.Sin(actualPositionMap.angle + right_map.angle) * (value / mmperpixel_map));
             Canvas.SetTop(e, Canvas.GetTop(macro) + right_map.y - Math.Sin(actualPositionMap.angle) * right_map.y - Math.Cos(actualPositionMap.angle + right_map.angle) * (value / mmperpixel_map));
         }
 

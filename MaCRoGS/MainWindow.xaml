@@ -9,29 +9,29 @@
             <AvalonDock:DocumentPane SelectedIndex="0">
                 <AvalonDock:DocumentContent IsCloseable="False" Title="Map" TabIndex="0">
                     <Canvas x:Name="map" Background="#FFCACACA">
-                        <Canvas x:Name="macro"  Height="65" Canvas.Left="454.106" Canvas.Top="370.931" Width="45">
-                            <Canvas.RenderTransform>
-                                <RotateTransform Angle="0"/>
-                            </Canvas.RenderTransform>
-                            <Rectangle x:Name="central_sensor1" Fill="Red" Height="3.692" Canvas.Left="15.161" Stroke="Black" Width="9.756" Panel.ZIndex="1" Canvas.Top="-0.713"/>
-                            <Rectangle x:Name="right_sensor1" Fill="Red" Height="3.692" Canvas.Left="31.025" Stroke="Black" Canvas.Top="1.899" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
+                        <Canvas x:Name="macro" Height="62.677" Canvas.Left="454.106" Canvas.Top="370.931" Width="43.578">
+                            <Rectangle x:Name="central_sensor1" Fill="Red" Height="3.692" Canvas.Left="15.208" Stroke="Black" Width="9.756" Panel.ZIndex="1"/>
+                            <Rectangle x:Name="right_sensor1" Fill="Red" Height="3.692" Canvas.Left="30.822" Stroke="Black" Canvas.Top="2.612" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="45"/>
                                 </Rectangle.RenderTransform>
                             </Rectangle>
-                            <Rectangle x:Name="wallback_sensor1" Fill="Red" Height="3.692" Canvas.Left="-2.754" Stroke="Black" Canvas.Top="52.608" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
+                            <Rectangle x:Name="wallback_sensor1" Fill="Red" Height="3.692" Canvas.Left="-2.957" Stroke="Black" Canvas.Top="53.321" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" VerticalAlignment="Top">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="90"/>
                                 </Rectangle.RenderTransform>
                             </Rectangle>
-                            <Rectangle x:Name="wall_sensor1" Fill="Red" Height="3.692" Stroke="Black" Canvas.Top="4.825" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" Canvas.Left="-2.797">
+                            <Rectangle x:Name="wall_sensor1" Fill="Red" Height="3.692" Stroke="Black" Canvas.Top="5.538" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" Canvas.Left="-2.75">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="90"/>
                                 </Rectangle.RenderTransform>
                             </Rectangle>
-                            <Rectangle x:Name="Panda1" Stroke="Black" Height="15.117" Panel.ZIndex="3" Fill="White" RenderTransformOrigin="-2.979,0.572" Canvas.Left="13.843" Canvas.Top="34.827" Width="13.953"/>
-                            <Rectangle x:Name="structure1" Stroke="Black" RadiusY="2" RadiusX="2" Height="61.964" Panel.ZIndex="2" Width="39.024" Fill="#FF6A6A6A" Opacity="0.8" Canvas.Left="0" Canvas.Top="0"/>
-                        </Canvas>
+                            <Rectangle x:Name="Panda1" Stroke="Black" Height="15.117" Panel.ZIndex="3" Fill="White" RenderTransformOrigin="-2.979,0.572" Canvas.Left="12.64" Canvas.Top="35.54" Width="13.953"/>
+                            <Rectangle x:Name="structure1" Stroke="Black" Height="61.964" Panel.ZIndex="2" Width="39.024" Fill="#FF6A6A6A" Opacity="0.8" Canvas.Left="0" Canvas.Top="0.713" RadiusY="2.894" RadiusX="2.894"/>
+                       <Canvas.RenderTransform>
+                                <RotateTransform Angle="0"/>
+                            </Canvas.RenderTransform>
+						</Canvas>
                     </Canvas>
                 </AvalonDock:DocumentContent>
                 <AvalonDock:DocumentContent IsCloseable="False" Title="Telemetry" TabIndex="1">
@@ -41,7 +41,7 @@
                     <d3:ChartPlotter Name="chart">
                         <d3:HorizontalAxisTitle>Time (seconds)</d3:HorizontalAxisTitle>
                     </d3:ChartPlotter>
-                </AvalonDock:DocumentContent>
+                </AvalonDock:DocumentContent>				
             </AvalonDock:DocumentPane>
             <AvalonDock:ResizingPanel Orientation="Vertical" AvalonDock:ResizingPanel.ResizeWidth="0.32*" Margin="0,0,0,0">
                 <AvalonDock:DockablePane AvalonDock:ResizingPanel.ResizeHeight="0.3*" Background="{x:Null}">
@@ -104,7 +104,7 @@
                         </StackPanel>
                     </AvalonDock:DockableContent>
                 </AvalonDock:DockablePane>
-                <AvalonDock:DockablePane  AvalonDock:ResizingPanel.ResizeHeight="0.7*" ClipToBounds="True" Background="White" Foreground="Black" >
+                <AvalonDock:DockablePane  AvalonDock:ResizingPanel.ResizeHeight="0.7*" ClipToBounds="True" Background="White" Foreground="Black" SelectedIndex="0">
                     <AvalonDock:DockableContent IsCloseable="False" Title="DockRobotMap" ClipToBounds="True">
                         <Viewbox Margin="0" >
                             <Canvas x:Name="robotMap" Background="White" Height="470" Width="375">
@@ -117,12 +117,12 @@
                                     </Rectangle>
                                     <Rectangle x:Name="wallback_sensor" Fill="Red" Height="7" Canvas.Left="0.918" Stroke="Black" Canvas.Top="107.111" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
                                         <Rectangle.RenderTransform>
-                                                <RotateTransform Angle="90"/>
+                                            <RotateTransform Angle="90"/>
                                         </Rectangle.RenderTransform>
                                     </Rectangle>
                                     <Rectangle x:Name="wall_sensor" Fill="Red" Height="7" Stroke="Black" Canvas.Top="16.501" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" Canvas.Left="0.835">
                                         <Rectangle.RenderTransform>
-                                                <RotateTransform Angle="90"/>
+                                            <RotateTransform Angle="90"/>
                                         </Rectangle.RenderTransform>
                                     </Rectangle>
                                     <Rectangle x:Name="Panda" Stroke="Black" Height="28.666" Panel.ZIndex="3" Fill="White" RenderTransformOrigin="-2.979,0.572" Canvas.Left="32.389" Canvas.Top="73.393" Width="26.459"/>
@@ -130,6 +130,9 @@
                                 </Canvas>
                             </Canvas>
                         </Viewbox>
+                    </AvalonDock:DockableContent>
+					<AvalonDock:DockableContent IsCloseable="False" Title="Manual navigation" ClipToBounds="True">
+                       
                     </AvalonDock:DockableContent>
                 </AvalonDock:DockablePane>
             </AvalonDock:ResizingPanel>

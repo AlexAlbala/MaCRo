@@ -190,12 +190,13 @@ namespace MaCRo.Core
         {
             brake();
 
-            MoveForward(100, GlobalVal.speed);
+            //MoveForward(100, GlobalVal.speed);
+            turnLeft(30);
 
-            while (sensors.getDistance(Sensor.Central) < GlobalVal.distanceToDetect)
+            while (sensors.getDistance(Sensor.Central) > GlobalVal.distanceToDetect)
             {
                 float wall = sensors.getDistance(Sensor.Wall);
-                float wall_back = sensors.getDistance(Sensor.wall_back);
+                float wall_back = sensors.getDistance(Sensor.wall_back);                
 
                 if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis)
                 { break; }
@@ -214,7 +215,7 @@ namespace MaCRo.Core
                         continue;
                     }
                 }
-            }            
+            }
         }
 
         public void MoveForward(int distancemm, sbyte speed)
@@ -290,7 +291,7 @@ namespace MaCRo.Core
 
             turnRight();
 
-            while (right.distance_mm < lengthRight || left.distance_mm < lengthLeft)
+            while (right.distance_mm < lengthRight && left.distance_mm < lengthLeft)
             {
                 Thread.Sleep(50);
             }
@@ -323,7 +324,7 @@ namespace MaCRo.Core
 
             turnLeft();
 
-            while (right.distance_mm < lengthRight || left.distance_mm < lengthLeft)
+            while (right.distance_mm < lengthRight && left.distance_mm < lengthLeft)
             {
                 Thread.Sleep(50);
             }
@@ -338,13 +339,12 @@ namespace MaCRo.Core
         {
             double angleRad = exMath.ToRad(angle);
 
-            //Let's suppose the mass center is in the geometrical center of the rover
-            double lengthRight = angleRad * GlobalVal.width_mm / 2;
-            double lengthLeft = lengthRight;
+            double lengthRight = angleRad * GlobalVal.width_mm;
+            
 
             _turnLeft();
 
-            while (right.distance_mm < lengthRight || left.distance_mm < lengthLeft)
+            while (right.distance_mm < lengthRight)
             {
                 Thread.Sleep(50);
             }
@@ -352,7 +352,7 @@ namespace MaCRo.Core
 
             //actualPosition.angle -= exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
             //actualPosition.angle = initialHeading - MAG_Heading;
-            actualPosition.angle -= (left.distance_mm + right.distance_mm) / GlobalVal.width_mm;
+            actualPosition.angle -= (left.distance_mm + right.distance_mm) / 2 * GlobalVal.width_mm;
         }
         public void _turnLeft()
         {

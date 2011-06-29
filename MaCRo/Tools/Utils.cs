@@ -14,6 +14,15 @@ namespace MaCRo.Tools
         X, Y, Z
     }
 
+    public enum Movement
+    {
+        left,
+        right,
+        forward,
+        backward,
+        stop
+    }
+
     public enum Message
     {
         PositionX,
@@ -60,6 +69,6 @@ namespace MaCRo.Tools
 
         public double x { get { return _x; } set { _x = value; } }
         public double y { get { return _y; } set { _y = value; } }
-        public double angle { get { return _angle; } set { _angle = value; } }
+        public double angle { get { return _angle; } set { _angle = (value % (2 * System.Math.PI)); } }
     }
 }

@@ -10,18 +10,18 @@
                 <AvalonDock:DocumentContent IsCloseable="False" Title="Map" TabIndex="0">
                     <Canvas x:Name="map" Background="#FFCACACA">
                         <Canvas x:Name="macro" Height="62.677" Canvas.Left="454.106" Canvas.Top="370.931" Width="43.578">
-                            <Rectangle x:Name="central_sensor1" Fill="Red" Height="3.692" Canvas.Left="15.208" Stroke="Black" Width="9.756" Panel.ZIndex="1"/>
+                            <Rectangle x:Name="central_sensor1" Fill="Red" Height="3.692" Canvas.Left="14.874" Stroke="Black" Width="9.756" Panel.ZIndex="1"/>
                             <Rectangle x:Name="right_sensor1" Fill="Red" Height="3.692" Canvas.Left="30.822" Stroke="Black" Canvas.Top="2.612" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="45"/>
                                 </Rectangle.RenderTransform>
                             </Rectangle>
-                            <Rectangle x:Name="wallback_sensor1" Fill="Red" Height="3.692" Canvas.Left="-2.957" Stroke="Black" Canvas.Top="53.321" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <Rectangle x:Name="wallback_sensor1" Fill="Red" Height="3.692" Canvas.Left="-2.79" Stroke="Black" Canvas.Top="50.315" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" VerticalAlignment="Top">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="90"/>
                                 </Rectangle.RenderTransform>
                             </Rectangle>
-                            <Rectangle x:Name="wall_sensor1" Fill="Red" Height="3.692" Stroke="Black" Canvas.Top="5.538" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" Canvas.Left="-2.75">
+                            <Rectangle x:Name="wall_sensor1" Fill="Red" Height="3.692" Stroke="Black" Canvas.Top="7.876" Width="9.756" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" Canvas.Left="-2.75">
                                 <Rectangle.RenderTransform>
                                     <RotateTransform Angle="90"/>
                                 </Rectangle.RenderTransform>

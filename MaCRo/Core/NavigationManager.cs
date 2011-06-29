@@ -14,10 +14,17 @@ namespace MaCRo.Core
         private Encoder left = new Encoder(PortMap.encoderL_interrupt);
         private Encoder right = new Encoder(PortMap.encoderR_interrupt);
         private DCMotorDriver dcm = new DCMotorDriver();
+        private Contingency contingency;
+        public Movement movement;
+        
+        public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
+
+        #region IMU
         private nIMU imu;
         private Position actualPosition;
         private Position actualVelocity;
         private Timer integration;
+
         private double integrationTimeConstant;
         private double lastTime;
         private double initialHeading;
@@ -29,23 +36,7 @@ namespace MaCRo.Core
         //-Y / X   (x,y) y/x
         public double MAG_Heading { get { return exMath.Atan2(getMag(Axis.X), -1 * getMag(Axis.Y)); } }
 
-        public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
-
-        public NavigationManager()
-        {
-            imu = new nIMU();
-            imu.Start();
-            integrationTimeConstant = GlobalVal.integrationPeriod / 1e3;
-            actualVelocity = new Position();
-            actualPosition = new Position();
-
-            lastTime = 0.0;
-
-            //initialAcc = new double[3];
-            initialHeading = this.MAG_Heading;
-
-            //integration = new Timer(new TimerCallback(this.Integrate), new object(), GlobalVal.integrationPeriod * 10, GlobalVal.integrationPeriod);
-        }
+       
 
         private void Integrate(Object state)
         {
@@ -168,12 +159,32 @@ namespace MaCRo.Core
             }
         }
 
+        #endregion
+
+        public NavigationManager()
+        {
+            movement = Movement.stop;
+            imu = new nIMU();
+            imu.Start();
+            integrationTimeConstant = GlobalVal.integrationPeriod / 1e3;
+            actualVelocity = new Position();
+            actualPosition = new Position();
+
+            lastTime = 0.0;
+
+            //initialAcc = new double[3];
+            initialHeading = this.MAG_Heading;
+
+            contingency = new Contingency(left, right, this);
+            //integration = new Timer(new TimerCallback(this.Integrate), new object(), GlobalVal.integrationPeriod * 10, GlobalVal.integrationPeriod);
+        }
+
         public void TurnUntilWall(SensorManager sensors)
         {
             brake();
             turnRight(45);
             //Thread.Sleep(600);
-            while (true)
+            while (!contingency.alarm)
             {
                 float wall = sensors.getDistance(Sensor.Wall);
                 float wall_back = sensors.getDistance(Sensor.wall_back);
@@ -191,15 +202,14 @@ namespace MaCRo.Core
             brake();
 
             //MoveForward(100, GlobalVal.speed);
-            turnLeft(30);
+            turnLeft(45);            
 
             while (sensors.getDistance(Sensor.Central) > GlobalVal.distanceToDetect)
             {
                 float wall = sensors.getDistance(Sensor.Wall);
-                float wall_back = sensors.getDistance(Sensor.wall_back);                
+                float wall_back = sensors.getDistance(Sensor.wall_back);
 
-                if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis)
-                { break; }
+                if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis) { break; }
                 else
                 {
                     if (wall < wall_back)
@@ -224,7 +234,7 @@ namespace MaCRo.Core
 
             MoveForward(speed);
 
-            while ((left.distance_mm + right.distance_mm) < distancemm * 2)
+            while ((left.distance_mm + right.distance_mm) < distancemm * 2 && !contingency.alarm)
             {
                 Thread.Sleep(50);
             }
@@ -237,7 +247,7 @@ namespace MaCRo.Core
         public void MoveToObject(SensorManager sensors)
         {
             this.resetDistance();
-            while (sensors.getDistance(Sensor.Central) > GlobalVal.distanceToDetect) { MoveForward(50, GlobalVal.speed); }
+            while (sensors.getDistance(Sensor.Central) > GlobalVal.distanceToDetect && !contingency.alarm) { MoveForward(50, GlobalVal.speed); }
             this.brake();
         }
 
@@ -251,11 +261,13 @@ namespace MaCRo.Core
 
         public void MoveForward()
         {
+            movement = Movement.forward;
             dcm.Move(GlobalVal.speed, GlobalVal.speed);
         }
 
         private void MoveForward(sbyte speed)
         {
+            movement = Movement.forward;
             dcm.Move(speed, speed);
         }
 
@@ -263,7 +275,7 @@ namespace MaCRo.Core
         {
             MoveBackward(speed);
 
-            while (left.distance_mm < distancemm && right.distance_mm < distancemm)
+            while (left.distance_mm < distancemm && right.distance_mm < distancemm && !contingency.alarm)
             {
                 Thread.Sleep(100);
             }
@@ -273,11 +285,13 @@ namespace MaCRo.Core
 
         public void MoveBackward()
         {
+            movement = Movement.backward;
             dcm.Move((sbyte)(GlobalVal.speed * -1), (sbyte)(GlobalVal.speed * -1));
         }
 
         public void MoveBackward(sbyte speed)
         {
+            movement = Movement.backward;
             dcm.Move((sbyte)(speed * -1), (sbyte)(speed * -1));
         }
 
@@ -291,7 +305,7 @@ namespace MaCRo.Core
 
             turnRight();
 
-            while (right.distance_mm < lengthRight && left.distance_mm < lengthLeft)
+            while (right.distance_mm < lengthRight && left.distance_mm < lengthLeft && !contingency.alarm)
             {
                 Thread.Sleep(50);
             }
@@ -304,12 +318,14 @@ namespace MaCRo.Core
 
         public void _turnRight()
         {
+            movement = Movement.right;
             this.resetDistance();
             dcm.Move(0, GlobalVal.turningSpeed);
         }
 
         public void turnRight()
         {
+            movement = Movement.right;
             this.resetDistance();
             dcm.Move((sbyte)(GlobalVal.turningSpeed * -1), GlobalVal.turningSpeed);
         }
@@ -324,7 +340,7 @@ namespace MaCRo.Core
 
             turnLeft();
 
-            while (right.distance_mm < lengthRight && left.distance_mm < lengthLeft)
+            while (right.distance_mm < lengthRight && left.distance_mm < lengthLeft && !contingency.alarm)
             {
                 Thread.Sleep(50);
             }
@@ -340,7 +356,7 @@ namespace MaCRo.Core
             double angleRad = exMath.ToRad(angle);
 
             double lengthRight = angleRad * GlobalVal.width_mm;
-            
+
 
             _turnLeft();
 
@@ -356,18 +372,21 @@ namespace MaCRo.Core
         }
         public void _turnLeft()
         {
+            movement = Movement.left;
             this.resetDistance();
             dcm.Move(GlobalVal.turningSpeed, 0);
         }
 
         public void turnLeft()
         {
+            movement = Movement.left;
             this.resetDistance();
             dcm.Move(GlobalVal.turningSpeed, (sbyte)(GlobalVal.turningSpeed * -1));
         }
 
         public void brake()
         {
+            movement = Movement.stop;
             dcm.Move(0, 0);
         }
 

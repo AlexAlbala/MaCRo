@@ -69,7 +69,8 @@ namespace MaCRoGS
             central_map = new Position();
             central_map.angle = 0;
             central_map.x = (int)(Canvas.GetLeft(central_sensor1) + central_sensor1.ActualWidth / 2);
-            central_map.y = (int)Canvas.GetTop(central_sensor1);
+            //central_map.y = (int)Canvas.GetTop(central_sensor1);
+            central_map.y = 0;
 
             //RIGHT MAP SENSOR *******************************
             right_map = new Position();
@@ -82,15 +83,19 @@ namespace MaCRoGS
             wallback_map = new Position();
             RotateTransform t_wbmap = (RotateTransform)wallback_sensor1.RenderTransform;
             wallback_map.angle = t_wbmap.Angle * Math.PI / 180;
-            wallback_map.x = (int)Canvas.GetLeft(wallback_sensor1);
+            //wallback_map.x = (int)Canvas.GetLeft(wallback_sensor1);
             wallback_map.y = (int)Canvas.GetTop(wallback_sensor1);
+            /****ÑAPA*****/
+            //Los valores si los cogemos dinámicamente no son correctos de estos dos sensores
+            wallback_map.x = 0;
 
             //WALL MAP SENSOR *************************************
             wall_map = new Position();
             RotateTransform t_wmap = (RotateTransform)wall_sensor1.RenderTransform;
             wall_map.angle = t_wmap.Angle * Math.PI / 180;
-            wall_map.x = (int)(Canvas.GetLeft(wall_sensor1));
+            //wall_map.x = (int)(Canvas.GetLeft(wall_sensor1));
             wall_map.y = (int)(Canvas.GetTop(wall_sensor1) + wall_sensor1.ActualWidth / 2);
+            wall_map.x = 0;
 
             //MACRO WIDTH = 148
             mmperpixel_map = 148 / structure1.ActualWidth;
@@ -154,7 +159,7 @@ namespace MaCRoGS
         }
 
         void macro_SizeChanged(object sender, SizeChangedEventArgs e)
-        {            
+        {
             mmperpixel_map = 148 / structure1.ActualWidth;
 
             //RE CENTER ALL THE MAP !!!!
@@ -176,6 +181,6 @@ namespace MaCRoGS
 
         public double x { get { return _x; } set { _x = value; } }
         public double y { get { return _y; } set { _y = value; } }
-        public double angle { get { return _angle; } set { _angle = value; } }
+        public double angle { get { return _angle; } set { _angle = (value % (2 * Math.PI)); } }
     }
 }

@@ -45,23 +45,23 @@ namespace MaCRo.Config
         /// <summary>
         /// Distance which has to be respected when following the wall. In centimeters
         /// </summary>
-        public readonly static short distanceToFollowWall = 7;//(int)exMath.Ceiling(length_mm / 10);
+        public readonly static short minDistanceToFollowWall = 7;//(int)exMath.Ceiling(length_mm / 10);
         /// <summary>
-        /// Centimeters of hysteresis when following the wall. In centimeters
+        /// Centimeters of hysteresis when following the wall.
         /// </summary>
         public readonly static short hysteresis = 2;
-        /// <summary>
-        /// Inclination of the right sensor
-        /// </summary>
-        public readonly static int rightAngle = 45;
-        /// <summary>
-        /// Inclination of the left sensor
-        /// </summary>
-        public readonly static short leftAngle = 45;
         /// <summary>
         /// Value of acceleration in m/s of 1g
         /// </summary>
         public readonly static float gravity = 9.807f;
+        /// <summary>
+        /// The time between the contingency takes a measure sample
+        /// </summary>
+        public readonly static short contingencyPeriod = 1000;
+        /// <summary>
+        /// Time while the robot is correcting any trouble
+        /// </summary>
+        public readonly static short contingencyCorrectionTime = 500;
 
         /// <summary>
         /// The periodicity of the sensor telemetry transmission in milliseconds
@@ -81,10 +81,6 @@ namespace MaCRo.Config
         public readonly static short transmissionPeriodTemp_ms = 30000;
 
 
-        /// <summary>
-        /// Time for the IMU to be setted 
-        /// </summary>
-        public readonly static short imuSettingTime = 15000;
         /// <summary>
         /// Periodicity of the IMU data update 
         /// </summary>

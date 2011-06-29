@@ -19,11 +19,13 @@ namespace MaCRo.Core
         private NavigationManager navigation;
         private SensorManager sensors;
         private Coder coder;
+        private bool cancel;
 
         private Mode currentMode;
 
         private Position actualPosition;
 
+        private Thread workerThread;
         private Timer sensorTimer;
         private Timer positionTimer;
         private Timer IMUTimer;
@@ -55,6 +57,7 @@ namespace MaCRo.Core
             IMUTimer = new Timer(new TimerCallback(imuTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodIMU_ms);
             TempTimer = new Timer(new TimerCallback(tempTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodTemp_ms);
 
+            cancel = false;
 
             debug.Write(false);
         }
@@ -131,9 +134,32 @@ namespace MaCRo.Core
             actualPosition = new Position();
         }
 
+        public void Restart()
+        {
+            cancel = false;
+            this.Run();
+        }
+
+        public void Cancel()
+        {
+            cancel = true;
+            workerThread.Abort();
+            //Thread.Sleep(500);
+            navigation.brake();
+
+
+            //Thread.Sleep(1000);
+        }
+
         public void Run()
         {
-            while (true)
+            workerThread = new Thread(new ThreadStart(_Run));
+            workerThread.Start();
+        }
+
+        private void _Run()
+        {
+            while (!cancel)
             {
                 debug.Write(true);
                 Thread.Sleep(50);
@@ -162,7 +188,7 @@ namespace MaCRo.Core
                     float wallback;
 
                     //FOLLOW LEFT WALL
-                    while (true)
+                    while (!cancel)
                     {
                         wall = sensors.getDistance(Sensor.Wall);
                         wallback = sensors.getDistance(Sensor.wall_back);
@@ -177,6 +203,10 @@ namespace MaCRo.Core
                         {
                             if (wall < 30 && wallback < 30)
                             {
+                                //Maintain certain distance to the wall (too close may be a problem)
+                                if (wall < GlobalVal.minDistanceToFollowWall || wallback < GlobalVal.minDistanceToFollowWall)
+                                    navigation.turnRight(10);
+
                                 navigation.MoveForward(50, GlobalVal.speed);
                             }
                             else
@@ -186,7 +216,15 @@ namespace MaCRo.Core
                         }//CORRECT THE DEVIATION RESPECT TO THE WALL
                         else if (wall < wallback)
                         {
-                            navigation.turnRight(1);
+                            if (wall < 6)
+                            {
+                                navigation.turnRight(10);
+                            }
+                            else
+                            {
+                                navigation.turnRight(1);
+                            }
+
                             navigation.MoveForward(50, GlobalVal.speed);
                         }//IN THE FOLLOWING CASE:
                         //1-IS A WALL DEVIATION
@@ -204,44 +242,9 @@ namespace MaCRo.Core
                             }
                         }
                     }
-                    //navigation.UpdatePosition();
-                    navigation.TurnUntilWall(sensors);
-                    continue;
+                    if (!cancel)
+                        navigation.TurnUntilWall(sensors);
                 }
-
-
-                /*
-                if (central < 10)
-                {
-                    navigation.MoveBackward();
-                    //dm.brake();
-                }
-                else if (central > 12)
-                {
-                    if (left < 13 || right < 13)
-                    {
-                        if (left < 13)
-                        {
-                            navigation.turnRight();
-                            Thread.Sleep(100);
-                        }
-
-                        if (right < 13)
-                        {
-                            navigation.turnLeft();
-                            Thread.Sleep(100);
-                        }
-                    }
-                    else
-                    {
-                        navigation.MoveForward();
-                    }
-
-                }
-                else
-                {
-                    navigation.brake();
-                }*/
 
             }
 

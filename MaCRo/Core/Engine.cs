@@ -205,9 +205,12 @@ namespace MaCRo.Core
                             {
                                 //Maintain certain distance to the wall (too close may be a problem)
                                 if (wall < GlobalVal.minDistanceToFollowWall || wallback < GlobalVal.minDistanceToFollowWall)
-                                    navigation.turnRight(10);
+                                {
+                                    if (wall <= wallback)
+                                        navigation.turnRight(10);
+                                }
 
-                                navigation.MoveForward(50, GlobalVal.speed);
+                                navigation.MoveForward(30, GlobalVal.speed);
                             }
                             else
                             {

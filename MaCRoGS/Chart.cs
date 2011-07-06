@@ -88,7 +88,7 @@ namespace MaCRoGS
 
             actualPositionMap.x = StartingPositionMap.x + (1000 * actualPosition.x / this.mmperpixel_map);
 
-            Canvas.SetLeft(macro, actualPositionMap.x - Canvas.GetLeft(structure1) - structure1.ActualWidth / 2 + structure1.ActualHeight * Math.Sin(actualPositionMap.angle) / 2);
+            Canvas.SetLeft(macro, actualPositionMap.x - (Canvas.GetLeft(structure1) + structure1.ActualWidth / 2) * Math.Cos(actualPositionMap.angle) + (Canvas.GetTop(structure1) + structure1.ActualHeight * Math.Sin(actualPositionMap.angle)) / 2);
 
             timePX.Add(actualTime);
             PosX.Add(posX);
@@ -169,8 +169,8 @@ namespace MaCRoGS
             actualPosition.y = Y;
 
             actualPositionMap.y = StartingPositionMap.y + (1000 * actualPosition.y / this.mmperpixel_map);
-            
-            Canvas.SetTop(macro, actualPositionMap.y - Canvas.GetTop(structure1) - structure1.ActualHeight / 2 - structure1.ActualWidth * Math.Cos(actualPositionMap.angle) / 2);
+
+            Canvas.SetTop(macro, actualPositionMap.y - (Canvas.GetTop(structure1) + structure1.ActualHeight / 2) * Math.Cos(actualPositionMap.angle) - (Canvas.GetLeft(structure1) + structure1.ActualWidth * Math.Sin(actualPositionMap.angle) / 2));
 
             macro.UpdateLayout();
 

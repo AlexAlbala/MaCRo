@@ -159,6 +159,16 @@ namespace MaCRo.Core
 
         private void _Run()
         {
+            /****************** TEST CODE *********************/
+            //navigation.MoveForward(100, GlobalVal.speed);
+            //navigation.turnRight(90);
+            //navigation.MoveForward(100, GlobalVal.speed);
+            //navigation.turnRight(90);
+            //navigation.MoveForward(100, GlobalVal.speed);
+            //navigation.turnRight(90);
+            //navigation.MoveForward(100, GlobalVal.speed);
+            //return;
+            /****************** TEST CODE *********************/
             while (!cancel)
             {
                 debug.Write(true);
@@ -175,7 +185,7 @@ namespace MaCRo.Core
                     if (central <= GlobalVal.distanceToDetect)
                     {
                         //WALL FOUND
-                        navigation.TurnUntilWall(sensors);
+                        navigation.TurnRightUntilWall(sensors);
                         currentMode = Mode.FollowWall;
                     }
                     continue;
@@ -246,7 +256,7 @@ namespace MaCRo.Core
                         }
                     }
                     if (!cancel)
-                        navigation.TurnUntilWall(sensors);
+                        navigation.TurnRightUntilWall(sensors);
                 }
 
             }

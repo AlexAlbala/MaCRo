@@ -16,7 +16,7 @@ namespace MaCRo.Core
         private DCMotorDriver dcm = new DCMotorDriver();
         private Contingency contingency;
         public Movement movement;
-        
+
         public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
 
         #region IMU
@@ -36,7 +36,7 @@ namespace MaCRo.Core
         //-Y / X   (x,y) y/x
         public double MAG_Heading { get { return exMath.Atan2(getMag(Axis.X), -1 * getMag(Axis.Y)); } }
 
-       
+
 
         private void Integrate(Object state)
         {
@@ -179,7 +179,7 @@ namespace MaCRo.Core
             //integration = new Timer(new TimerCallback(this.Integrate), new object(), GlobalVal.integrationPeriod * 10, GlobalVal.integrationPeriod);
         }
 
-        public void TurnUntilWall(SensorManager sensors)
+        public void TurnRightUntilWall(SensorManager sensors)
         {
             brake();
             turnRight(45);
@@ -202,7 +202,7 @@ namespace MaCRo.Core
             brake();
 
             //MoveForward(100, GlobalVal.speed);
-            turnLeft(45);            
+            turnLeft(45);
 
             while (sensors.getDistance(Sensor.Central) > GlobalVal.distanceToDetect)
             {

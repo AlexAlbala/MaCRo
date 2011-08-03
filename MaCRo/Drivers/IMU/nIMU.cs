@@ -41,7 +41,7 @@ namespace MaCRo.Drivers.IMU
         private double rangeTimer;
         private double lastValueTimer;
         private long counter;
-        private long counterFilter;
+        private bool iirInitialized;
 
         private double oax;
         private double oay;
@@ -66,7 +66,7 @@ namespace MaCRo.Drivers.IMU
             lastTime = 0.0;
             lastValueTimer = 0.0;
             counter = 0;
-            counterFilter = 0;
+            iirInitialized = false;
             oax = oay = oaz = 0.0;
             lastDCMLoopTime = DateTime.MinValue;
 
@@ -91,21 +91,23 @@ namespace MaCRo.Drivers.IMU
             t = null;
         }
 
-        double[] accel_filter(double ax, double ay, double az)
+        double[] IIR3AxisFilter(double ax, double ay, double az)
         {
             double bx = ax;
             double by = ay;
             double bz = az;
-            if (counterFilter > 0)
+
+            if (iirInitialized)
             {
                 ax = oax + (bx - oax) * GlobalVal.IIRFilterCoefficient;
                 ay = oay + (by - oay) * GlobalVal.IIRFilterCoefficient;
                 az = oaz + (bz - oaz) * GlobalVal.IIRFilterCoefficient;
             }
+
             oax = ax;
             oay = ay;
             oaz = az;
-            counterFilter++;
+            iirInitialized = true;
 
             return new double[] { ax, ay, az };
         }
@@ -156,8 +158,8 @@ namespace MaCRo.Drivers.IMU
                         //Z
                         lastMag[2] = digitalSensitivityMag * ToShortC2(new byte[] { buffer[30], buffer[29] });
 
-                        lastMag = accel_filter(lastMag[0], lastMag[1], lastMag[2]);
-                        
+                        lastMag = IIR3AxisFilter(lastMag[0], lastMag[1], lastMag[2]);
+
                         //X
                         lastTemp[0] = digitalSensitivityTemp * ToShortC2(new byte[] { buffer[32], buffer[31] }) + 25;
                         //Y
@@ -252,8 +254,8 @@ namespace MaCRo.Drivers.IMU
 
         private void loop(Object state) //Main Loop
         {
-            
-            if(lastDCMLoopTime == DateTime.MinValue)
+
+            if (lastDCMLoopTime == DateTime.MinValue)
             {
                 lastDCMLoopTime = DateTime.Now;
             }

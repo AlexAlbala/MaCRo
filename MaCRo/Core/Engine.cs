@@ -105,6 +105,9 @@ namespace MaCRo.Core
                 //coder.Send(Message.Roll, navigation.Roll);
                 //coder.Send(Message.Yaw, navigation.Yaw);
                 coder.Send(Message.MAGHeading, (double)exMath.ToDeg((float)navigation.MAG_Heading));
+                Debug.Print("MAG:" + (double)exMath.ToDeg((float)navigation.MAG_Heading));
+                Debug.Print("GYR: " + navigation.getGyro(Axis.X).ToString() + "X");
+                Debug.Print("ACC: " + navigation.getAccel(Axis.X).ToString() + "X");
 
             }
         }

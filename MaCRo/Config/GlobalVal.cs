@@ -9,7 +9,7 @@ namespace MaCRo.Config
         /// <summary>
         /// Perimeter of the wheel in millimeters
         /// </summary>
-        public readonly static short wheelPerimeter_mm = 200;
+        public readonly static double wheelPerimeter_mm = (65.0 * System.Math.PI);
         /// <summary>
         /// Number of interruptions in every turn of the wheel
         /// </summary>
@@ -17,11 +17,11 @@ namespace MaCRo.Config
         /// <summary>
         /// Width of the structure. Center of the wheel to center of the wheel
         /// </summary>
-        public readonly static short width_mm = 148;
+        public readonly static short width_mm = 185;
         /// <summary>
         /// Length of the structure.
         /// </summary>
-        public readonly static short length_mm = 235;
+        public readonly static short length_mm = 230;
         /// <summary>
         /// The radius of the turn
         /// </summary>
@@ -41,7 +41,7 @@ namespace MaCRo.Config
         /// <summary>
         /// Distance for an object to be detected. In centimeters
         /// </summary>
-        public readonly static short distanceToDetect = 25;       
+        public readonly static short distanceToDetect = 25;
         /// <summary>
         /// Distance which has to be respected when following the wall. In centimeters
         /// </summary>

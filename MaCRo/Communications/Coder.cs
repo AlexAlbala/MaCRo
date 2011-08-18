@@ -2,6 +2,7 @@ using System;
 using Microsoft.SPOT;
 using MaCRo.Tools;
 using System.Text;
+using MaCRo.Core;
 
 namespace MaCRo.Communications
 {
@@ -190,6 +191,36 @@ namespace MaCRo.Communications
 
         public void DataReceived(byte[] buffer, int offset, int length, TransportAddress t)
         {
+            byte[] tmpBuff = new byte[length];
+            for (int i = 0; i < length; i++)
+            {
+                tmpBuff[i] = buffer[offset + i];
+            }
+            
+            switch ((char)tmpBuff[0])
+            {
+                case 'f':
+                    Engine.getInstance().ManualForward(ToShort(tmpBuff, 1));
+                    break;
+                case 'b':                    
+                    Engine.getInstance().ManualBackward(ToShort(tmpBuff,1));
+                    break;
+                case 'r':
+                    Engine.getInstance().ManualRight();
+                    break;
+                case 'l':
+                    Engine.getInstance().ManualLeft();
+                    break;
+                case 's':
+                    Engine.getInstance().ManualStop();
+                    break;
+                case 'm':
+                    Engine.getInstance().ManualMode();
+                    break;
+                case 'M':
+                    Engine.getInstance().StopManualMode();
+                    break;
+            }
         }
 
         private void FromShort(short theShort, byte[] buffer, int offset)
@@ -199,7 +230,15 @@ namespace MaCRo.Communications
                 buffer[offset] = (byte)theShort;
                 buffer[offset + 1] = (byte)(theShort >> 8);
             }
-        }       
+        }
+
+        private short ToShort(byte[] buffer, int offset)
+        {
+            return (short)(
+               (buffer[offset] & 0x000000FF) |
+               (buffer[offset + 1] << 8 & 0x0000FF00)
+               );
+        }
 
         public int FromDouble(double theDouble, byte[] buffer, int offset)
         {

@@ -168,6 +168,8 @@ namespace MaCRoGS
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.Init();
+            Manual m = new Manual(this.coder);
+            m.Show();
         }
 
 

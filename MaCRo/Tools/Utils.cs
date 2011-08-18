@@ -6,7 +6,8 @@ namespace MaCRo.Tools
     public enum Mode
     {
         SearchingForWall,
-        FollowWall
+        FollowWall,
+        Manual
     }
 
     public enum Axis

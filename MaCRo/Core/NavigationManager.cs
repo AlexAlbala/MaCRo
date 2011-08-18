@@ -15,8 +15,9 @@ namespace MaCRo.Core
         private Encoder right = new Encoder(PortMap.encoderR_interrupt);
         private DCMotorDriver dcm = new DCMotorDriver();
         private Contingency contingency;
+        private bool manualStop;
         public Movement movement;
-
+        
         public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
 
         #region IMU
@@ -169,6 +170,7 @@ namespace MaCRo.Core
             integrationTimeConstant = GlobalVal.integrationPeriod / 1e3;
             actualVelocity = new Position();
             actualPosition = new Position();
+            manualStop = false;
 
             lastTime = 0.0;
 
@@ -241,7 +243,7 @@ namespace MaCRo.Core
 
             this.brake();
 
-            UpdatePosition();
+            UpdatePosition(false);
         }
 
         public void MoveToObject(SensorManager sensors)
@@ -251,11 +253,19 @@ namespace MaCRo.Core
             this.brake();
         }
 
-        private void UpdatePosition()
+        private void UpdatePosition(bool isBack)
         {
             //angle respect of axis Y !!!
-            actualPosition.x += (right.distance_mm + left.distance_mm) * exMath.Sin(actualPosition.angle) / 2000;
-            actualPosition.y -= (right.distance_mm + left.distance_mm) * exMath.Cos(actualPosition.angle) / 2000;
+            if (isBack)
+            {
+                actualPosition.x -= (right.distance_mm + left.distance_mm) * exMath.Sin(actualPosition.angle) / 2000;
+                actualPosition.y += (right.distance_mm + left.distance_mm) * exMath.Cos(actualPosition.angle) / 2000;            
+            }
+            else
+            {
+                actualPosition.x += (right.distance_mm + left.distance_mm) * exMath.Sin(actualPosition.angle) / 2000;
+                actualPosition.y -= (right.distance_mm + left.distance_mm) * exMath.Cos(actualPosition.angle) / 2000;
+            }
             this.resetDistance();
         }
 
@@ -271,8 +281,57 @@ namespace MaCRo.Core
             dcm.Move(speed, speed);
         }
 
+        #region MANUAL CONTROLS
+        public void ManualForward()
+        {
+            manualStop = false;
+            while (!manualStop)
+            {
+                MoveForward(10, GlobalVal.speed);
+            }
+            this.brake();
+        }
+
+        public void ManualBackward()
+        {
+            manualStop = false;
+            while (!manualStop)
+            {
+                MoveBackward(10, GlobalVal.speed);
+            }
+            this.brake();
+        }
+
+        public void ManualLeft()
+        {
+            manualStop = false;
+            while (!manualStop)
+            {
+                turnLeft(5);
+            }
+            this.brake();
+        }
+
+        public void ManualRight()
+        {
+            manualStop = false;
+            while (!manualStop)
+            {
+                turnRight(5);
+            }
+            this.brake();
+        }
+
+        public void manualBrake()
+        {
+            manualStop = true;
+        }
+
+        #endregion
+
         public void MoveBackward(int distancemm, sbyte speed)
         {
+            this.resetDistance();
             MoveBackward(speed);
 
             while (left.distance_mm < distancemm && right.distance_mm < distancemm && !contingency.alarm)
@@ -281,6 +340,7 @@ namespace MaCRo.Core
             }
 
             this.brake();
+            UpdatePosition(true);
         }
 
         public void MoveBackward()

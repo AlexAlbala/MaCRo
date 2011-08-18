@@ -4,20 +4,65 @@ using System.Globalization;
 
 namespace MaCRoGS.Communications
 {
-    class Coder
+    public class Coder
     {
         SerialTransport transport;
+        SerialTransportAddress t;
         MainWindow display;
 
         public void Start(MainWindow display)
         {
             this.display = display;
-            transport = new SerialTransport(new SerialTransportAddress("COM3", false), 9600);
+            t = new SerialTransportAddress("COM3", false);
+            transport = new SerialTransport(t, 9600);
             transport.Start(this);
         }
-        public void Send()
+        public void Send(Message message,object value)
         {
+            //1 byte: movement/telemtry
+            //1 byte: right/left - forward/backward
+            //2 bytes: (short) distance in centimeters or angle in degrees
+            byte[] buffer;
+            switch (message)
+            {
+                case Message.Forward:
+                    buffer = new byte[3];
+                    buffer[0] = (byte)'f';
 
+                    this.FromShort((short)value, buffer, 1);
+                    break;
+                case Message.Backward:
+                    buffer = new byte[3];
+                    buffer[0] = (byte)'b';
+
+                    this.FromShort((short)value, buffer, 1);
+                    break;
+                case Message.TurnLeft:
+                    buffer = new byte[1];
+                    buffer[0] = (byte)'l';
+                    break;
+                case Message.TurnRight:
+                    buffer = new byte[1];
+                    buffer[0] = (byte)'r';
+                    break;
+                case Message.Stop:
+                    buffer = new byte[1];
+                    buffer[0] = (byte)'s';
+                    break;
+                case Message.ToManual:
+                    buffer = new byte[1];
+                    buffer[0] = (byte)'m';
+                    break;
+                case Message.StopManual:
+                    buffer = new byte[1];
+                    buffer[0] = (byte)'M';
+                    break;
+                default:
+                    buffer = new byte[0];
+                    break;
+            }
+
+            transport.Send(t, buffer);
         }
 
         public void DataReceived(byte[] buffer, int offset, int length, TransportAddress t)

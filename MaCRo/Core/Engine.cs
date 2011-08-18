@@ -160,6 +160,48 @@ namespace MaCRo.Core
             workerThread.Start();
         }
 
+        public void ManualMode()
+        {
+            this.Cancel();
+            this.currentMode = Mode.Manual;
+        }
+
+        public void StopManualMode()
+        {
+            this.currentMode = Mode.SearchingForWall;
+            this.Restart();
+        }
+
+        public void ManualForward(short speed)
+        {
+            Thread t = new Thread(new ThreadStart(navigation.ManualForward));
+            t.Start();
+        }
+
+        public void ManualBackward(short speed)
+        {
+            Thread t = new Thread(new ThreadStart(navigation.ManualBackward));
+            t.Start();
+        }
+
+        public void ManualRight()
+        {
+            Thread t = new Thread(new ThreadStart(navigation.ManualRight));
+            t.Start();
+        }
+
+        public void ManualLeft()
+        {
+            Thread t = new Thread(new ThreadStart(navigation.ManualLeft));
+            t.Start();
+        }
+
+        public void ManualStop()
+        {
+            Thread t = new Thread(new ThreadStart(navigation.manualBrake));
+            t.Start();
+        }
+
         private void _Run()
         {
             /****************** TEST CODE *********************/

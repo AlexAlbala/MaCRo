@@ -14,6 +14,8 @@ using System.Windows.Shapes;
 using MaCRoGS.Communications;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
+using MaCRoGS.SLAM;
+using System.Threading;
 
 namespace MaCRoGS
 {
@@ -24,15 +26,37 @@ namespace MaCRoGS
     {
         private Coder coder;
         private delegate void Updater(short value);
+        private delegate void UpdaterString(string message);
+        private delegate void UpdaterInt(int value);
         private delegate void UpdaterD(double value);
+        private delegate void UpdaterUSA(ushort[] value, short part);
+        private delegate void UpdaterUSAF(ushort[] value);
+        private delegate void UpdaterUS(ushort value);
+
+        private short updates = 0;
+
+        private Timer scanTimer;
+        private Timer updateMap;
+        private Timer positionHistoryUpdate;
+
+        private bool activated;
 
         public MainWindow()
         {
+            try
+            {
+                coder = new Coder();
+                coder.Start(this);
+            }
+            catch (Exception e)
+            {
+                MessageBoxResult mbres = MessageBox.Show("Could not initialize the coder. Original message: " + e.Message + " Do you want to continue anyway?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                if (mbres == MessageBoxResult.No)
+                {
+                    Application.Current.Shutdown();
+                }
+            }
             InitializeComponent();
-
-            coder = new Coder();
-            coder.Start(this);
-
         }
 
         public void StartupSensors()
@@ -65,45 +89,10 @@ namespace MaCRoGS
             wall_robotmap.y = (int)(Canvas.GetTop(wall_sensor) + wall_sensor.ActualWidth / 2);
 
 
-            //CENTRAL MAP SENSOR *****************************
-            central_map = new Position();
-            central_map.angle = 0;
-            central_map.x = (int)(Canvas.GetLeft(central_sensor1) + central_sensor1.ActualWidth / 2);
-            //central_map.y = (int)Canvas.GetTop(central_sensor1);
-            central_map.y = 0;
-
-            //RIGHT MAP SENSOR *******************************
-            right_map = new Position();
-            RotateTransform t_rmap = (RotateTransform)right_sensor1.RenderTransform;
-            right_map.angle = t_rmap.Angle * Math.PI / 180;
-            right_map.x = (int)(Canvas.GetLeft(right_sensor1));
-            right_map.y = (int)(Canvas.GetTop(right_sensor1));
-
-            //WALL BACK MAP SENSOR *******************************
-            wallback_map = new Position();
-            RotateTransform t_wbmap = (RotateTransform)wallback_sensor1.RenderTransform;
-            wallback_map.angle = t_wbmap.Angle * Math.PI / 180;
-            //wallback_map.x = (int)Canvas.GetLeft(wallback_sensor1);
-            wallback_map.y = (int)Canvas.GetTop(wallback_sensor1);
-            /****ÑAPA*****/
-            //Los valores si los cogemos dinámicamente no son correctos de estos dos sensores
-            wallback_map.x = 0;
-
-            //WALL MAP SENSOR *************************************
-            wall_map = new Position();
-            RotateTransform t_wmap = (RotateTransform)wall_sensor1.RenderTransform;
-            wall_map.angle = t_wmap.Angle * Math.PI / 180;
-            //wall_map.x = (int)(Canvas.GetLeft(wall_sensor1));
-            wall_map.y = (int)(Canvas.GetTop(wall_sensor1) + wall_sensor1.ActualWidth / 2);
-            wall_map.x = 0;
-
-            //MACRO WIDTH = 148
-            mmperpixel_map = 148 / structure1.ActualWidth;
         }
 
         public void Init()
         {
-            robot.SizeChanged += new SizeChangedEventHandler(macro_SizeChanged);
             mmperpixel_robotmap = 2.0;
 
             central_line = new Line();
@@ -117,9 +106,6 @@ namespace MaCRoGS
 
             wallback_line = new Line();
             robot.Children.Add(wallback_line);
-
-            Canvas.SetTop(macro, map.ActualHeight / 2 - macro.ActualHeight / 2);
-            Canvas.SetLeft(macro, map.ActualWidth / 2 - macro.ActualWidth / 2);
 
             StartupSensors();
             StartupMap();
@@ -141,36 +127,354 @@ namespace MaCRoGS
             timeAY = new List<double>();
 
             updateChart = new System.Threading.Timer(new System.Threading.TimerCallback(_updateChart), new object(), 1000, 1000);
+
+            scanTimer = new Timer(new TimerCallback(Scan), new object(), 4000, 100);
+            updateMap = new Timer(new TimerCallback(mapUpdate), new object(), 4000, 3000);
+            positionHistoryUpdate = new Timer(new TimerCallback(UpdatePositionHistory), new object(), 0, 250);
+
+            activated = false;
+            tinySLAM.Initialize();
+
+            lbl_holeWidth.Content = "HOLE WIDTH: " + tinySLAM.HoleWidth() + " mm";
+            lbl_mapScale.Content = "MAP SCALE: " + (1 / tinySLAM.MapScale()).ToString() + " mm/cell";
+            lbl_mapSize.Content = "MAP SIZE: " + tinySLAM.MapSize() + " cells";
+            lbl_scanSize.Content = "SCAN SIZE: " + tinySLAM.ScanSize() + " points";
+            this.updateIterationsLabel(0);
+            this.updateMapUpdatesLabel(0);
+            log.SelectAll();
+            log.Selection.Text = "";
         }
 
         private void StartupMap()
         {
-            StartingPositionMap = new Position();
-            StartingPositionMap.x = (int)Canvas.GetLeft(macro);
-            StartingPositionMap.y = (int)Canvas.GetTop(macro);
-            StartingPositionMap.angle = 0;
-
-            actualPositionMap = new Position();
-            actualPositionMap.x = StartingPositionMap.x;
-            actualPositionMap.y = StartingPositionMap.y;
-            actualPositionMap.angle = StartingPositionMap.angle;
-
             actualPosition = new Position();
+            positionHistory = new List<Position>();
         }
 
-        void macro_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            mmperpixel_map = 148 / structure1.ActualWidth;
-
-            //RE CENTER ALL THE MAP !!!!
+        private void UpdatePositionHistory(Object state)
+        {            
+            positionHistory.Add(actualPosition);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.Init();
-            Manual m = new Manual(this.coder);
-            m.Show();
         }
+
+        private void updateIterationsLabel(int num)
+        {
+            lbl_iterations.Content = "ITERATIONS: " + num.ToString();
+        }
+
+        private void updateMapUpdatesLabel(int num)
+        {
+            lbl_mapUpdates.Content = "UPDATES: " + num.ToString();
+        }    
+
+        public void mapUpdate(object state)
+        {
+            UpdaterInt d = new UpdaterInt(updateMapUpdatesLabel);
+            this.Dispatcher.Invoke(d, ++updates);
+
+            this.UpdateMap(tinySLAM.Map().map, (short)-1);
+        }
+
+        public void Scan(object state)
+        {
+            UpdaterInt d = new UpdaterInt(updateIterationsLabel);
+            this.Dispatcher.Invoke(d, tinySLAM.NumUpdates());
+
+            ts_scan_t scan = new ts_scan_t();
+
+            int j = 0;
+            int angle = 0;
+            //CENTRAL SENSOR:
+            if (lastCentral != -1)
+            {
+                angle -= 10;
+                for (int i = 0; i < 20; angle++, i++, j++)
+                {
+                    double angleRad = (float)(angle * Math.PI / 180);
+                    double c = Math.Cos(angleRad);
+                    double s = Math.Sin(angleRad);
+
+
+                    scan.x[j] = (float)(lastCentral * s);
+                    scan.y[j] = (float)(lastCentral * c + 230 / 2) * (-1);
+                    scan.value[j] = SLAMAlgorithm.TS_OBSTACLE;
+                }
+            }
+
+
+            //WALL SENSOR
+            if (lastWall != -1)
+            {
+                angle = 0;
+                angle -= 10;
+                for (int i = 0; i < 20; angle++, i++, j++)
+                {
+                    double angleRad = (angle * Math.PI / 180);
+                    double c = Math.Cos(angleRad);
+                    double s = Math.Sin(angleRad);
+
+
+                    scan.x[j] = (float)(lastWall * c + 185 / 2) * (-1);
+                    scan.y[j] = (float)(230 / 2 + lastWall * s) * (-1);
+                    scan.value[j] = SLAMAlgorithm.TS_OBSTACLE;
+                }
+            }
+
+            //WALLBACK SENSOR
+            if (lastWallBack != -1)
+            {
+                angle = 0;
+                angle -= 10;
+                for (int i = 0; i < 20; angle++, i++, j++)
+                {
+                    double angleRad = (angle * Math.PI / 180);
+                    double c = Math.Cos(angleRad);
+                    double s = Math.Sin(angleRad);
+
+
+                    scan.x[j] = (float)(lastWallBack * c + 185 / 2) * (-1);
+                    scan.y[j] = (float)(lastWallBack * s - 230 / 2) * (-1);
+                    scan.value[j] = SLAMAlgorithm.TS_OBSTACLE;
+                }
+            }
+
+            //RIGHT SENSOR
+            if (lastRight != -1)
+            {
+                angle = 0;
+                angle -= 10;
+                for (int i = 0; i < 20; angle++, i++, j++)
+                {
+                    double angleRad = (angle * Math.PI / 180);
+                    double rad45 = (45 * Math.PI / 180);
+                    double c = Math.Cos(angleRad + rad45);
+                    double s = Math.Sin(angleRad + rad45);
+
+
+                    scan.x[j] = (float)(lastRight * c + 185 / 2);
+                    scan.y[j] = (float)(lastRight * s + 230 / 2) * (-1);
+                    scan.value[j] = SLAMAlgorithm.TS_OBSTACLE;
+                }
+            }
+
+            scan.nb_points = (ushort)j;
+
+            ts_position_t position = new ts_position_t();
+
+            position.theta = (float)(actualPosition.angle * 180 / Math.PI);
+            position.x = 1000 * actualPosition.x + SLAMAlgorithm.TS_MAP_SIZE / (SLAMAlgorithm.TS_MAP_SCALE * 2);
+            position.y = 1000 * actualPosition.y + SLAMAlgorithm.TS_MAP_SIZE / (SLAMAlgorithm.TS_MAP_SCALE * 2);
+            tinySLAM.NewScan(scan, position);
+        }
+
+        #region Handlers
+        private void for_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            coder.Send(Message.Forward, (short)25);
+        }
+
+        private void for_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            coder.Send(Message.Stop, null);
+            forw.IsChecked = true;
+        }
+
+        private void left_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            coder.Send(Message.TurnLeft, null);
+        }
+
+        private void left_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            coder.Send(Message.Stop, null);
+            left.IsChecked = true;
+        }
+
+        private void back_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            coder.Send(Message.Backward, (short)25);
+        }
+
+        private void back_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            coder.Send(Message.Stop, null);
+            back.IsChecked = true;
+        }
+
+        private void right_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            coder.Send(Message.TurnRight, null);
+        }
+
+        private void right_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            coder.Send(Message.Stop, null);
+            right.IsChecked = true;
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            if (activated)
+            {
+                coder.Send(Message.StopManual, null);
+                OnOff.Content = "On";
+
+                LEDImageOFF.Visibility = System.Windows.Visibility.Visible;
+                LEDImageON.Visibility = System.Windows.Visibility.Hidden;
+            }
+            else
+            {
+                coder.Send(Message.ToManual, null);
+                OnOff.Content = "Off";
+
+                LEDImageOFF.Visibility = System.Windows.Visibility.Hidden;
+                LEDImageON.Visibility = System.Windows.Visibility.Visible;
+            }
+
+            activated = !activated;
+        }
+
+        private void Speed_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        {
+            // TODO: Add event handler implementation here.
+            short value = (short)(e.NewValue * 10);
+            if (SpeedBox != null)
+            {
+                SpeedBox.Text = value.ToString();
+            }
+
+            coder.Send(Message.Speed, value);
+
+        }
+
+        private void Turning_Speed_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        {
+            // TODO: Add event handler implementation here.
+
+            short value = (short)(e.NewValue * 10);
+            if (TurningSpeedBox != null)
+            {
+                TurningSpeedBox.Text = value.ToString();
+            }
+
+            coder.Send(Message.TurningSpeed, value);
+        }
+
+        private void SpeedBox_Initialized(object sender, System.EventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            short value = (short)(Speed.Value * 10);
+            SpeedBox.Text = value.ToString();
+        }
+
+        private void TurningSpeedBox_Initialized(object sender, System.EventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            short value = (short)(Turning_Speed.Value * 10);
+            TurningSpeedBox.Text = value.ToString();
+        }
+
+        private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            coder.Send(Message.Stop, null);
+
+            switch (e.Key)
+            {
+                case Key.Left:
+                    left.IsChecked = false;
+                    break;
+                case Key.Up:
+                    forw.IsChecked = false;
+                    break;
+                case Key.Right:
+                    right.IsChecked = false;
+                    break;
+                case Key.Down:
+                    back.IsChecked = false;
+                    break;
+                default:
+                    break;
+            }
+
+            coder.Send(Message.Stop, null);
+        }
+
+        private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            // TODO: Add event handler implementation here.
+            switch (e.Key)
+            {
+                case Key.Left:
+                    coder.Send(Message.TurnLeft, null);
+                    left.IsChecked = true;
+                    break;
+                case Key.Up:
+                    coder.Send(Message.Forward, (short)25);
+                    forw.IsChecked = true;
+                    break;
+                case Key.Right:
+                    coder.Send(Message.TurnRight, null);
+                    right.IsChecked = true;
+                    break;
+                case Key.Down:
+                    coder.Send(Message.Backward, (short)25);
+                    back.IsChecked = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+        #endregion
+
+        #region Log
+        private void updateLog(string text)
+        {
+            FlowDocument mcFlowDoc = new FlowDocument();
+            mcFlowDoc = log.Document;
+            Paragraph pr = new Paragraph();
+            pr.Inlines.Add(DateTime.Now.ToString() + " : " + text);
+            mcFlowDoc.Blocks.Add(pr);
+            log.Document = mcFlowDoc;
+
+            log.ScrollToEnd();
+        }
+
+        public void info(string text)
+        {
+            string message = "INFO-" + text;
+            UpdaterString d = new UpdaterString(updateLog);
+            this.Dispatcher.Invoke(d, message);
+        }
+
+        public void debug(string text)
+        {
+            string message = "DEBUG-" + text;
+            UpdaterString d = new UpdaterString(updateLog);
+            this.Dispatcher.Invoke(d, message);
+        }
+
+        public void error(string text)
+        {
+            string message = "ERROR-" + text;
+            UpdaterString d = new UpdaterString(updateLog);
+            this.Dispatcher.Invoke(d, message);
+        }
+
+        #endregion
 
 
     }

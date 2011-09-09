@@ -19,11 +19,7 @@ namespace MaCRoGS
         private Position central_map;
         private Position right_map;
         private Position wallback_map;
-        private Position wall_map;
-
-        private Position StartingPositionMap;
-        private Position actualPositionMap;
-        private Position actualPosition;
+        private Position wall_map;       
 
         private double mmperpixel_robotmap;
         private double mmperpixel_map;
@@ -33,6 +29,11 @@ namespace MaCRoGS
         private Line right_line;
         private Line wallback_line;
 
+        private short lastCentral = -1;
+        private short lastWall = -1;
+        private short lastWallBack = -1;
+        private short lastRight = -1;
+
         public void UpdateS1(short value)//LEFT
         {
             Updater d = new Updater(_UpdateS1);
@@ -41,6 +42,7 @@ namespace MaCRoGS
 
         private void _UpdateS1(short value)//WALL_BACK
         {
+            lastWallBack = value;
             S1.Content = "WALL_BACK: " + value.ToString() + " mm";
 
             wallback_line.X1 = wallback_robotmap.x - (value / mmperpixel_robotmap);
@@ -50,15 +52,15 @@ namespace MaCRoGS
 
             wallback_line.Stroke = Brushes.Red;
 
-            Ellipse e = new Ellipse();
-            e.Width = 3;
-            e.Height = 3;
+            //Ellipse e = new Ellipse();
+            //e.Width = 3;
+            //e.Height = 3;
 
-            e.Stroke = Brushes.Red;
-            map.Children.Add(e);
+            //e.Stroke = Brushes.Red;
+            //map.Children.Add(e);
 
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + Math.Cos(actualPositionMap.angle) * wallback_map.x - Math.Sin(actualPositionMap.angle) * (wallback_map.y) - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
-            Canvas.SetTop(e, Canvas.GetTop(macro) + Math.Cos(actualPositionMap.angle) * wallback_map.y + Math.Sin(actualPositionMap.angle) * wallback_map.x - Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
+            //Canvas.SetLeft(e, Canvas.GetLeft(macro) + Math.Cos(actualPositionMap.angle) * wallback_map.x - Math.Sin(actualPositionMap.angle) * (wallback_map.y) - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
+            //Canvas.SetTop(e, Canvas.GetTop(macro) + Math.Cos(actualPositionMap.angle) * wallback_map.y + Math.Sin(actualPositionMap.angle) * wallback_map.x - Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
         }
 
         public void UpdateS2(short value)//WALL
@@ -69,6 +71,7 @@ namespace MaCRoGS
 
         private void _UpdateS2(short value)//WALL
         {
+            lastWall = value;
             S2.Content = "WALL: " + value.ToString() + " mm";
 
             wall_line.X1 = wall_robotmap.x - (value / mmperpixel_robotmap);
@@ -78,15 +81,15 @@ namespace MaCRoGS
 
             wall_line.Stroke = Brushes.Blue;
 
-            Ellipse e = new Ellipse();
-            e.Width = 3;
-            e.Height = 3;
+            //Ellipse e = new Ellipse();
+            //e.Width = 3;
+            //e.Height = 3;
 
-            e.Stroke = Brushes.Blue;
-            map.Children.Add(e);
+            //e.Stroke = Brushes.Blue;
+            //map.Children.Add(e);
 
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + Math.Cos(actualPositionMap.angle) * wall_map.x - Math.Sin(actualPositionMap.angle) * (wall_map.y) - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
-            Canvas.SetTop(e, Canvas.GetTop(macro) + Math.Cos(actualPositionMap.angle) * wall_map.y + Math.Sin(actualPositionMap.angle) * wall_map.x - Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
+            //Canvas.SetLeft(e, Canvas.GetLeft(macro) + Math.Cos(actualPositionMap.angle) * wall_map.x - Math.Sin(actualPositionMap.angle) * (wall_map.y) - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
+            //Canvas.SetTop(e, Canvas.GetTop(macro) + Math.Cos(actualPositionMap.angle) * wall_map.y + Math.Sin(actualPositionMap.angle) * wall_map.x - Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
 
         }
 
@@ -98,24 +101,28 @@ namespace MaCRoGS
 
         private void _UpdateL1(short value)//CENTRAL
         {
+            lastCentral = value;
             L1.Content = "CENTRAL: " + value.ToString() + " mm";
 
-            central_line.X1 = central_robotmap.x - 10;
-            central_line.X2 = central_robotmap.x + 10;
-            central_line.Y1 = central_robotmap.y - (value / mmperpixel_robotmap);
-            central_line.Y2 = central_line.Y1;
+            if (central_line != null)
+            {
+                central_line.X1 = central_robotmap.x - 10;
+                central_line.X2 = central_robotmap.x + 10;
+                central_line.Y1 = central_robotmap.y - (value / mmperpixel_robotmap);
+                central_line.Y2 = central_line.Y1;
 
-            central_line.Stroke = Brushes.Black;
+                central_line.Stroke = Brushes.Black;
+            }
 
-            Ellipse e = new Ellipse();
-            e.Width = 3;
-            e.Height = 3;
+            //Ellipse e = new Ellipse();
+            //e.Width = 3;
+            //e.Height = 3;
 
-            e.Stroke = Brushes.Black;
-            map.Children.Add(e);
+            //e.Stroke = Brushes.Black;
+            //map.Children.Add(e);
 
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + central_map.x * Math.Cos(actualPositionMap.angle) + Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
-            Canvas.SetTop(e, Canvas.GetTop(macro) + central_map.y*Math.Cos(actualPositionMap.angle) + Math.Sin(actualPositionMap.angle) * central_map.x - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
+            //Canvas.SetLeft(e, Canvas.GetLeft(macro) + central_map.x * Math.Cos(actualPositionMap.angle) + Math.Sin(actualPositionMap.angle) * (value / mmperpixel_map));
+            //Canvas.SetTop(e, Canvas.GetTop(macro) + central_map.y * Math.Cos(actualPositionMap.angle) + Math.Sin(actualPositionMap.angle) * central_map.x - Math.Cos(actualPositionMap.angle) * (value / mmperpixel_map));
         }
 
         public void UpdateL2(short value)//RIGHT
@@ -126,6 +133,7 @@ namespace MaCRoGS
 
         private void _UpdateL2(short value)//RIGHT
         {
+            lastRight = value;
             L2.Content = "RIGHT: " + value.ToString() + " mm";
 
             right_line.X1 = right_robotmap.x + (value / mmperpixel_robotmap - 10) * Math.Cos(right_robotmap.angle);
@@ -135,36 +143,16 @@ namespace MaCRoGS
 
             right_line.Stroke = Brushes.Brown;
 
-            Ellipse e = new Ellipse();
-            e.Width = 3;
-            e.Height = 3;
+            //Ellipse e = new Ellipse();
+            //e.Width = 3;
+            //e.Height = 3;
 
-            e.Stroke = Brushes.Brown;
-            map.Children.Add(e);
+            //e.Stroke = Brushes.Brown;
+            //map.Children.Add(e);
 
-            Canvas.SetLeft(e, Canvas.GetLeft(macro) + right_map.x * Math.Cos(actualPositionMap.angle) + Math.Sin(actualPositionMap.angle) * right_map.y + Math.Sin(actualPositionMap.angle + right_map.angle) * (value / mmperpixel_map));
-            Canvas.SetTop(e, Canvas.GetTop(macro) + Math.Cos(actualPositionMap.angle) * right_map.y + Math.Sin(actualPositionMap.angle) * right_map.x - Math.Cos(actualPositionMap.angle + right_map.angle) * (value / mmperpixel_map));
+            //Canvas.SetLeft(e, Canvas.GetLeft(macro) + right_map.x * Math.Cos(actualPositionMap.angle) + Math.Sin(actualPositionMap.angle) * right_map.y + Math.Sin(actualPositionMap.angle + right_map.angle) * (value / mmperpixel_map));
+            //Canvas.SetTop(e, Canvas.GetTop(macro) + Math.Cos(actualPositionMap.angle) * right_map.y + Math.Sin(actualPositionMap.angle) * right_map.x - Math.Cos(actualPositionMap.angle + right_map.angle) * (value / mmperpixel_map));
         }
-
-        public void UpdateMode(short value)//RIGHT
-        {
-            Updater d = new Updater(_UpdateMode);
-            this.Dispatcher.Invoke(d, value);
-        }
-
-        private void _UpdateMode(short value)
-        {
-            switch (value)
-            {
-                case 0:
-                    Mode.Content = "MODE: Searching for a wall";
-                    break;
-                case 1:
-                    Mode.Content = "MODE: Following the wall";
-                    break;
-                default:
-                    break;
-            }
-        }
+       
     }
 }

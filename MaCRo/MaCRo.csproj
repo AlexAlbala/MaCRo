@@ -19,6 +19,7 @@
     <DefineConstants>DEBUG;MicroFramework</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -44,12 +45,13 @@
     <Compile Include="Core\Engine.cs" />
     <Compile Include="Core\NavigationManager.cs" />
     <Compile Include="Core\SensorManager.cs" />
+    <Compile Include="Core\SLAM\MapUpdate.cs" />
+    <Compile Include="Core\SLAM\ScanToMapDistance.cs" />
+    <Compile Include="Core\SLAM\Definitions.cs" />
     <Compile Include="Drivers\DCMotorDriver.cs" />
     <Compile Include="Drivers\DistanceDetector.cs" />
     <Compile Include="Drivers\Encoder.cs" />
-    <Compile Include="Drivers\IMU\Matrix.cs" />
     <Compile Include="Drivers\IMU\nIMU.cs" />
-    <Compile Include="Drivers\IMU\Vector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -58,7 +60,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Tools\BitConverter.cs" />
-    <Compile Include="Drivers\IMU\DCM.cs" />
     <Compile Include="Tools\Dictionary.cs" />
     <Compile Include="Tools\Math.cs" />
     <Compile Include="Tools\Utils.cs" />

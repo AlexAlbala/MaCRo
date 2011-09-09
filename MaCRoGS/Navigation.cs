@@ -5,32 +5,201 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
+using MaCRoGS.SLAM;
+using System.Windows.Media.Imaging;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+using System.IO;
 
 namespace MaCRoGS
 {
     public partial class MainWindow : Window
     {
+        private ushort MapSizeValue = 0;
+        private double Scale = 0;
+
+        private Position actualPosition;
+        private List<Position> positionHistory;
+        System.Windows.Shapes.Path roverPath;
+
         private void _SetHeading(double heading)
         {
             double headingDEG = heading * 180 / Math.PI;
-            actualPositionMap.angle = heading;
+            actualPosition.angle = heading;
+        }
 
-            //Save the central point of the element.
-            RotateTransform t_macro = (RotateTransform)macro.RenderTransform;
-            //IEnumerable<RotateTransform> transf = t_macro.Children.OfType<RotateTransform>();
-            double angleRad = (t_macro.Angle) * Math.PI / 180;
+        private void _MapSize(ushort NewSize)
+        {
+            this.MapSizeValue = (ushort)(NewSize);
 
-            //double centralPointX = Canvas.GetLeft(macro) + (Canvas.GetLeft(structure1) + structure1.ActualWidth / 2) * Math.Cos(angleRad) - structure1.ActualHeight * Math.Sin(angleRad) / 2;
-            //double centralPointY = Canvas.GetTop(macro) + (Canvas.GetTop(structure1) + structure1.ActualHeight / 2) * Math.Cos(angleRad) - structure1.ActualWidth * Math.Sin(angleRad) / 2;
+            double WidthScale = map.ActualWidth / MapSizeValue;
+            double HeightScale = map.ActualHeight / MapSizeValue;
 
-            macro.RenderTransform = new RotateTransform(headingDEG);
+            if (WidthScale < HeightScale)
+                this.Scale = WidthScale;
+            else
+                this.Scale = HeightScale;
+        }
 
-            //Correct the position
-            //Canvas.SetLeft(macro, centralPointX - (Canvas.GetLeft(structure1) + structure1.ActualWidth / 2) * Math.Cos(angleRad) + structure1.ActualHeight * Math.Sin(angleRad) / 2);
-            //Canvas.SetTop(macro, centralPointY - (Canvas.GetTop(structure1) + structure1.ActualHeight / 2) * Math.Cos(angleRad) + structure1.ActualWidth * Math.Sin(angleRad) / 2);
+        public void MapSize(ushort NewSize)
+        {
+            UpdaterUS d = new UpdaterUS(_MapSize);
+            this.Dispatcher.Invoke(d, NewSize);
+        }
 
-            macro.UpdateLayout();
-            
+        private void _UpdateMap(ushort[] NewMap, short part)
+        {
+
+            if (MapSizeValue == 0)
+                return;
+
+            int line, column = 0;
+            int start = (part - 1) * (MapSizeValue * MapSizeValue) / 4;
+            for (int i = start; i < start + NewMap.Length; i++)
+            {
+                line = i / MapSizeValue;
+                column = i % MapSizeValue;
+
+                System.Windows.Shapes.Rectangle rect = new System.Windows.Shapes.Rectangle();
+
+                rect.Width = Scale;
+                rect.Height = Scale;
+
+                byte value = (byte)(NewMap[i - start] * 255 / 65500);
+
+                rect.Stroke = new SolidColorBrush(System.Windows.Media.Color.FromRgb((byte)(255 - value), (byte)(255 - value), (byte)(255 - value)));
+                rect.Fill = new SolidColorBrush(System.Windows.Media.Color.FromRgb((byte)(255 - value), (byte)(255 - value), (byte)(255 - value)));
+
+                map.Children.Add(rect);
+
+                Canvas.SetLeft(rect, column * Scale);
+                Canvas.SetTop(rect, line * Scale);
+            }
+
+        }
+
+        public void SetPositionX(double distance)
+        {
+            UpdaterD updater = new UpdaterD(_SetPositionX);
+            this.Dispatcher.Invoke(updater, distance);
+
+        }
+
+        private void _SetPositionX(double posX)
+        {
+            xPos.Content = "Position in X axis: " + posX.ToString() + " meters";
+            actualPosition.x = posX;
+
+            //actualPositionMap.x = StartingPositionMap.x + (1000 * actualPosition.x / this.mmperpixel_map);
+
+            //Canvas.SetLeft(macro, actualPositionMap.x - (Canvas.GetLeft(structure1) + structure1.ActualWidth / 2) * Math.Cos(actualPositionMap.angle) + (Canvas.GetTop(structure1) + structure1.ActualHeight * Math.Sin(actualPositionMap.angle)) / 2);
+
+            timePX.Add(actualTime);
+            PosX.Add(posX);
+        }
+
+        public void SetPositionAngle(double distance)
+        {
+            UpdaterD updater = new UpdaterD(_SetPositionAngle);
+            this.Dispatcher.Invoke(updater, distance);
+        }
+
+        private void _SetPositionAngle(double angle)
+        {
+            anglePos.Content = "Current angle: " + angle.ToString() + " rads";
+            this._SetHeading(angle);
+        }
+
+        public void SetPositionY(double distance)
+        {
+            UpdaterD updater = new UpdaterD(_SetPositionY);
+            this.Dispatcher.Invoke(updater, distance);
+        }
+
+        private void _SetPositionY(double Y)
+        {
+            yPos.Content = "Position in Y axis: " + Y.ToString() + " meters";
+            actualPosition.y = Y;
+
+            //actualPositionMap.y = StartingPositionMap.y + (1000 * actualPosition.y / this.mmperpixel_map);
+
+            //Canvas.SetTop(macro, actualPositionMap.y - (Canvas.GetTop(structure1) + structure1.ActualHeight / 2) * Math.Cos(actualPositionMap.angle) - (Canvas.GetLeft(structure1) + structure1.ActualWidth * Math.Sin(actualPositionMap.angle) / 2));
+
+            //macro.UpdateLayout();
+
+            timePY.Add(actualTime);
+
+            PosY.Add(Y);
+        }
+
+        private void _UpdateFullMap(ushort[] NewMap)
+        {
+            if (roverPath == null)
+            {
+                roverPath = new System.Windows.Shapes.Path();
+                map.Children.Add(roverPath);
+                roverPath.Stroke = System.Windows.Media.Brushes.Blue;
+                roverPath.Stroke.Freeze();
+                roverPath.StrokeThickness = 2;
+            }
+
+            PathGeometry geometry = new PathGeometry(); ;
+            PathFigure trackFigure = new PathFigure();
+            geometry.Figures.Add(trackFigure);
+            roverPath.Data = geometry;
+            //translateTrasnform = new TranslateTransform();
+            //uavTrack.RenderTransform = translateTrasnform;
+
+            foreach (Position p in positionHistory)
+            {
+                //CALCULATE !
+                System.Windows.Point _p = new System.Windows.Point(p.x, p.y);
+                trackFigure.Segments.Add(new LineSegment(_p, true));
+            }
+
+            ushort _MapSizeValue = tinySLAM.MapSize();
+            MapSize(_MapSizeValue);
+
+            byte[] buffer = new byte[NewMap.Length * 3];
+            for (int i = 0; i < NewMap.Length; i++)
+            {
+                byte value = (byte)(NewMap[i] * 255 / 65500);
+                buffer[3 * i] = value;
+                buffer[3 * i + 1] = value;
+                buffer[3 * i + 2] = value;
+            }
+
+            Bitmap bmp = new Bitmap((int)_MapSizeValue, (int)_MapSizeValue, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            BitmapData bmpData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, bmp.PixelFormat);
+            Marshal.Copy(buffer, 0, bmpData.Scan0, buffer.Length);
+
+
+            MemoryStream ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Png);
+            ms.Position = 0;
+            BitmapImage bi = new BitmapImage();
+            bi.BeginInit();
+            bi.StreamSource = ms;
+            bi.EndInit();
+
+            mapImage.Source = bi;
+        }
+
+        public void UpdateMap(ushort[] map, short part)
+        {
+            if (part == -1)
+            {
+                UpdaterUSAF d = new UpdaterUSAF(_UpdateFullMap);
+                this.Dispatcher.Invoke(d, map);
+            }
+            else
+            {
+                UpdaterUSA d = new UpdaterUSA(_UpdateMap);
+                this.Dispatcher.Invoke(d, map, part);
+            }
+
         }
     }
 

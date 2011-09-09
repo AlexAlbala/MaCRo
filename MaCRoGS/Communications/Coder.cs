@@ -17,8 +17,8 @@ namespace MaCRoGS.Communications
             transport = new SerialTransport(t, 9600);
             transport.Start(this);
         }
-        public void Send(Message message,object value)
-        {
+        public void Send(Message message, object value)
+        {            
             //1 byte: movement/telemtry
             //1 byte: right/left - forward/backward
             //2 bytes: (short) distance in centimeters or angle in degrees
@@ -28,13 +28,11 @@ namespace MaCRoGS.Communications
                 case Message.Forward:
                     buffer = new byte[3];
                     buffer[0] = (byte)'f';
-
                     this.FromShort((short)value, buffer, 1);
                     break;
                 case Message.Backward:
                     buffer = new byte[3];
                     buffer[0] = (byte)'b';
-
                     this.FromShort((short)value, buffer, 1);
                     break;
                 case Message.TurnLeft:
@@ -57,6 +55,16 @@ namespace MaCRoGS.Communications
                     buffer = new byte[1];
                     buffer[0] = (byte)'M';
                     break;
+                case Message.Speed:
+                    buffer = new byte[3];
+                    buffer[0] = (byte)'V';
+                    this.FromShort((short)value, buffer, 1);
+                    break;
+                case Message.TurningSpeed:
+                    buffer = new byte[3];
+                    buffer[0] = (byte)'v';
+                    this.FromShort((short)value, buffer, 1);
+                    break;
                 default:
                     buffer = new byte[0];
                     break;
@@ -76,17 +84,6 @@ namespace MaCRoGS.Communications
             object value;
             switch ((char)tmpBuff[0])
             {
-                case 'm':
-                    switch ((char)tmpBuff[1])
-                    {
-                        case 'm':
-                            value = ToShort(tmpBuff, 2);
-                            display.UpdateMode((short)value);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
                 case 't':
                     switch ((char)tmpBuff[1])
                     {
@@ -127,27 +124,27 @@ namespace MaCRoGS.Communications
                             break;
                     }
                     break;
-                case 'a':
-                    switch ((char)tmpBuff[1])
-                    {
-                        case 'p':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetPitch((double)value);
-                            break;
-                        case 'y':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetYaw((double)value);
-                            break;
-                        case 'r':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetRoll((double)value);
-                            break;
-                        case 'm':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetMHead((double)value);
-                            break;
-                    }
-                    break;
+                //case 'a':
+                //    switch ((char)tmpBuff[1])
+                //    {
+                //        case 'p':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetPitch((double)value);
+                //            break;
+                //        case 'y':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetYaw((double)value);
+                //            break;
+                //        case 'r':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetRoll((double)value);
+                //            break;
+                //        case 'm':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetMHead((double)value);
+                //            break;
+                //    }
+                //    break;
                 case 'v':
                     switch ((char)tmpBuff[1])
                     {
@@ -165,71 +162,138 @@ namespace MaCRoGS.Communications
                             break;
                     }
                     break;
-                case 'A':
+                //case 'A':
+                //    switch ((char)tmpBuff[1])
+                //    {
+                //        case 'X':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetAccX((double)value);
+                //            break;
+                //        case 'Y':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetAccY((double)value);
+                //            break;
+                //        case 'Z':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetAccZ((double)value);
+                //            break;
+                //    }
+                //    break;
+                //case 'G':
+                //    switch ((char)tmpBuff[1])
+                //    {
+                //        case 'X':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetGyroX((double)value);
+                //            break;
+                //        case 'Y':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetGyroY((double)value);
+                //            break;
+                //        case 'Z':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetGyroZ((double)value);
+                //            break;
+                //    }
+                //    break;
+                //case 'M':
+                //    switch ((char)tmpBuff[1])
+                //    {
+                //        case 'X':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetMagX((double)value);
+                //            break;
+                //        case 'Y':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetMagY((double)value);
+                //            break;
+                //        case 'Z':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetMagZ((double)value);
+                //            break;
+                //    }
+                //    break;
+                //case 'T':
+                //    switch ((char)tmpBuff[1])
+                //    {
+                //        case 'X':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetTempX((double)value);
+                //            break;
+                //        case 'Y':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetTempY((double)value);
+                //            break;
+                //        case 'Z':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetTempZ((double)value);
+                //            break;
+                //    }
+                //    break;
+                case 'L':
+                    string message;
                     switch ((char)tmpBuff[1])
                     {
-                        case 'X':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetAccX((double)value);
+                        case 'D':
+                            //DEBUG
+                            ToString(tmpBuff, 2, out message);
+                            display.debug(message);
                             break;
-                        case 'Y':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetAccY((double)value);
+                        case 'I':
+                            //INFO         
+                            ToString(tmpBuff, 2, out message);
+                            display.info(message);
                             break;
-                        case 'Z':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetAccZ((double)value);
+                        case 'E':
+                            //ERROR
+                            ToString(tmpBuff, 2, out message);
+                            display.error(message);
                             break;
                     }
                     break;
-                case 'G':
+
+                case 'U':
                     switch ((char)tmpBuff[1])
                     {
-                        case 'X':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetGyroX((double)value);
+                        case 'M':
+                            //MAP
+                            short size = ToShort(tmpBuff, 3);
+                            ushort[] buff = new ushort[size];
+
+                            for (int i = 0; i < size; i++)
+                            {
+                                buff[i] = ToUShort(tmpBuff, 3 + 2 + i * 2);
+                            }
+                            switch ((char)tmpBuff[2])
+                            {
+                                case '1':
+                                    display.UpdateMap(buff, 1);
+                                    break;
+                                case '2':
+                                    display.UpdateMap(buff, 2);
+                                    break;
+                                case '3':
+                                    display.UpdateMap(buff, 3);
+                                    break;
+                                case '4':
+                                    display.UpdateMap(buff, 4);
+                                    break;
+                            }
                             break;
-                        case 'Y':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetGyroY((double)value);
+                        case 'P':
+                            //POS         
+                            short _size = ToShort(tmpBuff, 2);
+                            byte[] tbuff = new byte[_size];
+
+                            for (int i = 0; i < _size; i++)
+                            {
+                                tbuff[i] = tmpBuff[i + 2 + 2];
+                            }
                             break;
-                        case 'Z':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetGyroZ((double)value);
-                            break;
-                    }
-                    break;
-                case 'M':
-                    switch ((char)tmpBuff[1])
-                    {
-                        case 'X':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetMagX((double)value);
-                            break;
-                        case 'Y':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetMagY((double)value);
-                            break;
-                        case 'Z':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetMagZ((double)value);
-                            break;
-                    }
-                    break;
-                case 'T':
-                    switch ((char)tmpBuff[1])
-                    {
-                        case 'X':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetTempX((double)value);
-                            break;
-                        case 'Y':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetTempY((double)value);
-                            break;
-                        case 'Z':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetTempZ((double)value);
+                        case 'S':
+                            //SIZE
+                            value = ToUShort(tmpBuff, 2);
+                            display.MapSize((ushort)value);
                             break;
                     }
                     break;
@@ -250,6 +314,14 @@ namespace MaCRoGS.Communications
         private short ToShort(byte[] buffer, int offset)
         {
             return (short)(
+               (buffer[offset] & 0x000000FF) |
+               (buffer[offset + 1] << 8 & 0x0000FF00)
+               );
+        }
+
+        private ushort ToUShort(byte[] buffer, int offset)
+        {
+            return (ushort)(
                (buffer[offset] & 0x000000FF) |
                (buffer[offset + 1] << 8 & 0x0000FF00)
                );

@@ -49,12 +49,6 @@ namespace MaCRo.Communications
                         buffer[0] = (byte)'t';
                         buffer[1] = (byte)'l';
                         break;
-                    case Message.Mode:
-                        buffer = new byte[4];
-                        buffer[0] = (byte)'m';
-                        buffer[1] = (byte)'m';
-                        break;
-
 
                     case Message.PositionX:
                         buffer = new byte[6 + ((double)value).ToString().Length];
@@ -72,7 +66,7 @@ namespace MaCRo.Communications
                         buffer[1] = (byte)'a';
                         break;
 
-                    case Message.Pitch:
+                    /*case Message.Pitch:
                         buffer = new byte[6 + ((double)value).ToString().Length];
                         buffer[0] = (byte)'a';
                         buffer[1] = (byte)'p';
@@ -91,7 +85,7 @@ namespace MaCRo.Communications
                         buffer = new byte[6 + ((double)value).ToString().Length];
                         buffer[0] = (byte)'a';
                         buffer[1] = (byte)'m';
-                        break;
+                        break;*/
 
                     case Message.VelocityX:
                         buffer = new byte[6 + ((double)value).ToString().Length];
@@ -104,6 +98,7 @@ namespace MaCRo.Communications
                         buffer[1] = (byte)'y';
                         break;
 
+                        /*
                     case Message.Time:
                         buffer = new byte[6 + ((double)value).ToString().Length];
                         buffer[0] = (byte)'v';
@@ -172,6 +167,103 @@ namespace MaCRo.Communications
                         buffer[0] = (byte)'T';
                         buffer[1] = (byte)'Z';
                         break;
+                         */
+
+                    case Message.Info:
+                        buffer = new byte[6 + (value as string).Length];
+                        buffer[0] = (byte)'L';
+                        buffer[1] = (byte)'I';
+                        break;
+                    case Message.Debug:
+                        buffer = new byte[6 + (value as string).Length];
+                        buffer[0] = (byte)'L';
+                        buffer[1] = (byte)'D';
+                        break;
+                    case Message.Error:
+                        buffer = new byte[6 + (value as string).Length];
+                        buffer[0] = (byte)'L';
+                        buffer[1] = (byte)'E';
+                        break;
+
+                    case Message.MapUpdate1:
+                        short size = (short)(value as ushort[]).Length;
+                        buffer = new byte[3 + 2 + size * sizeof(ushort)];
+                        buffer[0] = (byte)'U';
+                        buffer[1] = (byte)'M';
+                        buffer[2] = (byte)'1';
+
+                        this.FromShort(size, buffer, 3);
+
+                        ushort[] tmp = value as ushort[];
+                        for (int i = 0; i < size; i++)
+                        {
+                            FromUShort(tmp[i], buffer, 3 + 2 + i * 2);
+                        }
+                        break;
+                    case Message.MapUpdate2:
+                        short size2 = (short)(value as ushort[]).Length;
+                        buffer = new byte[3 + 2 + size2 * sizeof(ushort)];
+                        buffer[0] = (byte)'U';
+                        buffer[1] = (byte)'M';
+                        buffer[2] = (byte)'2';
+
+                        this.FromShort(size2, buffer, 3);
+
+                        ushort[] tmp2 = value as ushort[];
+                        for (int i = 0; i < size2; i++)
+                        {
+                            FromUShort(tmp2[i], buffer, 3 + 2 + i * 2);
+                        }
+                        break;
+                    case Message.MapUpdate3:
+                        short size3 = (short)(value as ushort[]).Length;
+                        buffer = new byte[3 + 2 + size3 * sizeof(ushort)];
+                        buffer[0] = (byte)'U';
+                        buffer[1] = (byte)'M';
+                        buffer[2] = (byte)'3';
+
+                        this.FromShort(size3, buffer, 3);
+
+                        ushort[] tmp3 = value as ushort[];
+                        for (int i = 0; i < size3; i++)
+                        {
+                            FromUShort(tmp3[i], buffer, 3 + 2 + i * 2);
+                        }
+                        break;
+                    case Message.MapUpdate4:
+                        short size4 = (short)(value as ushort[]).Length;
+                        buffer = new byte[3 + 2 + size4 * sizeof(ushort)];
+                        buffer[0] = (byte)'U';
+                        buffer[1] = (byte)'M';
+                        buffer[2] = (byte)'4';
+
+                        this.FromShort(size4, buffer, 3);
+
+                        ushort[] tmp4 = value as ushort[];
+                        for (int i = 0; i < size4; i++)
+                        {
+                            FromUShort(tmp4[i], buffer, 3 + 2 + i * 2);
+                        }
+                        break;
+                    case Message.PosUpdate:
+                        short _size = (short)(value as byte[]).Length;
+                        buffer = new byte[2 + 2 + _size];
+                        buffer[0] = (byte)'U';
+                        buffer[1] = (byte)'P';
+
+                        this.FromShort(_size, buffer, 2);
+
+                        ushort[] _tmp = value as ushort[];
+                        for (int i = 0; i < _size; i++)
+                        {
+                            FromUShort(_tmp[i], buffer, 2 + 2 + i * 2);
+                        }
+                        break;
+                    case Message.MapSize:
+                        buffer = new byte[4];
+                        buffer[0] = (byte)'U';
+                        buffer[1] = (byte)'S';
+                        break;
                     default:
                         buffer = null;
                         break;
@@ -185,7 +277,15 @@ namespace MaCRo.Communications
                 {
                     this.FromDouble((double)value, buffer, 2);
                 }
-                transport.Send(t, buffer);
+                else if (value is string)
+                {
+                    this.FromString(value as string, buffer, 2);
+                }
+                else if (value is ushort)
+                {
+                    this.FromUShort((ushort)value, buffer, 2);
+                }
+                transport.Send(t, buffer);                
             }
         }
 
@@ -196,14 +296,14 @@ namespace MaCRo.Communications
             {
                 tmpBuff[i] = buffer[offset + i];
             }
-            
+
             switch ((char)tmpBuff[0])
             {
                 case 'f':
                     Engine.getInstance().ManualForward(ToShort(tmpBuff, 1));
                     break;
-                case 'b':                    
-                    Engine.getInstance().ManualBackward(ToShort(tmpBuff,1));
+                case 'b':
+                    Engine.getInstance().ManualBackward(ToShort(tmpBuff, 1));
                     break;
                 case 'r':
                     Engine.getInstance().ManualRight();
@@ -220,6 +320,22 @@ namespace MaCRo.Communications
                 case 'M':
                     Engine.getInstance().StopManualMode();
                     break;
+
+                case 'V':
+                    Engine.getInstance().ManualSpeed(ToShort(tmpBuff,1));
+                    break;
+                case 'v':
+                    Engine.getInstance().ManualTurningSpeed(ToShort(tmpBuff,1));
+                    break;
+            }
+        }
+
+        private void FromUShort(ushort theUShort, byte[] buffer, int offset)
+        {
+            unchecked
+            {
+                buffer[offset] = (byte)theUShort;
+                buffer[offset + 1] = (byte)(theUShort >> 8);
             }
         }
 
@@ -245,7 +361,7 @@ namespace MaCRo.Communications
             int Write = FromString(theDouble.ToString(), buffer, offset);
 
             return Write;
-        }        
+        }
 
         public int FromString(string theString, byte[] buffer, int offset)
         {
@@ -260,6 +376,6 @@ namespace MaCRo.Communications
             written += tmpBuffer.Length;
 
             return written;
-        }       
+        }
     }
 }

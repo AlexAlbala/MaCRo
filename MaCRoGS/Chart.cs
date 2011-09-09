@@ -45,14 +45,7 @@ namespace MaCRoGS
         private Timer updateChart;
 
         private double actualTime;
-
-        public void SetPositionX(double distance)
-        {
-            UpdaterD updater = new UpdaterD(_SetPositionX);
-            this.Dispatcher.Invoke(updater, distance);
-
-        }
-
+        
         void _updateChart(object state)
         {
             if (PosX.Count > 0 && timePX.Count > 0)
@@ -79,27 +72,9 @@ namespace MaCRoGS
             {
                 UpdateLine(AccyLine, timeAY.ToArray(), AccelY.ToArray(), Colors.Brown, "Acceleration Y", out AccyLine);
             }
-        }
+        }        
 
-        private void _SetPositionX(double posX)
-        {
-            xPos.Content = "Position in X axis: " + posX.ToString() + " meters";
-            actualPosition.x = posX;
-
-            actualPositionMap.x = StartingPositionMap.x + (1000 * actualPosition.x / this.mmperpixel_map);
-
-            Canvas.SetLeft(macro, actualPositionMap.x - (Canvas.GetLeft(structure1) + structure1.ActualWidth / 2) * Math.Cos(actualPositionMap.angle) + (Canvas.GetTop(structure1) + structure1.ActualHeight * Math.Sin(actualPositionMap.angle)) / 2);
-
-            timePX.Add(actualTime);
-            PosX.Add(posX);
-        }
-
-        public void SetPositionY(double distance)
-        {
-            UpdaterD updater = new UpdaterD(_SetPositionY);
-            this.Dispatcher.Invoke(updater, distance);
-        }
-
+        
         public void SetVelocityX(double distance)
         {
             UpdaterD updater = new UpdaterD(_SetVelocityX);
@@ -161,34 +136,6 @@ namespace MaCRoGS
                 return newLine;
 
             }
-        }
-
-        private void _SetPositionY(double Y)
-        {
-            yPos.Content = "Position in Y axis: " + Y.ToString() + " meters";
-            actualPosition.y = Y;
-
-            actualPositionMap.y = StartingPositionMap.y + (1000 * actualPosition.y / this.mmperpixel_map);
-
-            Canvas.SetTop(macro, actualPositionMap.y - (Canvas.GetTop(structure1) + structure1.ActualHeight / 2) * Math.Cos(actualPositionMap.angle) - (Canvas.GetLeft(structure1) + structure1.ActualWidth * Math.Sin(actualPositionMap.angle) / 2));
-
-            macro.UpdateLayout();
-
-            timePY.Add(actualTime);
-
-            PosY.Add(Y);
-        }
-
-        public void SetPositionAngle(double distance)
-        {
-            UpdaterD updater = new UpdaterD(_SetPositionAngle);
-            this.Dispatcher.Invoke(updater, distance);
-        }
-
-        private void _SetPositionAngle(double angle)
-        {
-            anglePos.Content = "Current angle: " + angle.ToString() + " rads";
-            this._SetHeading(angle);
         }
 
         public void SetTime(double time)

@@ -20,7 +20,7 @@ namespace MaCRo.Drivers.IMU
         private Timer dcm_timer;
 
 
-        private DCM dcm;
+        //private DCM dcm;
         private float G_Dt;
         private int cycleCount;
         private int gyro_sat;
@@ -47,10 +47,10 @@ namespace MaCRo.Drivers.IMU
         private double oay;
         private double oaz;
 
-        public float Yaw { get { return dcm.yaw; } }
-        public float Pitch { get { return dcm.pitch; } }
-        public float Roll { get { return dcm.roll; } }
-        public float MAG_Heading { get { return dcm.MAG_Heading; } }
+        //public float Yaw { get { return dcm.yaw; } }
+        //public float Pitch { get { return dcm.pitch; } }
+        //public float Roll { get { return dcm.roll; } }
+        //public float MAG_Heading { get { return dcm.MAG_Heading; } }
 
         private DateTime lastDCMLoopTime;
 
@@ -158,7 +158,7 @@ namespace MaCRo.Drivers.IMU
                         //Z
                         lastMag[2] = digitalSensitivityMag * ToShortC2(new byte[] { buffer[30], buffer[29] });
 
-                        lastMag = IIR3AxisFilter(lastMag[0], lastMag[1], lastMag[2]);
+                        //lastMag = IIR3AxisFilter(lastMag[0], lastMag[1], lastMag[2]);
 
                         //X
                         lastTemp[0] = digitalSensitivityTemp * ToShortC2(new byte[] { buffer[32], buffer[31] }) + 25;
@@ -252,7 +252,8 @@ namespace MaCRo.Drivers.IMU
             this.t_Tick(new object());
         }
 
-        private void loop(Object state) //Main Loop
+
+        /*private void loop(Object state) //Main Loop
         {
 
             if (lastDCMLoopTime == DateTime.MinValue)
@@ -396,7 +397,7 @@ namespace MaCRo.Drivers.IMU
             //        break;
             //}
 
-        }
+        }*/
 
     }
 }

@@ -17,7 +17,11 @@ namespace MaCRo.Core
         private Contingency contingency;
         private bool manualStop;
         public Movement movement;
-        
+        private object monitor;
+
+        public short manualSpeed { set; get; }
+        public short manualTurningSpeed { set; get; }
+
         public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
 
         #region IMU
@@ -36,6 +40,8 @@ namespace MaCRo.Core
 
         //-Y / X   (x,y) y/x
         public double MAG_Heading { get { return exMath.Atan2(getMag(Axis.X), -1 * getMag(Axis.Y)); } }
+
+        public double Relative_MAG_Heading { get { return MAG_Heading - initialHeading; } }
 
 
 
@@ -167,14 +173,16 @@ namespace MaCRo.Core
             movement = Movement.stop;
             imu = new nIMU();
             imu.Start();
-            integrationTimeConstant = GlobalVal.integrationPeriod / 1e3;
+            //integrationTimeConstant = GlobalVal.integrationPeriod / 1e3;
             actualVelocity = new Position();
             actualPosition = new Position();
             manualStop = false;
+            monitor = new object();
 
             lastTime = 0.0;
 
             //initialAcc = new double[3];
+            Thread.Sleep(1000);
             initialHeading = this.MAG_Heading;
 
             contingency = new Contingency(left, right, this);
@@ -196,7 +204,9 @@ namespace MaCRo.Core
                 else
                     turnRight(5);
             }
-            //brake();
+            /*brake();
+            Thread.Sleep(1000);
+            actualPosition.angle = Relative_MAG_Heading;*/            
         }
 
         public void TurnLeftUntilWall(SensorManager sensors)
@@ -211,7 +221,13 @@ namespace MaCRo.Core
                 float wall = sensors.getDistance(Sensor.Wall);
                 float wall_back = sensors.getDistance(Sensor.wall_back);
 
-                if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis) { break; }
+                if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis) 
+                {
+                    /*brake();
+                    Thread.Sleep(1000);
+                    actualPosition.angle = Relative_MAG_Heading;*/
+                    break; 
+                }
                 else
                 {
                     if (wall < wall_back)
@@ -259,7 +275,7 @@ namespace MaCRo.Core
             if (isBack)
             {
                 actualPosition.x -= (right.distance_mm + left.distance_mm) * exMath.Sin(actualPosition.angle) / 2000;
-                actualPosition.y += (right.distance_mm + left.distance_mm) * exMath.Cos(actualPosition.angle) / 2000;            
+                actualPosition.y += (right.distance_mm + left.distance_mm) * exMath.Cos(actualPosition.angle) / 2000;
             }
             else
             {
@@ -280,54 +296,6 @@ namespace MaCRo.Core
             movement = Movement.forward;
             dcm.Move(speed, speed);
         }
-
-        #region MANUAL CONTROLS
-        public void ManualForward()
-        {
-            manualStop = false;
-            while (!manualStop)
-            {
-                MoveForward(10, GlobalVal.speed);
-            }
-            this.brake();
-        }
-
-        public void ManualBackward()
-        {
-            manualStop = false;
-            while (!manualStop)
-            {
-                MoveBackward(10, GlobalVal.speed);
-            }
-            this.brake();
-        }
-
-        public void ManualLeft()
-        {
-            manualStop = false;
-            while (!manualStop)
-            {
-                turnLeft(5);
-            }
-            this.brake();
-        }
-
-        public void ManualRight()
-        {
-            manualStop = false;
-            while (!manualStop)
-            {
-                turnRight(5);
-            }
-            this.brake();
-        }
-
-        public void manualBrake()
-        {
-            manualStop = true;
-        }
-
-        #endregion
 
         public void MoveBackward(int distancemm, sbyte speed)
         {
@@ -374,6 +342,27 @@ namespace MaCRo.Core
             //actualPosition.angle += exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
             //actualPosition.angle = this.MAG_Heading - initialHeading;
             actualPosition.angle += (left.distance_mm + right.distance_mm) / GlobalVal.width_mm;
+        }
+
+        public void _turnRight(int angle)
+        {
+            double angleRad = exMath.ToRad(angle);
+
+            //Let's suppose the mass center is in the geometrical center of the rover
+            double lengthRight = angleRad * GlobalVal.width_mm;
+            double lengthLeft = lengthRight;
+
+            _turnRight();
+
+            while (right.distance_mm < lengthRight && left.distance_mm < lengthLeft && !contingency.alarm)
+            {
+                Thread.Sleep(50);
+            }
+            this.brake();
+
+            //actualPosition.angle += exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
+            //actualPosition.angle = this.MAG_Heading - initialHeading;
+            actualPosition.angle += (left.distance_mm) / GlobalVal.width_mm;
         }
 
         public void _turnRight()
@@ -430,6 +419,7 @@ namespace MaCRo.Core
             //actualPosition.angle = initialHeading - MAG_Heading;
             actualPosition.angle -= (left.distance_mm + right.distance_mm) / 2 * GlobalVal.width_mm;
         }
+
         public void _turnLeft()
         {
             movement = Movement.left;
@@ -455,5 +445,75 @@ namespace MaCRo.Core
             left.resetDistance();
             right.resetDistance();
         }
+
+        public void disableContingency()
+        {
+            contingency.Disable();
+        }
+
+        public void restartContingency()
+        {
+            contingency.Restart();
+        }
+
+        #region MANUAL CONTROLS
+        public void ManualForward()
+        {
+            lock (monitor)
+            {
+                manualStop = false;
+                while (!manualStop)
+                {
+                    MoveForward(10, (sbyte)this.manualSpeed);
+                }
+                this.brake();
+            }
+        }
+
+        public void ManualBackward()
+        {
+            lock (monitor)
+            {
+                manualStop = false;
+                while (!manualStop)
+                {
+                    MoveBackward(10, (sbyte)this.manualSpeed);
+                }
+                this.brake();
+            }
+        }
+
+        public void ManualLeft()
+        {
+            lock (monitor)
+            {
+                manualStop = false;
+                while (!manualStop)
+                {
+                    turnLeft(5);
+                }
+                this.brake();
+            }
+        }
+
+        public void ManualRight()
+        {
+            lock (monitor)
+            {
+                manualStop = false;
+                while (!manualStop)
+                {
+                    turnRight(5);
+                }
+                this.brake();
+            }
+        }
+
+        public void manualBrake()
+        {
+            manualStop = true;
+        }
+
+        #endregion
     }
 }

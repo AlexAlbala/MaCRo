@@ -40,7 +40,6 @@ namespace MaCRo.Tools
         SensorS2,
         SensorL1,
         SensorL2,
-        Mode,
         IMUAccX,
         IMUAccY,
         IMUAccZ,
@@ -52,7 +51,16 @@ namespace MaCRo.Tools
         IMUMagZ,
         IMUTempX,
         IMUTempY,
-        IMUTempZ
+        IMUTempZ,
+        Info,
+        Debug,
+        Error,
+        MapUpdate1,
+        MapUpdate2,
+        MapUpdate3,
+        MapUpdate4,
+        PosUpdate,
+        MapSize
     }
 
     public class Position

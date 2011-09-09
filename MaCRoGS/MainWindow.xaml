@@ -1,49 +1,105 @@
 ﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:AvalonDock="clr-namespace:AvalonDock;assembly=AvalonDock" xmlns:local="clr-namespace:MaCRoGS" x:Class="MaCRoGS.MainWindow"
         mc:Ignorable="d"
         xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
-        Title="MaCRo Ground Station" Height="776" Width="1296" Background="Black" Loaded="Window_Loaded" WindowState="Maximized" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow">
+        Title="MaCRo Ground Station" Height="776" Width="1296" Background="Black" Loaded="Window_Loaded" WindowState="Maximized" WindowStartupLocation="CenterScreen" WindowStyle="ThreeDBorderWindow" KeyUp="Window_KeyUp" KeyDown="Window_KeyDown">
 
 
     <AvalonDock:DockingManager x:Name="DockManager" >
         <AvalonDock:ResizingPanel>
-            <AvalonDock:DocumentPane SelectedIndex="0">
+            <AvalonDock:DocumentPane SelectedIndex="0" Background="White" Margin="0,0,64,0">
                 <AvalonDock:DocumentContent IsCloseable="False" Title="Map" TabIndex="0">
-				<Canvas x:Name="map" Background="#FF9B9B9B">
-					<Canvas x:Name="macro"  Height="74.95" Canvas.Left="414.273" Canvas.Top="262.431" Width="49.85">
-                                    <Rectangle x:Name="central_sensor1" Fill="Red" Height="4.312" Canvas.Left="17.572" Stroke="Black" Width="11.397" Panel.ZIndex="1" Canvas.Top="-1.078"/>
-                                    <Rectangle x:Name="right_sensor1" Fill="Red" Height="4.313" Canvas.Left="36.105" Stroke="Black" Canvas.Top="1.973" Width="11.397" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
-                                        <Rectangle.RenderTransform>
-                                            <RotateTransform Angle="45"/>
-                                        </Rectangle.RenderTransform>
-                                    </Rectangle>
-                                    <Rectangle x:Name="wallback_sensor1" Fill="Red" Height="4.313" Canvas.Left="-3.357" Stroke="Black" Canvas.Top="61.213" Width="11.397" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
-                                        <Rectangle.RenderTransform>
-                                            <RotateTransform Angle="90"/>
-                                        </Rectangle.RenderTransform>
-                                    </Rectangle>
-                                    <Rectangle x:Name="wall_sensor1" Fill="Red" Height="4.313" Stroke="Black" Canvas.Top="5.391" Width="11.397" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" Canvas.Left="-3.408">
-                                        <Rectangle.RenderTransform>
-                                            <RotateTransform Angle="90"/>
-                                        </Rectangle.RenderTransform>
-                                    </Rectangle>
-                                    <Rectangle x:Name="Panda1" Stroke="Black" Height="17.66" Panel.ZIndex="3" Fill="White" RenderTransformOrigin="-2.979,0.572" Canvas.Left="16.031" Canvas.Top="40.441" Width="16.301"/>
-                                    <Rectangle x:Name="structure1" Stroke="Black" RadiusY="2" RadiusX="2" Height="72.388" Panel.ZIndex="2" Width="45.589" Fill="#FF6A6A6A" Opacity="0.8" Canvas.Left="0" Canvas.Top="0"/>
-									<Canvas.RenderTransform>
-										<RotateTransform Angle="0"/>
-									</Canvas.RenderTransform>
-                                </Canvas>
-				</Canvas>
-				</AvalonDock:DocumentContent>
-                <AvalonDock:DocumentContent IsCloseable="False" Title="Telemetry" TabIndex="1">
-                    <Canvas x:Name="telemetryTab" Background="#FF9B9B9B"/>
-                </AvalonDock:DocumentContent>
-                <AvalonDock:DocumentContent IsCloseable="False" Title="IMU Charts" TabIndex="2">
+				<Grid Margin="0,0,5.152,-7">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="0.688*"/>
+						<ColumnDefinition Width="0.312*"/>
+					</Grid.ColumnDefinitions>
+                		<Canvas x:Name="map" Margin="0,1.5,8.192,113.5" Grid.ColumnSpan="1" Grid.Column="0" Width="600" Height="600"/>
+                		<Image x:Name="mapImage" Margin="0,1.5,8.192,113.5" Width="600" Height="600"/>
+                		<RichTextBox x:Name="log" Height="93" Background="Black" Foreground="#FF08FF00" FontFamily="Consolas" Cursor="None" ForceCursor="True" IsReadOnlyCaretVisible="True" Focusable="False" TextOptions.TextFormattingMode="Display" Margin="0,0,8.192,15" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" FontSize="13.333" FontWeight="Bold">
+                			<RichTextBox.BorderBrush>
+                				<LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                					<GradientStop Color="#FFABADB3" Offset="0.05"/>
+                					<GradientStop Color="#FFE2E3EA" Offset="0.07"/>
+                					<GradientStop Color="Black" Offset="1"/>
+                				</LinearGradientBrush>
+                			</RichTextBox.BorderBrush>
+                			<FlowDocument Focusable="False" IsEnabled="False">
+                				<Paragraph><Run Text="RichTextBox"/></Paragraph>
+                			</FlowDocument>
+                		</RichTextBox>
+                		<Border Grid.Column="1" Margin="46.04,41.5,41,324" BorderThickness="3" CornerRadius="6" BorderBrush="Black">
+                			<Grid>
+                				<StackPanel Orientation="Vertical" Margin="12,91,0,0" HorizontalAlignment="Left" Width="167" Height="117.5" VerticalAlignment="Top">
+                					<StackPanel Orientation="Horizontal" >
+                						<ToggleButton x:Name="forw" Margin="50,0,0,0"  Height="50" Width="50" PreviewMouseDown="for_MouseLeftButtonDown" PreviewMouseUp="for_MouseLeftButtonUp" Focusable="False" Content="↑" FontSize="32" FontWeight="Bold">
+                							<ToggleButton.Effect>
+                								<DropShadowEffect Color="Black" ShadowDepth="3"/>
+                							</ToggleButton.Effect></ToggleButton>
+                					</StackPanel>
+                					<StackPanel Orientation="Horizontal" >
+                						<ToggleButton x:Name="left" Height="50" Width="50" PreviewMouseDown="left_MouseLeftButtonDown" PreviewMouseUp="left_MouseLeftButtonUp" Focusable="False" Content="←" FontSize="32" FontWeight="Bold">
+                							<ToggleButton.Effect>
+                								<DropShadowEffect Color="Black" ShadowDepth="3"/>
+                							</ToggleButton.Effect></ToggleButton>
+                						<ToggleButton x:Name="back"  Height="50" Width="50" PreviewMouseDown="back_MouseLeftButtonDown" PreviewMouseUp="back_MouseLeftButtonUp" Focusable="False" Content="↓" FontSize="32" FontWeight="Bold">
+                							<ToggleButton.Effect>
+                								<DropShadowEffect Color="Black" ShadowDepth="3"/>
+                							</ToggleButton.Effect></ToggleButton>
+                						<ToggleButton x:Name="right"  Height="50" Width="50" PreviewMouseDown="right_MouseLeftButtonDown" PreviewMouseUp="right_MouseLeftButtonUp" Focusable="False" Content="→" FontSize="32" FontWeight="Bold" >
+                							<ToggleButton.Effect>
+                								<DropShadowEffect Color="Black" ShadowDepth="3"/>
+                							</ToggleButton.Effect></ToggleButton>
+                					</StackPanel>
+                				</StackPanel>
+                				<Button x:Name="OnOff" Content="On" HorizontalAlignment="Left" Width="83.5" Click="Button_Click" Margin="3,35.832,0,0" Height="25.5" VerticalAlignment="Top"/>
+                				<Image x:Name="LEDImageOFF" HorizontalAlignment="Right" Margin="0,14,20,0" Width="50" Height="50" Source="LED_OFF.png" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
+                				<Image x:Name="LEDImageON" HorizontalAlignment="Right" Margin="0,14,20,0" Width="50" Height="50" Source="LED_ON.png" Visibility="Hidden" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
+                				<Slider x:Name="Speed" Margin="1,0,0,69.5" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" HorizontalAlignment="Left" Width="108" ValueChanged="Speed_ValueChanged" Value="2.5" Focusable="False" Height="23" VerticalAlignment="Bottom">
+                					<Slider.RenderTransform>
+                						<TransformGroup>
+                							<ScaleTransform ScaleY="-1"/>
+                							<SkewTransform/>
+                							<RotateTransform/>
+                							<TranslateTransform/>
+                						</TransformGroup>
+                					</Slider.RenderTransform>
+                				</Slider>
+                				<Slider x:Name="Turning_Speed" Height="23" Margin="0.133,0,74.634,24" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" Width="108" ValueChanged="Turning_Speed_ValueChanged" Value="2.5" Focusable="False">
+                					<Slider.RenderTransform>
+                						<TransformGroup>
+                							<ScaleTransform ScaleY="-1"/>
+                							<SkewTransform/>
+                							<RotateTransform/>
+                							<TranslateTransform/>
+                						</TransformGroup>
+                					</Slider.RenderTransform>
+                				</Slider>
+                				<TextBox x:Name="SpeedBox" HorizontalAlignment="Right" Height="19" Margin="0,0,20,69" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Bottom" Width="35.5" Initialized="SpeedBox_Initialized" IsEnabled="False" Focusable="False"/>
+                				<TextBox x:Name="TurningSpeedBox" HorizontalAlignment="Right" Height="19" Margin="0,0,20,25" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Bottom" Width="35.5" Initialized="TurningSpeedBox_Initialized" IsEnabled="False" Focusable="False"/>
+                				<Label Content="Turning Speed:" Height="23.5" Margin="3,0,84,40" VerticalAlignment="Bottom" FontSize="9.333"/>
+                				<Label Content="Speed:" Margin="3.5,0,0,86" FontSize="9.333" HorizontalAlignment="Left" Width="36" Height="23.5" VerticalAlignment="Bottom"/>
+                				<Label Content="Manual Mode" Height="26.5" Margin="-0.333,3.998,82.333,0" VerticalAlignment="Top" FontWeight="Bold"/>
+                				<GroupBox Header="SLAM Algorithm" HorizontalAlignment="Right" Height="183.5" VerticalAlignment="Bottom" Width="183.333" Margin="0,0,-2,-207.5" BorderBrush="#FF009DFB" BorderThickness="3">
+                					<StackPanel>
+                						<Label x:Name="lbl_scanSize" Content="Label"/>
+                						<Label x:Name="lbl_mapSize" Content="Label"/>
+                						<Label x:Name="lbl_mapScale" Content="Label"/>
+                						<Label x:Name="lbl_holeWidth" Content="Label"/>
+                						<Label x:Name="lbl_iterations" Content="Label"/>
+                						<Label x:Name="lbl_mapUpdates" Content="Label"/>
+                					</StackPanel>
+                				</GroupBox>
+                			</Grid>
+                		</Border>
+                	</Grid>
+				</AvalonDock:DocumentContent>                
+                <AvalonDock:DocumentContent IsCloseable="False" Title="Graphs" TabIndex="1">
                     <d3:ChartPlotter Name="chart">
                         <d3:HorizontalAxisTitle>Time (seconds)</d3:HorizontalAxisTitle>
                     </d3:ChartPlotter>
                 </AvalonDock:DocumentContent>				
             </AvalonDock:DocumentPane>
-            <AvalonDock:ResizingPanel Orientation="Vertical" AvalonDock:ResizingPanel.ResizeWidth="0.32*" Margin="0,0,0,0">
+            <AvalonDock:ResizingPanel Orientation="Vertical" AvalonDock:ResizingPanel.ResizeWidth="0.32*" Margin="-70,0,0,0">
                 <AvalonDock:DockablePane AvalonDock:ResizingPanel.ResizeHeight="0.3*" Background="{x:Null}">
                     <AvalonDock:DockableContent IsCloseable="False" Title="Sensors values" >
                         <StackPanel Orientation="Vertical" Background="White" Panel.ZIndex="4" Margin="0" >
@@ -51,7 +107,6 @@
                             <Label Content="S2" x:Name="S2" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="L1" x:Name="L1" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="L2" x:Name="L2" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                            <Label Content="Mode" x:Name="Mode" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                         </StackPanel>
                     </AvalonDock:DockableContent>
                     <AvalonDock:DockableContent IsCloseable="False" Title="IMU data" >
@@ -95,14 +150,14 @@
 
                         </StackPanel>
                     </AvalonDock:DockableContent>
-                    <AvalonDock:DockableContent IsCloseable="False" Title="Angle Values" >
+					<!--<AvalonDock:DockableContent IsCloseable="False" Title="Angle Values" >
                         <StackPanel Orientation="Vertical" Background="White" Panel.ZIndex="4" Margin="0" >
                             <Label Content="Yaw" x:Name="aYaw" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="Pitch" x:Name="aPitch" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="Roll" x:Name="aRoll" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="MAGHeading" x:Name="aMH" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                         </StackPanel>
-                    </AvalonDock:DockableContent>
+                    </AvalonDock:DockableContent>-->
                 </AvalonDock:DockablePane>
                 <AvalonDock:DockablePane  AvalonDock:ResizingPanel.ResizeHeight="0.7*" ClipToBounds="True" Background="White" Foreground="Black" SelectedIndex="0">
                     <AvalonDock:DockableContent IsCloseable="False" Title="DockRobotMap" ClipToBounds="True">

@@ -19,8 +19,8 @@ namespace MaCRo.Core
         public Movement movement;
         private object monitor;
 
-        public short manualSpeed { set; get; }
-        public short manualTurningSpeed { set; get; }
+        public sbyte manualSpeed { set; get; }
+        public sbyte manualTurningSpeed { set; get; }
 
         public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
 
@@ -81,6 +81,11 @@ namespace MaCRo.Core
         public Position getActualPosition()
         {
             return actualPosition;
+        }
+
+        public void setActualPosition(Position p)
+        {
+            this.actualPosition.angle = p.angle;
         }
 
         public Position getActualVelocity()
@@ -206,7 +211,7 @@ namespace MaCRo.Core
             }
             /*brake();
             Thread.Sleep(1000);
-            actualPosition.angle = Relative_MAG_Heading;*/            
+            actualPosition.angle = Relative_MAG_Heading;*/
         }
 
         public void TurnLeftUntilWall(SensorManager sensors)
@@ -221,12 +226,12 @@ namespace MaCRo.Core
                 float wall = sensors.getDistance(Sensor.Wall);
                 float wall_back = sensors.getDistance(Sensor.wall_back);
 
-                if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis) 
+                if (exMath.Abs(wall - wall_back) <= GlobalVal.hysteresis)
                 {
                     /*brake();
                     Thread.Sleep(1000);
                     actualPosition.angle = Relative_MAG_Heading;*/
-                    break; 
+                    break;
                 }
                 else
                 {
@@ -244,22 +249,6 @@ namespace MaCRo.Core
                     }
                 }
             }
-        }
-
-        public void MoveForward(int distancemm, sbyte speed)
-        {
-            this.resetDistance();
-
-            MoveForward(speed);
-
-            while ((left.distance_mm + right.distance_mm) < distancemm * 2 && !contingency.alarm)
-            {
-                Thread.Sleep(50);
-            }
-
-            this.brake();
-
-            UpdatePosition(false);
         }
 
         public void MoveToObject(SensorManager sensors)
@@ -285,7 +274,39 @@ namespace MaCRo.Core
             this.resetDistance();
         }
 
-        public void MoveForward()
+        public void MoveForward(int distancemm)
+        {
+            this.resetDistance();
+
+            MoveForward();
+
+            while ((left.distance_mm + right.distance_mm) < distancemm * 2 && !contingency.alarm)
+            {
+                Thread.Sleep(50);
+            }
+
+            this.brake();
+
+            UpdatePosition(false);
+        }
+
+        public void MoveForward(int distancemm, sbyte speed)
+        {
+            this.resetDistance();
+
+            MoveForward(speed);
+
+            while ((left.distance_mm + right.distance_mm) < distancemm * 2 && !contingency.alarm)
+            {
+                Thread.Sleep(50);
+            }
+
+            this.brake();
+
+            UpdatePosition(false);
+        }
+
+        private void MoveForward()
         {
             movement = Movement.forward;
             dcm.Move(GlobalVal.speed, GlobalVal.speed);
@@ -295,6 +316,20 @@ namespace MaCRo.Core
         {
             movement = Movement.forward;
             dcm.Move(speed, speed);
+        }
+
+        public void MoveBackward(int distancemm)
+        {
+            this.resetDistance();
+            MoveBackward();
+
+            while (left.distance_mm < distancemm && right.distance_mm < distancemm && !contingency.alarm)
+            {
+                Thread.Sleep(100);
+            }
+
+            this.brake();
+            UpdatePosition(true);
         }
 
         public void MoveBackward(int distancemm, sbyte speed)
@@ -311,13 +346,13 @@ namespace MaCRo.Core
             UpdatePosition(true);
         }
 
-        public void MoveBackward()
+        private void MoveBackward()
         {
             movement = Movement.backward;
             dcm.Move((sbyte)(GlobalVal.speed * -1), (sbyte)(GlobalVal.speed * -1));
         }
 
-        public void MoveBackward(sbyte speed)
+        private void MoveBackward(sbyte speed)
         {
             movement = Movement.backward;
             dcm.Move((sbyte)(speed * -1), (sbyte)(speed * -1));
@@ -328,7 +363,7 @@ namespace MaCRo.Core
             double angleRad = exMath.ToRad(angle);
 
             //Let's suppose the mass center is in the geometrical center of the rover
-            double lengthRight = angleRad * GlobalVal.width_mm / 2;
+            double lengthRight = angleRad * GlobalVal.distanceBetweenWheels_mm / 2;
             double lengthLeft = lengthRight;
 
             turnRight();
@@ -341,18 +376,18 @@ namespace MaCRo.Core
 
             //actualPosition.angle += exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
             //actualPosition.angle = this.MAG_Heading - initialHeading;
-            actualPosition.angle += (left.distance_mm + right.distance_mm) / GlobalVal.width_mm;
+            actualPosition.angle += (left.distance_mm + right.distance_mm) / GlobalVal.distanceBetweenWheels_mm;
         }
 
-        public void _turnRight(int angle)
+        public void turnRight(int angle, sbyte speed)
         {
             double angleRad = exMath.ToRad(angle);
 
             //Let's suppose the mass center is in the geometrical center of the rover
-            double lengthRight = angleRad * GlobalVal.width_mm;
+            double lengthRight = angleRad * GlobalVal.distanceBetweenWheels_mm / 2;
             double lengthLeft = lengthRight;
 
-            _turnRight();
+            turnRight(speed);
 
             while (right.distance_mm < lengthRight && left.distance_mm < lengthLeft && !contingency.alarm)
             {
@@ -362,21 +397,21 @@ namespace MaCRo.Core
 
             //actualPosition.angle += exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
             //actualPosition.angle = this.MAG_Heading - initialHeading;
-            actualPosition.angle += (left.distance_mm) / GlobalVal.width_mm;
+            actualPosition.angle += (left.distance_mm + right.distance_mm) / GlobalVal.distanceBetweenWheels_mm;
         }
 
-        public void _turnRight()
-        {
-            movement = Movement.right;
-            this.resetDistance();
-            dcm.Move(0, GlobalVal.turningSpeed);
-        }
-
-        public void turnRight()
+        private void turnRight()
         {
             movement = Movement.right;
             this.resetDistance();
             dcm.Move((sbyte)(GlobalVal.turningSpeed * -1), GlobalVal.turningSpeed);
+        }
+
+        private void turnRight(sbyte speed)
+        {
+            movement = Movement.right;
+            this.resetDistance();
+            dcm.Move((sbyte)(speed * -1), speed);
         }
 
         public void turnLeft(int angle)
@@ -384,7 +419,7 @@ namespace MaCRo.Core
             double angleRad = exMath.ToRad(angle);
 
             //Let's suppose the mass center is in the geometrical center of the rover
-            double lengthRight = angleRad * GlobalVal.width_mm / 2;
+            double lengthRight = angleRad * GlobalVal.distanceBetweenWheels_mm / 2;
             double lengthLeft = lengthRight;
 
             turnLeft();
@@ -397,14 +432,85 @@ namespace MaCRo.Core
 
             //actualPosition.angle -= exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
             //actualPosition.angle = initialHeading - MAG_Heading;
-            actualPosition.angle -= (left.distance_mm + right.distance_mm) / GlobalVal.width_mm;
+            actualPosition.angle -= (left.distance_mm + right.distance_mm) / GlobalVal.distanceBetweenWheels_mm;
+        }
+
+        public void turnLeft(int angle, sbyte speed)
+        {
+            double angleRad = exMath.ToRad(angle);
+
+            //Let's suppose the mass center is in the geometrical center of the rover
+            double lengthRight = angleRad * GlobalVal.distanceBetweenWheels_mm / 2;
+            double lengthLeft = lengthRight;
+
+            turnLeft(speed);
+
+            while (right.distance_mm < lengthRight && left.distance_mm < lengthLeft && !contingency.alarm)
+            {
+                Thread.Sleep(50);
+            }
+            this.brake();
+
+            //actualPosition.angle -= exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
+            //actualPosition.angle = initialHeading - MAG_Heading;
+            actualPosition.angle -= (left.distance_mm + right.distance_mm) / GlobalVal.distanceBetweenWheels_mm;
+        }
+
+        private void turnLeft()
+        {
+            movement = Movement.left;
+            this.resetDistance();
+            dcm.Move(GlobalVal.turningSpeed, (sbyte)(GlobalVal.turningSpeed * -1));
+        }
+
+        private void turnLeft(sbyte speed)
+        {
+            movement = Movement.left;
+            this.resetDistance();
+            dcm.Move(speed, (sbyte)(speed * -1));
+        }
+
+        #region NOT USED
+        public void _turnRight(int angle)
+        {
+            double angleRad = exMath.ToRad(angle);
+
+            //Let's suppose the mass center is in the geometrical center of the rover
+            double lengthRight = angleRad * GlobalVal.distanceBetweenWheels_mm;
+            double lengthLeft = lengthRight;
+
+            _turnRight();
+
+            while (right.distance_mm < lengthRight && left.distance_mm < lengthLeft && !contingency.alarm)
+            {
+                Thread.Sleep(50);
+            }
+            this.brake();
+
+            //actualPosition.angle += exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
+            //actualPosition.angle = this.MAG_Heading - initialHeading;
+            actualPosition.angle += (left.distance_mm) / GlobalVal.distanceBetweenWheels_mm;
+        }
+
+        public void _turnRight()
+        {
+            movement = Movement.right;
+            this.resetDistance();
+            dcm.Move(0, GlobalVal.turningSpeed);
+        }
+
+        public void _turnLeft()
+        {
+            movement = Movement.left;
+            this.resetDistance();
+            dcm.Move(GlobalVal.turningSpeed, 0);
         }
 
         public void _turnLeft(int angle)
         {
             double angleRad = exMath.ToRad(angle);
 
-            double lengthRight = angleRad * GlobalVal.width_mm;
+            double lengthRight = angleRad * GlobalVal.distanceBetweenWheels_mm;
 
 
             _turnLeft();
@@ -417,22 +523,9 @@ namespace MaCRo.Core
 
             //actualPosition.angle -= exMath.Atan2((left.distance_mm + right.distance_mm) / 2, GlobalVal.width_mm / 2);
             //actualPosition.angle = initialHeading - MAG_Heading;
-            actualPosition.angle -= (left.distance_mm + right.distance_mm) / 2 * GlobalVal.width_mm;
+            actualPosition.angle -= (left.distance_mm + right.distance_mm) / 2 * GlobalVal.distanceBetweenWheels_mm;
         }
-
-        public void _turnLeft()
-        {
-            movement = Movement.left;
-            this.resetDistance();
-            dcm.Move(GlobalVal.turningSpeed, 0);
-        }
-
-        public void turnLeft()
-        {
-            movement = Movement.left;
-            this.resetDistance();
-            dcm.Move(GlobalVal.turningSpeed, (sbyte)(GlobalVal.turningSpeed * -1));
-        }
+        #endregion
 
         public void brake()
         {
@@ -464,7 +557,7 @@ namespace MaCRo.Core
                 manualStop = false;
                 while (!manualStop)
                 {
-                    MoveForward(10, (sbyte)this.manualSpeed);
+                    MoveForward(10, this.manualSpeed);
                 }
                 this.brake();
             }
@@ -477,7 +570,7 @@ namespace MaCRo.Core
                 manualStop = false;
                 while (!manualStop)
                 {
-                    MoveBackward(10, (sbyte)this.manualSpeed);
+                    MoveBackward(10, this.manualSpeed);
                 }
                 this.brake();
             }
@@ -490,7 +583,7 @@ namespace MaCRo.Core
                 manualStop = false;
                 while (!manualStop)
                 {
-                    turnLeft(5);
+                    turnLeft(5, this.manualTurningSpeed);
                 }
                 this.brake();
             }
@@ -503,7 +596,7 @@ namespace MaCRo.Core
                 manualStop = false;
                 while (!manualStop)
                 {
-                    turnRight(5);
+                    turnRight(5, this.manualTurningSpeed);
                 }
                 this.brake();
             }

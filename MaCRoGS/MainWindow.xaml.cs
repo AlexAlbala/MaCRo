@@ -38,6 +38,7 @@ namespace MaCRoGS
         private Timer scanTimer;
         private Timer updateMap;
         private Timer positionHistoryUpdate;
+        private Timer updatePosition;
 
         private bool activated;
 
@@ -126,11 +127,14 @@ namespace MaCRoGS
             timeAX = new List<double>();
             timeAY = new List<double>();
 
-            updateChart = new System.Threading.Timer(new System.Threading.TimerCallback(_updateChart), new object(), 1000, 1000);
+            updateChart = new Timer(new TimerCallback(_updateChart), new object(), 1000, 1000);
 
+            /************************** TIMERS ***************************************/
             scanTimer = new Timer(new TimerCallback(Scan), new object(), 4000, 100);
             updateMap = new Timer(new TimerCallback(mapUpdate), new object(), 4000, 3000);
+            updatePosition = new Timer(new TimerCallback(MonteCarlo_UpdatePosition), new object(), 30000, 3000);
             positionHistoryUpdate = new Timer(new TimerCallback(UpdatePositionHistory), new object(), 0, 250);
+            /************************** TIMERS ***************************************/
 
             activated = false;
             tinySLAM.Initialize();
@@ -139,6 +143,11 @@ namespace MaCRoGS
             lbl_mapScale.Content = "MAP SCALE: " + (1 / tinySLAM.MapScale()).ToString() + " mm/cell";
             lbl_mapSize.Content = "MAP SIZE: " + tinySLAM.MapSize() + " cells";
             lbl_scanSize.Content = "SCAN SIZE: " + tinySLAM.ScanSize() + " points";
+
+            lbl_perCent.Content = "Capacity:";
+            lbl_voltage.Content = "Voltage:";
+            lbl_current.Content = "Current:";
+
             this.updateIterationsLabel(0);
             this.updateMapUpdatesLabel(0);
             log.SelectAll();
@@ -152,8 +161,12 @@ namespace MaCRoGS
         }
 
         private void UpdatePositionHistory(Object state)
-        {            
-            positionHistory.Add(actualPosition);
+        {
+            Position p = new Position();
+            p.x = actualPosition.x;
+            p.y = actualPosition.y;
+            p.angle = actualPosition.angle;
+            positionHistory.Add(p);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -169,7 +182,7 @@ namespace MaCRoGS
         private void updateMapUpdatesLabel(int num)
         {
             lbl_mapUpdates.Content = "UPDATES: " + num.ToString();
-        }    
+        }
 
         public void mapUpdate(object state)
         {
@@ -179,11 +192,30 @@ namespace MaCRoGS
             this.UpdateMap(tinySLAM.Map().map, (short)-1);
         }
 
-        public void Scan(object state)
+        void MonteCarlo_UpdatePosition(Object state)
         {
-            UpdaterInt d = new UpdaterInt(updateIterationsLabel);
-            this.Dispatcher.Invoke(d, tinySLAM.NumUpdates());
+            ts_position_t position = new ts_position_t();
 
+            position.theta = (float)(actualPosition.angle * 180 / Math.PI);
+            position.x = 1000 * actualPosition.x + SLAMAlgorithm.TS_MAP_SIZE / (SLAMAlgorithm.TS_MAP_SCALE * 2);
+            position.y = 1000 * actualPosition.y + SLAMAlgorithm.TS_MAP_SIZE / (SLAMAlgorithm.TS_MAP_SCALE * 2);
+
+            ts_scan_t scan = this.doScan();
+
+            int quality;
+            ts_position_t newPos = tinySLAM.MonteCarlo_UpdatePosition(scan, position, 0, 1, 10000, 50, out quality);
+
+
+            Position p = new Position();
+            p.x = (newPos.x - SLAMAlgorithm.TS_MAP_SIZE / (SLAMAlgorithm.TS_MAP_SCALE * 2)) * 1e-3;
+            p.y = (newPos.y - SLAMAlgorithm.TS_MAP_SIZE / (SLAMAlgorithm.TS_MAP_SCALE * 2)) * 1e-3;
+            p.angle = newPos.theta * Math.PI / 180;
+
+            coder.Send(Message.UpdatePosition, p);
+        }
+
+        private ts_scan_t doScan()
+        {
             ts_scan_t scan = new ts_scan_t();
 
             int j = 0;
@@ -262,6 +294,16 @@ namespace MaCRoGS
             }
 
             scan.nb_points = (ushort)j;
+
+            return scan;
+        }
+
+        public void Scan(object state)
+        {
+            UpdaterInt d = new UpdaterInt(updateIterationsLabel);
+            this.Dispatcher.Invoke(d, tinySLAM.NumUpdates());
+
+            ts_scan_t scan = this.doScan();
 
             ts_position_t position = new ts_position_t();
 
@@ -475,7 +517,6 @@ namespace MaCRoGS
         }
 
         #endregion
-
 
     }
 

@@ -60,24 +60,25 @@ namespace MaCRo.Tools
         MapUpdate3,
         MapUpdate4,
         PosUpdate,
-        MapSize
+        MapSize,
+        Voltage,
+        Current,
+        Capacity
     }
 
     public class Position
     {
-        private double _x;
-        private double _y;
+        public double x { get; set; }
+        public double y { get; set; }
         private double _angle;
+
+        public double angle { get { return _angle; } set { _angle = (value % (2 * System.Math.PI)); } }
 
         public Position()
         {
-            _x = 0;
-            _y = 0;
+            x = 0;
+            y = 0;
             _angle = 0;
         }
-
-        public double x { get { return _x; } set { _x = value; } }
-        public double y { get { return _y; } set { _y = value; } }
-        public double angle { get { return _angle; } set { _angle = (value % (2 * System.Math.PI)); } }
     }
 }

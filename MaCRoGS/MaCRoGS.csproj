@@ -70,8 +70,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Battery.cs" />
     <Compile Include="SLAM\Definitions.cs" />
     <Compile Include="SLAM\MapUpdate.cs" />
+    <Compile Include="SLAM\MonteCarlo.cs" />
+    <Compile Include="SLAM\Random.cs" />
     <Compile Include="SLAM\ScanToMapDistance.cs" />
     <Page Include="Controls\3AxisAccelerometer.xaml">
       <Generator>MSBuild:Compile</Generator>

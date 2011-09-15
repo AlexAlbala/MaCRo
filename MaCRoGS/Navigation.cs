@@ -51,7 +51,6 @@ namespace MaCRoGS
 
         private void _UpdateMap(ushort[] NewMap, short part)
         {
-
             if (MapSizeValue == 0)
                 return;
 
@@ -123,12 +122,6 @@ namespace MaCRoGS
             yPos.Content = "Position in Y axis: " + Y.ToString() + " meters";
             actualPosition.y = Y;
 
-            //actualPositionMap.y = StartingPositionMap.y + (1000 * actualPosition.y / this.mmperpixel_map);
-
-            //Canvas.SetTop(macro, actualPositionMap.y - (Canvas.GetTop(structure1) + structure1.ActualHeight / 2) * Math.Cos(actualPositionMap.angle) - (Canvas.GetLeft(structure1) + structure1.ActualWidth * Math.Sin(actualPositionMap.angle) / 2));
-
-            //macro.UpdateLayout();
-
             timePY.Add(actualTime);
 
             PosY.Add(Y);
@@ -140,24 +133,29 @@ namespace MaCRoGS
             {
                 roverPath = new System.Windows.Shapes.Path();
                 map.Children.Add(roverPath);
-                roverPath.Stroke = System.Windows.Media.Brushes.Blue;
+                roverPath.Stroke = System.Windows.Media.Brushes.Red;
                 roverPath.Stroke.Freeze();
                 roverPath.StrokeThickness = 2;
             }
 
-            PathGeometry geometry = new PathGeometry(); ;
+            PathGeometry geometry = new PathGeometry();
             PathFigure trackFigure = new PathFigure();
+            trackFigure.StartPoint = new System.Windows.Point(map.ActualWidth / 2, map.ActualHeight / 2);
+
+            lock (positionHistory)
+            {
+                for (int i = 0; i < positionHistory.Count; i++)
+                {
+                    Position p = positionHistory[i];
+                    double x = (p.x * 1000 * tinySLAM.MapScale() + SLAMAlgorithm.TS_MAP_SIZE / 2) * map.ActualWidth / tinySLAM.MapSize();
+                    double y = (p.y * 1000 * tinySLAM.MapScale() + SLAMAlgorithm.TS_MAP_SIZE / 2) * map.ActualHeight / tinySLAM.MapSize();
+                    System.Windows.Point _p = new System.Windows.Point(x, y);
+                    trackFigure.Segments.Add(new LineSegment(_p, true));
+                }
+            }
+
             geometry.Figures.Add(trackFigure);
             roverPath.Data = geometry;
-            //translateTrasnform = new TranslateTransform();
-            //uavTrack.RenderTransform = translateTrasnform;
-
-            foreach (Position p in positionHistory)
-            {
-                //CALCULATE !
-                System.Windows.Point _p = new System.Windows.Point(p.x, p.y);
-                trackFigure.Segments.Add(new LineSegment(_p, true));
-            }
 
             ushort _MapSizeValue = tinySLAM.MapSize();
             MapSize(_MapSizeValue);
@@ -165,10 +163,19 @@ namespace MaCRoGS
             byte[] buffer = new byte[NewMap.Length * 3];
             for (int i = 0; i < NewMap.Length; i++)
             {
-                byte value = (byte)(NewMap[i] * 255 / 65500);
-                buffer[3 * i] = value;
-                buffer[3 * i + 1] = value;
-                buffer[3 * i + 2] = value;
+                if (NewMap[i] == 0)
+                {
+                    buffer[3 * i] = 255;
+                    buffer[3 * i + 1] = 0;
+                    buffer[3 * i + 2] = 0;
+                }
+                else
+                {
+                    byte value = (byte)(NewMap[i] * 255 / 65500);
+                    buffer[3 * i] = value;
+                    buffer[3 * i + 1] = value;
+                    buffer[3 * i + 2] = value;
+                }
             }
 
             Bitmap bmp = new Bitmap((int)_MapSizeValue, (int)_MapSizeValue, System.Drawing.Imaging.PixelFormat.Format24bppRgb);

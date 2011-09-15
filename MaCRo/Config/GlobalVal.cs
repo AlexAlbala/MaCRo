@@ -19,6 +19,10 @@ namespace MaCRo.Config
         /// </summary>
         public readonly static ushort width_mm = 185;
         /// <summary>
+        /// Distance between the surface contact of the two front wheels
+        /// </summary>
+        public readonly static ushort distanceBetweenWheels_mm = 146;
+        /// <summary>
         /// Length of the structure.
         /// </summary>
         public readonly static ushort length_mm = 230;
@@ -67,6 +71,10 @@ namespace MaCRo.Config
         /// The periodicity of the sensor telemetry transmission in milliseconds
         /// </summary>
         public readonly static ushort transmissionPeriodSensor_ms = 150;
+        /// <summary>
+        /// The periodicity of the battery sensor transmission. In milliseconds
+        /// </summary>
+        public readonly static ushort transmissionPeriodBattery_ms = 15000;
         /// <summary>
         /// The periodicity of the Position telemetry transmission in milliseconds
         /// </summary>

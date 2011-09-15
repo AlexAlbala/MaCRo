@@ -15,6 +15,7 @@ namespace MaCRoGS.Communications
         ToManual,
         StopManual,
         Speed,
-        TurningSpeed
+        TurningSpeed,
+        UpdatePosition
     }
 }

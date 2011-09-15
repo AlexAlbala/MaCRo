@@ -5,7 +5,7 @@ namespace MaCRoGS.SLAM
     partial class SLAMAlgorithm
     {
         internal int ts_distance_scan_to_map(ts_scan_t scan, ts_position_t pos)
-        {            
+        {
             double c, s;
             int i, x, y, nb_points = 0;
             Int64 sum;
@@ -27,8 +27,14 @@ namespace MaCRoGS.SLAM
                     }
                 }
             }
-            if (nb_points > 0) sum = sum * 1024 / nb_points;
-            else sum = 2000000000;
+            if (nb_points > 0)
+            {
+                sum = sum * 1024 / nb_points;
+            }
+            else
+            {
+                sum = 2000000000;
+            }
             return (int)sum;
         }
 

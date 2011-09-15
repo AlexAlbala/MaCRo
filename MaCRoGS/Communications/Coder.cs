@@ -18,7 +18,7 @@ namespace MaCRoGS.Communications
             transport.Start(this);
         }
         public void Send(Message message, object value)
-        {            
+        {
             //1 byte: movement/telemtry
             //1 byte: right/left - forward/backward
             //2 bytes: (short) distance in centimeters or angle in degrees
@@ -64,6 +64,15 @@ namespace MaCRoGS.Communications
                     buffer = new byte[3];
                     buffer[0] = (byte)'v';
                     this.FromShort((short)value, buffer, 1);
+                    break;
+                case Message.UpdatePosition:
+                    int offset = 1;
+                    Position p = value as Position;
+                    buffer = new byte[p.x.ToString().Length + p.y.ToString().Length + p.angle.ToString().Length + 12 + 1];
+                    buffer[0] = (byte)'p';
+                    offset += FromDouble(p.x, buffer, offset);
+                    offset += FromDouble(p.y, buffer, offset);
+                    offset += FromDouble(p.angle, buffer, offset);
                     break;
                 default:
                     buffer = new byte[0];
@@ -252,51 +261,73 @@ namespace MaCRoGS.Communications
                     }
                     break;
 
-                case 'U':
+                case 'b':
                     switch ((char)tmpBuff[1])
                     {
-                        case 'M':
-                            //MAP
-                            short size = ToShort(tmpBuff, 3);
-                            ushort[] buff = new ushort[size];
-
-                            for (int i = 0; i < size; i++)
-                            {
-                                buff[i] = ToUShort(tmpBuff, 3 + 2 + i * 2);
-                            }
-                            switch ((char)tmpBuff[2])
-                            {
-                                case '1':
-                                    display.UpdateMap(buff, 1);
-                                    break;
-                                case '2':
-                                    display.UpdateMap(buff, 2);
-                                    break;
-                                case '3':
-                                    display.UpdateMap(buff, 3);
-                                    break;
-                                case '4':
-                                    display.UpdateMap(buff, 4);
-                                    break;
-                            }
+                        case 'v':
+                            //voltage
+                            double voltage = ToDouble(tmpBuff, 2);
+                            display.setVoltage(voltage);
                             break;
-                        case 'P':
-                            //POS         
-                            short _size = ToShort(tmpBuff, 2);
-                            byte[] tbuff = new byte[_size];
-
-                            for (int i = 0; i < _size; i++)
-                            {
-                                tbuff[i] = tmpBuff[i + 2 + 2];
-                            }
+                        case 'i':
+                            //current         
+                            double current = ToDouble(tmpBuff, 2);
+                            display.setCurrent(current);
                             break;
-                        case 'S':
-                            //SIZE
-                            value = ToUShort(tmpBuff, 2);
-                            display.MapSize((ushort)value);
+                        case 'p':
+                            //percent
+                            ushort Rvoltage = ToUShort(tmpBuff,2);
+                            display.setRVoltage(Rvoltage);
                             break;
                     }
                     break;
+                /*
+            case 'U':
+                switch ((char)tmpBuff[1])
+                {
+                    case 'M':
+                        //MAP
+                        short size = ToShort(tmpBuff, 3);
+                        ushort[] buff = new ushort[size];
+
+                        for (int i = 0; i < size; i++)
+                        {
+                            buff[i] = ToUShort(tmpBuff, 3 + 2 + i * 2);
+                        }
+                        switch ((char)tmpBuff[2])
+                        {
+                            case '1':
+                                display.UpdateMap(buff, 1);
+                                break;
+                            case '2':
+                                display.UpdateMap(buff, 2);
+                                break;
+                            case '3':
+                                display.UpdateMap(buff, 3);
+                                break;
+                            case '4':
+                                display.UpdateMap(buff, 4);
+                                break;
+                        }
+                        break;
+                    case 'P':
+                        //POS         
+                        short _size = ToShort(tmpBuff, 2);
+                        byte[] tbuff = new byte[_size];
+
+                        for (int i = 0; i < _size; i++)
+                        {
+                            tbuff[i] = tmpBuff[i + 2 + 2];
+                        }
+                        break;
+                    case 'S':
+                        //SIZE
+                        value = ToUShort(tmpBuff, 2);
+                        display.MapSize((ushort)value);
+                        break;
+                }
+                break;
+                 */
                 default:
                     break;
             }
@@ -352,6 +383,28 @@ namespace MaCRoGS.Communications
             double d = double.Parse(s, CultureInfo.InvariantCulture);
 
             return d;
+        }
+
+        public int FromDouble(double theDouble, byte[] buffer, int offset)
+        {
+            int Write = FromString(theDouble.ToString().Replace(',', '.'), buffer, offset);
+
+            return Write;
+        }
+
+        public int FromString(string theString, byte[] buffer, int offset)
+        {
+            byte[] tmpBuffer = Encoding.UTF8.GetBytes(theString);
+
+            // Prefix string with int length
+            FromShort((short)tmpBuffer.Length, buffer, offset);
+            int written = sizeof(int);
+
+            // Copy to output buffer
+            Array.Copy(tmpBuffer, 0, buffer, offset + written, tmpBuffer.Length);
+            written += tmpBuffer.Length;
+
+            return written;
         }
     }
 }

@@ -66,9 +66,10 @@ namespace MaCRoGS.SLAM
             return updates;
         }
 
-        public static ts_position_t Position()
+        public static ts_position_t MonteCarlo_UpdatePosition(ts_scan_t scan,ts_position_t startPos,double sigma_xy,double sigma_theta,int stop, int bd,out int quality)
         {
-            return null;
+            return a.ts_monte_carlo_search(scan, startPos, sigma_xy, sigma_theta, stop, bd, out quality);
+            //return a.montecarlo_position;
         }
     }
 
@@ -80,14 +81,21 @@ namespace MaCRoGS.SLAM
         internal static readonly ushort TS_DISTANCE_NO_DETECTION = 800;
         internal static readonly ushort TS_NO_OBSTACLE = 65500;
         internal static readonly ushort TS_OBSTACLE = 0;
-        internal static readonly ushort TS_HOLE_WIDTH = 500;
+        internal static readonly ushort TS_HOLE_WIDTH = 400;
 
         private ts_map_t map;
 
         public ts_map_t MAP { get { return map; } }
 
+        public ts_position_t montecarlo_position { get; set; }
+
+        private ts_randomizer_t random;
+
         public SLAMAlgorithm()
         {
+            montecarlo_position = new ts_position_t();
+            random = new ts_randomizer_t();
+            this.ts_random_init(random, 0xdead);
             this.ts_map_init();
         }
 
@@ -136,4 +144,26 @@ namespace MaCRoGS.SLAM
         public double x, y; //mm
         public double theta;//degrees
     }
+
+    public class ts_randomizer_t
+    {
+
+        public ulong jz;
+        public ulong jsr;
+        public long hz;
+        public ulong iz;
+        public ulong[] kn;
+        public double[] wnt;
+        public double[] wn;
+        public double[] fn;
+
+        public ts_randomizer_t()
+        {
+            kn = new ulong[128];
+            wnt = new double[128];
+            wn = new double[128];
+            fn = new double[128];
+        }
+    }
+
 }

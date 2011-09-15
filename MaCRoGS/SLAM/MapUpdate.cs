@@ -1,10 +1,10 @@
-    using System;
+using System;
 
 namespace MaCRoGS.SLAM
 {
     partial class SLAMAlgorithm
     {
-        //#define SWAP( x , y ) ( x ^= y ^= x ^= y )
+        //#define SWAP( x , y ) ( x ^= y ^= x ^= y )       
 
         private void ts_map_laser_ray(int x1, int y1, int x2, int y2, int xp, int yp, int value, int alpha)
         {
@@ -116,7 +116,7 @@ namespace MaCRoGS.SLAM
         }
 
         internal void ts_map_update(ts_scan_t scan, ts_position_t pos, int quality)
-        {
+        {               
             //cos sin quality
             double c, s, q;
             //Pos scan rotated
@@ -162,6 +162,7 @@ namespace MaCRoGS.SLAM
                 }
                 ts_map_laser_ray(x1, y1, x2, y2, xp, yp, value, (int)q);
             }
+
         }
     }
 }

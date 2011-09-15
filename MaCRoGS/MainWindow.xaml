@@ -13,9 +13,9 @@
 						<ColumnDefinition Width="0.688*"/>
 						<ColumnDefinition Width="0.312*"/>
 					</Grid.ColumnDefinitions>
-                		<Canvas x:Name="map" Margin="0,1.5,8.192,113.5" Grid.ColumnSpan="1" Grid.Column="0" Width="600" Height="600"/>
+                		<Canvas x:Name="map" Margin="0,1.5,8.192,113.5" Grid.ColumnSpan="1" Grid.Column="0" Width="600" Height="600" Panel.ZIndex="1"/>
                 		<Image x:Name="mapImage" Margin="0,1.5,8.192,113.5" Width="600" Height="600"/>
-                		<RichTextBox x:Name="log" Height="93" Background="Black" Foreground="#FF08FF00" FontFamily="Consolas" Cursor="None" ForceCursor="True" IsReadOnlyCaretVisible="True" Focusable="False" TextOptions.TextFormattingMode="Display" Margin="0,0,8.192,15" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" FontSize="13.333" FontWeight="Bold">
+                		<RichTextBox x:Name="log" Height="93" Background="Black" Foreground="#FF08FF00" FontFamily="Consolas" Cursor="Arrow" ForceCursor="True" IsReadOnlyCaretVisible="True" Focusable="False" TextOptions.TextFormattingMode="Display" Margin="0,0,8.192,15" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" FontSize="13.333" FontWeight="Bold">
                 			<RichTextBox.BorderBrush>
                 				<LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
                 					<GradientStop Color="#FFABADB3" Offset="0.05"/>
@@ -27,7 +27,7 @@
                 				<Paragraph><Run Text="RichTextBox"/></Paragraph>
                 			</FlowDocument>
                 		</RichTextBox>
-                		<Border Grid.Column="1" Margin="46.04,41.5,41,324" BorderThickness="3" CornerRadius="6" BorderBrush="Black">
+                		<Border Grid.Column="1" Margin="46.04,8.5,41,357" BorderThickness="3" CornerRadius="6" BorderBrush="Black">
                 			<Grid>
                 				<StackPanel Orientation="Vertical" Margin="12,91,0,0" HorizontalAlignment="Left" Width="167" Height="117.5" VerticalAlignment="Top">
                 					<StackPanel Orientation="Horizontal" >
@@ -79,7 +79,7 @@
                 				<Label Content="Turning Speed:" Height="23.5" Margin="3,0,84,40" VerticalAlignment="Bottom" FontSize="9.333"/>
                 				<Label Content="Speed:" Margin="3.5,0,0,86" FontSize="9.333" HorizontalAlignment="Left" Width="36" Height="23.5" VerticalAlignment="Bottom"/>
                 				<Label Content="Manual Mode" Height="26.5" Margin="-0.333,3.998,82.333,0" VerticalAlignment="Top" FontWeight="Bold"/>
-                				<GroupBox Header="SLAM Algorithm" HorizontalAlignment="Right" Height="183.5" VerticalAlignment="Bottom" Width="183.333" Margin="0,0,-2,-207.5" BorderBrush="#FF009DFB" BorderThickness="3">
+                				<GroupBox Header="SLAM Algorithm" HorizontalAlignment="Right" Height="183.5" VerticalAlignment="Bottom" Width="185.101" Margin="0,0,-2,-200.5" BorderBrush="#FF009DFB" BorderThickness="3">
                 					<StackPanel>
                 						<Label x:Name="lbl_scanSize" Content="Label"/>
                 						<Label x:Name="lbl_mapSize" Content="Label"/>
@@ -89,8 +89,17 @@
                 						<Label x:Name="lbl_mapUpdates" Content="Label"/>
                 					</StackPanel>
                 				</GroupBox>
+                				<GroupBox Header="Battery Status" HorizontalAlignment="Right" Height="140.667" VerticalAlignment="Bottom" Width="185.101" Margin="0,0,-2,-344.247" BorderBrush="#FF009DFB" BorderThickness="3">
+                					<StackPanel>
+                						<Label x:Name="lbl_voltage" Content="Label"/>
+                						<Label x:Name="lbl_current" Content="Label"/>
+                						<Label x:Name="lbl_perCent" Content="Label"/>
+                						<ProgressBar x:Name="batteryBar" Margin="0,0,4,0" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="163.768"/>            						
+                					</StackPanel>
+                				</GroupBox>
                 			</Grid>
                 		</Border>
+                		
                 	</Grid>
 				</AvalonDock:DocumentContent>                
                 <AvalonDock:DocumentContent IsCloseable="False" Title="Graphs" TabIndex="1">

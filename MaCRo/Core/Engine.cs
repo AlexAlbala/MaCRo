@@ -6,7 +6,7 @@ using Microsoft.SPOT.Hardware;
 using MaCRo.Config;
 using MaCRo.Tools;
 using MaCRo.Communications;
-using MaCRo.Core.SLAM;
+//using MaCRo.Core.SLAM;
 
 namespace MaCRo.Core
 {
@@ -18,6 +18,7 @@ namespace MaCRo.Core
 
         private NavigationManager navigation;
         private SensorManager sensors;
+        private BatteryManager battery;
         private Coder coder;
         private bool cancel;
 
@@ -28,6 +29,7 @@ namespace MaCRo.Core
         private Thread workerThread;
         private Timer sensorTimer;
         private Timer positionTimer;
+        private Timer batteryTimer;
 
 
         //private Timer IMUTimer;
@@ -53,13 +55,18 @@ namespace MaCRo.Core
             coder.Send(Message.Info, "Initializing System...");
 
             navigation = new NavigationManager();
-
+            coder.Send(Message.Info, "Initialized NavigationManager");
             sensors = new SensorManager();
+            coder.Send(Message.Info, "Initialized SensorManager");
+            battery = new BatteryManager();
+            coder.Send(Message.Info, "Initialized BatteryManager");
 
             currentMode = Mode.SearchingForWall;
 
             sensorTimer = new Timer(new TimerCallback(sensorTimer_tick), new object(), 0, GlobalVal.transmissionPeriodSensor_ms);
             positionTimer = new Timer(new TimerCallback(posTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodPosition_ms);
+            batteryTimer = new Timer(new TimerCallback(batteryTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodBattery_ms);
+            coder.Send(Message.Info, "Initialized Timers");
             //IMUTimer = new Timer(new TimerCallback(imuTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodIMU_ms);
             //TempTimer = new Timer(new TimerCallback(tempTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodTemp_ms);
 
@@ -74,12 +81,18 @@ namespace MaCRo.Core
             /*******SLAM**************/
 
             cancel = false;
-
             debug.Write(false);
 
             navigation.manualSpeed = GlobalVal.speed;
             navigation.manualTurningSpeed = GlobalVal.turningSpeed;
             coder.Send(Message.Info, "Ready");
+        }
+
+        void batteryTimer_Tick(Object state)
+        {
+            coder.Send(Message.Current, battery.getBatteryCurrent());
+            coder.Send(Message.Voltage, battery.getBatteryVoltage());
+            coder.Send(Message.Capacity, battery.getBatteryCapacity());
         }
 
         void imuTimer_Tick(Object state)
@@ -116,8 +129,8 @@ namespace MaCRo.Core
                 coder.Send(Message.PositionY, pos.y);
                 coder.Send(Message.Angle, pos.angle);
 
-                coder.Send(Message.VelocityX, vel.x);
-                coder.Send(Message.VelocityY, vel.y);
+                //coder.Send(Message.VelocityX, vel.x);
+                //coder.Send(Message.VelocityY, vel.y);
 
                 //coder.Send(Message.Time, navigation.getTime());
 
@@ -290,12 +303,12 @@ namespace MaCRo.Core
 
         public void ManualSpeed(short speed)
         {
-            navigation.manualSpeed = speed;
+            navigation.manualSpeed = (sbyte)speed;
         }
 
         public void ManualTurningSpeed(short speed)
         {
-            navigation.manualTurningSpeed = speed;
+            navigation.manualTurningSpeed = (sbyte)speed;
         }
 
         public void ManualMode()
@@ -322,7 +335,7 @@ namespace MaCRo.Core
 
         public void ManualForward(short speed)
         {
-            if (currentMode == Mode.Manual)
+            if (currentMode == Mode.Manual && navigation.movement == Movement.stop)
             {
                 Thread t = new Thread(new ThreadStart(navigation.ManualForward));
                 t.Start();
@@ -331,7 +344,7 @@ namespace MaCRo.Core
 
         public void ManualBackward(short speed)
         {
-            if (currentMode == Mode.Manual)
+            if (currentMode == Mode.Manual && navigation.movement == Movement.stop)
             {
                 Thread t = new Thread(new ThreadStart(navigation.ManualBackward));
                 t.Start();
@@ -340,7 +353,7 @@ namespace MaCRo.Core
 
         public void ManualRight()
         {
-            if (currentMode == Mode.Manual)
+            if (currentMode == Mode.Manual && navigation.movement == Movement.stop)
             {
                 Thread t = new Thread(new ThreadStart(navigation.ManualRight));
                 t.Start();
@@ -349,7 +362,7 @@ namespace MaCRo.Core
 
         public void ManualLeft()
         {
-            if (currentMode == Mode.Manual)
+            if (currentMode == Mode.Manual && navigation.movement == Movement.stop)
             {
                 Thread t = new Thread(new ThreadStart(navigation.ManualLeft));
                 t.Start();
@@ -365,6 +378,13 @@ namespace MaCRo.Core
             }
         }
         #endregion
+
+        public void UpdatePosition(Position p)
+        {
+            Position _p = navigation.getActualPosition();
+            coder.Send(Message.Debug, "Position: " + _p.x + ":" + _p.y + ":" + _p.angle + " | " + p.x + ":" + p.y + ":" + p.angle);
+            navigation.setActualPosition(p);
+        }
 
         private void _Run()
         {
@@ -429,7 +449,7 @@ namespace MaCRo.Core
                                         navigation.turnRight(10);
                                 }
 
-                                navigation.MoveForward(30, GlobalVal.speed);
+                                navigation.MoveForward(30);
                             }
                             else
                             {
@@ -447,7 +467,7 @@ namespace MaCRo.Core
                                 navigation.turnRight(1);
                             }
 
-                            navigation.MoveForward(50, GlobalVal.speed);
+                            navigation.MoveForward(50);
                         }//IN THE FOLLOWING CASE:
                         //1-IS A WALL DEVIATION
                         //2-THERE IS A CORNER
@@ -456,7 +476,7 @@ namespace MaCRo.Core
                             if ((wall - wallback) < 5)
                             {
                                 navigation.turnLeft(1);
-                                navigation.MoveForward(50, GlobalVal.speed);
+                                navigation.MoveForward(50);
                             }
                             else//THERE IS A CORNER
                             {

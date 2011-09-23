@@ -63,7 +63,8 @@ namespace MaCRo.Tools
         MapSize,
         Voltage,
         Current,
-        Capacity
+        Capacity,
+        Estimation
     }
 
     public class Position

@@ -51,7 +51,12 @@ namespace MaCRoGS
             }
             catch (Exception e)
             {
-                MessageBoxResult mbres = MessageBox.Show("Could not initialize the coder. Original message: " + e.Message + " Do you want to continue anyway?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                MessageBoxResult mbres = MessageBox.Show(
+                    "Could not initialize the coder. Original message: " + e.Message + " Do you want to continue anyway?",
+                    "Warning",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Exclamation);
+
                 if (mbres == MessageBoxResult.No)
                 {
                     Application.Current.Shutdown();
@@ -88,8 +93,6 @@ namespace MaCRoGS
             wall_robotmap.angle = t_wrmap.Angle * Math.PI / 180;
             wall_robotmap.x = (int)(Canvas.GetLeft(wall_sensor));
             wall_robotmap.y = (int)(Canvas.GetTop(wall_sensor) + wall_sensor.ActualWidth / 2);
-
-
         }
 
         public void Init()
@@ -107,6 +110,9 @@ namespace MaCRoGS
 
             wallback_line = new Line();
             robot.Children.Add(wallback_line);
+
+            //central_path = new Path();
+            //robot.Children.Add(central_path);
 
             StartupSensors();
             StartupMap();
@@ -127,12 +133,13 @@ namespace MaCRoGS
             timeAX = new List<double>();
             timeAY = new List<double>();
 
-            updateChart = new Timer(new TimerCallback(_updateChart), new object(), 1000, 1000);
 
             /************************** TIMERS ***************************************/
+            updateChart = new Timer(new TimerCallback(_updateChart), new object(), 1000, 1000);
+
             scanTimer = new Timer(new TimerCallback(Scan), new object(), 4000, 100);
-            updateMap = new Timer(new TimerCallback(mapUpdate), new object(), 4000, 3000);
-            updatePosition = new Timer(new TimerCallback(MonteCarlo_UpdatePosition), new object(), 30000, 3000);
+            updateMap = new Timer(new TimerCallback(mapUpdate), new object(), 4000, 1500);
+            //updatePosition = new Timer(new TimerCallback(MonteCarlo_UpdatePosition), new object(), 30000, 4000);
             positionHistoryUpdate = new Timer(new TimerCallback(UpdatePositionHistory), new object(), 0, 250);
             /************************** TIMERS ***************************************/
 
@@ -147,11 +154,12 @@ namespace MaCRoGS
             lbl_perCent.Content = "Capacity:";
             lbl_voltage.Content = "Voltage:";
             lbl_current.Content = "Current:";
+            lbl_estimation.Content = "Estimation:";
 
             this.updateIterationsLabel(0);
             this.updateMapUpdatesLabel(0);
             log.SelectAll();
-            log.Selection.Text = "";
+            log.Selection.Text = DateTime.Now.ToString() +  "- LOG:" ;
         }
 
         private void StartupMap()
@@ -203,7 +211,7 @@ namespace MaCRoGS
             ts_scan_t scan = this.doScan();
 
             int quality;
-            ts_position_t newPos = tinySLAM.MonteCarlo_UpdatePosition(scan, position, 0, 1, 10000, 50, out quality);
+            ts_position_t newPos = tinySLAM.MonteCarlo_UpdatePosition(scan, position, 1, 1, 10000, 50, out quality);
 
 
             Position p = new Position();
@@ -221,7 +229,7 @@ namespace MaCRoGS
             int j = 0;
             int angle = 0;
             //CENTRAL SENSOR:
-            if (lastCentral != -1)
+            if (lastCentral > 0)
             {
                 angle -= 10;
                 for (int i = 0; i < 20; angle++, i++, j++)
@@ -236,10 +244,25 @@ namespace MaCRoGS
                     scan.value[j] = SLAMAlgorithm.TS_OBSTACLE;
                 }
             }
+            else if (lastCentral == -1)
+            {
+                angle -= 10;
+                for (int i = 0; i < 20; angle++, i++, j++)
+                {
+                    double angleRad = (float)(angle * Math.PI / 180);
+                    double c = Math.Cos(angleRad);
+                    double s = Math.Sin(angleRad);
+
+
+                    scan.x[j] = (float)(800 * s);
+                    scan.y[j] = (float)(800 * c + 230 / 2) * (-1);
+                    scan.value[j] = SLAMAlgorithm.TS_NO_OBSTACLE;
+                }
+            }
 
 
             //WALL SENSOR
-            if (lastWall != -1)
+            if (lastWall > 0)
             {
                 angle = 0;
                 angle -= 10;
@@ -255,9 +278,25 @@ namespace MaCRoGS
                     scan.value[j] = SLAMAlgorithm.TS_OBSTACLE;
                 }
             }
+            else if (lastWall == -1)
+            {
+                angle = 0;
+                angle -= 10;
+                for (int i = 0; i < 20; angle++, i++, j++)
+                {
+                    double angleRad = (angle * Math.PI / 180);
+                    double c = Math.Cos(angleRad);
+                    double s = Math.Sin(angleRad);
+
+
+                    scan.x[j] = (float)(300 * c + 185 / 2) * (-1);
+                    scan.y[j] = (float)(230 / 2 + 300 * s) * (-1);
+                    scan.value[j] = SLAMAlgorithm.TS_NO_OBSTACLE;
+                }
+            }
 
             //WALLBACK SENSOR
-            if (lastWallBack != -1)
+            if (lastWallBack > 0)
             {
                 angle = 0;
                 angle -= 10;
@@ -273,9 +312,25 @@ namespace MaCRoGS
                     scan.value[j] = SLAMAlgorithm.TS_OBSTACLE;
                 }
             }
+            else if (lastWallBack == -1)
+            {
+                angle = 0;
+                angle -= 10;
+                for (int i = 0; i < 20; angle++, i++, j++)
+                {
+                    double angleRad = (angle * Math.PI / 180);
+                    double c = Math.Cos(angleRad);
+                    double s = Math.Sin(angleRad);
+
+
+                    scan.x[j] = (float)(300 * c + 185 / 2) * (-1);
+                    scan.y[j] = (float)(300 * s - 230 / 2) * (-1);
+                    scan.value[j] = SLAMAlgorithm.TS_NO_OBSTACLE;
+                }
+            }
 
             //RIGHT SENSOR
-            if (lastRight != -1)
+            if (lastRight > 0)
             {
                 angle = 0;
                 angle -= 10;
@@ -290,6 +345,23 @@ namespace MaCRoGS
                     scan.x[j] = (float)(lastRight * c + 185 / 2);
                     scan.y[j] = (float)(lastRight * s + 230 / 2) * (-1);
                     scan.value[j] = SLAMAlgorithm.TS_OBSTACLE;
+                }
+            }
+            else if (lastRight == -1)
+            {
+                angle = 0;
+                angle -= 10;
+                for (int i = 0; i < 20; angle++, i++, j++)
+                {
+                    double angleRad = (angle * Math.PI / 180);
+                    double rad45 = (45 * Math.PI / 180);
+                    double c = Math.Cos(angleRad + rad45);
+                    double s = Math.Sin(angleRad + rad45);
+
+
+                    scan.x[j] = (float)(800 * c + 185 / 2);
+                    scan.y[j] = (float)(800 * s + 230 / 2) * (-1);
+                    scan.value[j] = SLAMAlgorithm.TS_NO_OBSTACLE;
                 }
             }
 

@@ -4,7 +4,7 @@ namespace MaCRoGS.SLAM
 {
     partial class SLAMAlgorithm
     {
-        internal int ts_distance_scan_to_map(ts_scan_t scan, ts_position_t pos)
+        private int ts_distance_scan_to_map(ts_scan_t scan, ts_position_t pos)
         {
             double c, s;
             int i, x, y, nb_points = 0;
@@ -17,12 +17,19 @@ namespace MaCRoGS.SLAM
             {
                 if (scan.value[i] != TS_NO_OBSTACLE)
                 {
+                    //ORIGINAL
+                    //x = (int)Math.Floor((pos.x + c * scan.x[i] - s * scan.y[i]) * TS_MAP_SCALE + 0.5);
+                    //y = (int)Math.Floor((pos.y + s * scan.x[i] + c * scan.y[i]) * TS_MAP_SCALE + 0.5);
+
+                    //MINE
                     x = (int)Math.Floor((pos.x + c * scan.x[i] - s * scan.y[i]) * TS_MAP_SCALE + 0.5);
-                    y = (int)Math.Floor((pos.y + s * scan.x[i] + c * scan.y[i]) * TS_MAP_SCALE + 0.5);
+                    y = (int)Math.Floor((pos.y - s * scan.x[i] + c * scan.y[i]) * TS_MAP_SCALE + 0.5);
+
                     //Check boundaries
                     if (x >= 0 && x < TS_MAP_SIZE && y >= 0 && y < TS_MAP_SIZE)
                     {
-                        sum += map.map[y * TS_MAP_SIZE + x];
+                        //sum += map.map[y * TS_MAP_SIZE + x];
+                        sum += Math.Abs(scan.value[i] - map.map[y * TS_MAP_SIZE + x]);
                         nb_points++;
                     }
                 }
@@ -33,7 +40,7 @@ namespace MaCRoGS.SLAM
             }
             else
             {
-                sum = 2000000000;
+                sum = int.MaxValue;
             }
             return (int)sum;
         }

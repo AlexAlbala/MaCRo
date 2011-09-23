@@ -15,6 +15,25 @@ namespace MaCRo.Drivers
         private double stepmm;
         private bool lastValue;
 
+        //public double distance_mm_corrected
+        //{
+        //    get
+        //    {
+        //        if (encoder.Id == (Cpu.Pin)PortMap.encoderL_interrupt)
+        //        {
+        //            return _distance * GlobalVal.correction_left;
+        //        }
+        //        else if (encoder.Id == (Cpu.Pin)PortMap.encoderR_interrupt)
+        //        {
+        //            return _distance * GlobalVal.correction_right;
+        //        }
+        //        else
+        //        {
+        //            throw new Exception("error in encoder correction");
+        //        }
+        //    }
+        //}
+
         public double distance_mm
         {
             get { return _distance; }
@@ -52,7 +71,7 @@ namespace MaCRo.Drivers
             }
         }
         public void resetDistance()
-        {            
+        {
             _distance = 0;
         }
 

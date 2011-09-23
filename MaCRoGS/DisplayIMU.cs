@@ -8,6 +8,7 @@ namespace MaCRoGS
 {
     public partial class MainWindow : Window
     {
+        /*
         public void SetAccX(double value)
         {
             UpdaterD d = new UpdaterD(_SetAccX);
@@ -157,5 +158,6 @@ namespace MaCRoGS
             double val = value;
             GyroZ.Content = "Z Gyro: " + val.ToString();
         }
+         */ 
     }
 }

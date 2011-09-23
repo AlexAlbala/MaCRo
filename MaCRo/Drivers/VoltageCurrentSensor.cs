@@ -19,7 +19,7 @@ namespace MaCRo.Drivers
         private double ampScale;//Amp(in) / V(out)
         private double voltScale;//V(in) / V(out)
 
-        public VoltageCurrentSensor(float maxVoltage,float minVoltage,ushort mAh)
+        public VoltageCurrentSensor(float maxVoltage, float minVoltage, ushort mAh)
         {
             this.mAh = mAh;
             this.maxVoltage = maxVoltage;
@@ -38,7 +38,12 @@ namespace MaCRo.Drivers
         public ushort getBatteryCapacity()
         {
             double actualVoltage = this.getActualVoltage();
-            return (ushort)(100*(actualVoltage - minVoltage) / (maxVoltage - minVoltage));
+            if (actualVoltage < minVoltage)
+                return 0;
+            else if (actualVoltage > maxVoltage)
+                return 100;
+            else
+                return (ushort)(100 * (actualVoltage - minVoltage) / (maxVoltage - minVoltage));
         }
 
         public double getActualCurrent()
@@ -53,6 +58,17 @@ namespace MaCRo.Drivers
             int mVolts = voltage.Read();
 
             return mVolts * voltScale / 1000;
+        }
+
+        public ushort getEstimation()
+        {
+            int perCent = getBatteryCapacity();
+            double current = getActualCurrent();
+
+            if (current > 0)
+                return (ushort)(mAh * perCent * 60 / (current * 100));
+            else
+                return 0;
         }
     }
 }

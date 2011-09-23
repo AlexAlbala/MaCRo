@@ -13,6 +13,7 @@ namespace MaCRo.Core
         private Encoder right;
         private NavigationManager navigation;
         private Movement movement;
+        private Random r;
         public bool alarm;
         Thread th;
         Thread th2;
@@ -23,6 +24,7 @@ namespace MaCRo.Core
             this.left = left;
             this.right = right;
             this.navigation = navigation;
+            r = new Random();
 
             th = new Thread(new ThreadStart(Run));
             th.Start();
@@ -52,15 +54,42 @@ namespace MaCRo.Core
             {
                 if (alarm)
                 {
+                    Engine.getInstance().Debug("Solving problem when moving " + movement.ToString());
                     switch (movement)
                     {
                         case Movement.forward:
-                            navigation.MoveBackward(100);
+                            if (r.NextDouble() > 0.8)
+                                navigation.MoveBackward(100);
+                            else
+                            {
+                                if (r.NextDouble() > 0.5)
+                                    navigation.turnRight(10);
+                                else
+                                    navigation.turnLeft(10);
+                            }
                             break;
                         case Movement.backward:
+                            if (r.NextDouble() > 0.8)
+                                navigation.MoveForward(100);
+                            else
+                            {
+                                if (r.NextDouble() > 0.5)
+                                    navigation.turnRight(10);
+                                else
+                                    navigation.turnLeft(10);
+                            }
+                            break;
                         case Movement.left:
+                            if (r.NextDouble() > 0.8)
+                                navigation.MoveForward(100);
+                            else
+                                navigation.turnRight(10);
+                            break;
                         case Movement.right:
-                            navigation.MoveForward(100);
+                            if (r.NextDouble() > 0.8)
+                                navigation.MoveForward(100);
+                            else
+                                navigation.turnLeft(10);
                             break;
                     }
 
@@ -83,9 +112,10 @@ namespace MaCRo.Core
 
                     if (right.distance_mm == rightDistance && left.distance_mm == leftDistance)
                     {
+                        Engine.getInstance().Debug("Contingency alarm");
                         movement = navigation.movement;
                         alarm = true;
-                        Engine.getInstance().Cancel();              
+                        Engine.getInstance().Cancel();
                     }
                 }
             }

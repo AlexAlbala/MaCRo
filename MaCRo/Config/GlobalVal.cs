@@ -23,6 +23,18 @@ namespace MaCRo.Config
         /// </summary>
         public readonly static ushort distanceBetweenWheels_mm = 146;
         /// <summary>
+        /// Correction factor of the distance between wheels
+        /// </summary>
+        public readonly static float width_correction = 90 / (90 - 4.75f);
+        ///// <summary>
+        ///// Correction factor of the left wheel distance
+        ///// </summary>
+        //public readonly static float correction_left = 2 / (0.96709488f + 1);
+        ///// <summary>
+        ///// Correction factor of the right wheel distance
+        ///// </summary>
+        //public readonly static float correction_right = 2 / (1 / 0.96709488f + 1);
+        /// <summary>
         /// Length of the structure.
         /// </summary>
         public readonly static ushort length_mm = 230;
@@ -62,10 +74,10 @@ namespace MaCRo.Config
         /// The time between the contingency takes a measure sample
         /// </summary>
         public readonly static ushort contingencyPeriod = 1000;
-        /// <summary>
-        /// Time while the robot is correcting any trouble
-        /// </summary>
-        public readonly static ushort contingencyCorrectionTime = 500;
+        ///// <summary>
+        ///// Time while the robot is correcting any trouble
+        ///// </summary>
+        //public readonly static ushort contingencyCorrectionTime = 500;
 
         /// <summary>
         /// The periodicity of the sensor telemetry transmission in milliseconds
@@ -74,19 +86,19 @@ namespace MaCRo.Config
         /// <summary>
         /// The periodicity of the battery sensor transmission. In milliseconds
         /// </summary>
-        public readonly static ushort transmissionPeriodBattery_ms = 15000;
+        public readonly static ushort transmissionPeriodBattery_ms = 5000;
         /// <summary>
         /// The periodicity of the Position telemetry transmission in milliseconds
         /// </summary>
         public readonly static ushort transmissionPeriodPosition_ms = 100;
-        /// <summary>
-        /// The periodicity of the IMU telemetry transmission in milliseconds
-        /// </summary>
-        public readonly static ushort transmissionPeriodIMU_ms = 100;
-        /// <summary>
-        /// The periodicity of the Temperature telemetry transmission in milliseconds
-        /// </summary>
-        public readonly static ushort transmissionPeriodTemp_ms = 30000;
+        ///// <summary>
+        ///// The periodicity of the IMU telemetry transmission in milliseconds
+        ///// </summary>
+        //public readonly static ushort transmissionPeriodIMU_ms = 100;
+        ///// <summary>
+        ///// The periodicity of the Temperature telemetry transmission in milliseconds
+        ///// </summary>
+        //public readonly static ushort transmissionPeriodTemp_ms = 30000;
 
 
         /// <summary>

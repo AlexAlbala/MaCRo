@@ -26,7 +26,6 @@ namespace MaCRo.Config
         public readonly static FEZ_Pin.AnalogIn infraredL1 = FEZ_Pin.AnalogIn.An3;
         public readonly static FEZ_Pin.AnalogIn infraredL2 = FEZ_Pin.AnalogIn.An2;
 
-
         public readonly static FEZ_Pin.AnalogIn voltage = FEZ_Pin.AnalogIn.An4;
         public readonly static FEZ_Pin.AnalogIn current = FEZ_Pin.AnalogIn.An5;
 

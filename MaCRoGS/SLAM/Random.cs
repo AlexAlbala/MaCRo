@@ -103,11 +103,10 @@ namespace MaCRoGS.SLAM
             double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
 
             if (rand.NextDouble() > 0.5)
-                stDev *= -1;
+                randStdNormal *= -1;
             double randNormal = x + stDev * randStdNormal; //random normal(mean,stdDev^2)
 
             return randNormal;
-
         }
     }
 }

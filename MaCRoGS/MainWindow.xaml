@@ -27,8 +27,8 @@
                 				<Paragraph><Run Text="RichTextBox"/></Paragraph>
                 			</FlowDocument>
                 		</RichTextBox>
-                		<Border Grid.Column="1" Margin="46.04,8.5,41,357" BorderThickness="3" CornerRadius="6" BorderBrush="Black">
-                			<Grid>
+                		<Border Grid.Column="1" Margin="46.04,8.5,41,0" BorderThickness="3" CornerRadius="6" BorderBrush="Black" Height="339.5" VerticalAlignment="Top">
+                			<Grid Margin="0,0,0,-3">
                 				<StackPanel Orientation="Vertical" Margin="12,91,0,0" HorizontalAlignment="Left" Width="167" Height="117.5" VerticalAlignment="Top">
                 					<StackPanel Orientation="Horizontal" >
                 						<ToggleButton x:Name="forw" Margin="50,0,0,0"  Height="50" Width="50" PreviewMouseDown="for_MouseLeftButtonDown" PreviewMouseUp="for_MouseLeftButtonUp" Focusable="False" Content="↑" FontSize="32" FontWeight="Bold">
@@ -54,7 +54,7 @@
                 				<Button x:Name="OnOff" Content="On" HorizontalAlignment="Left" Width="83.5" Click="Button_Click" Margin="3,35.832,0,0" Height="25.5" VerticalAlignment="Top"/>
                 				<Image x:Name="LEDImageOFF" HorizontalAlignment="Right" Margin="0,14,20,0" Width="50" Height="50" Source="LED_OFF.png" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
                 				<Image x:Name="LEDImageON" HorizontalAlignment="Right" Margin="0,14,20,0" Width="50" Height="50" Source="LED_ON.png" Visibility="Hidden" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
-                				<Slider x:Name="Speed" Margin="1,0,0,69.5" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" HorizontalAlignment="Left" Width="108" ValueChanged="Speed_ValueChanged" Value="2.5" Focusable="False" Height="23" VerticalAlignment="Bottom">
+                				<Slider x:Name="Speed" Margin="1,0,0,72.5" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" HorizontalAlignment="Left" Width="108" ValueChanged="Speed_ValueChanged" Value="2.5" Focusable="False" Height="23" VerticalAlignment="Bottom">
                 					<Slider.RenderTransform>
                 						<TransformGroup>
                 							<ScaleTransform ScaleY="-1"/>
@@ -64,7 +64,7 @@
                 						</TransformGroup>
                 					</Slider.RenderTransform>
                 				</Slider>
-                				<Slider x:Name="Turning_Speed" Height="23" Margin="0.133,0,74.634,24" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" Width="108" ValueChanged="Turning_Speed_ValueChanged" Value="2.5" Focusable="False">
+                				<Slider x:Name="Turning_Speed" Height="23" Margin="0.133,0,74.634,27" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" Width="108" ValueChanged="Turning_Speed_ValueChanged" Value="2.5" Focusable="False">
                 					<Slider.RenderTransform>
                 						<TransformGroup>
                 							<ScaleTransform ScaleY="-1"/>
@@ -74,12 +74,12 @@
                 						</TransformGroup>
                 					</Slider.RenderTransform>
                 				</Slider>
-                				<TextBox x:Name="SpeedBox" HorizontalAlignment="Right" Height="19" Margin="0,0,20,69" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Bottom" Width="35.5" Initialized="SpeedBox_Initialized" IsEnabled="False" Focusable="False"/>
-                				<TextBox x:Name="TurningSpeedBox" HorizontalAlignment="Right" Height="19" Margin="0,0,20,25" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Bottom" Width="35.5" Initialized="TurningSpeedBox_Initialized" IsEnabled="False" Focusable="False"/>
-                				<Label Content="Turning Speed:" Height="23.5" Margin="3,0,84,40" VerticalAlignment="Bottom" FontSize="9.333"/>
-                				<Label Content="Speed:" Margin="3.5,0,0,86" FontSize="9.333" HorizontalAlignment="Left" Width="36" Height="23.5" VerticalAlignment="Bottom"/>
+                				<TextBox x:Name="SpeedBox" HorizontalAlignment="Right" Height="19" Margin="0,0,20,72" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Bottom" Width="35.5" Initialized="SpeedBox_Initialized" IsEnabled="False" Focusable="False"/>
+                				<TextBox x:Name="TurningSpeedBox" HorizontalAlignment="Right" Height="19" Margin="0,0,20,28" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Bottom" Width="35.5" Initialized="TurningSpeedBox_Initialized" IsEnabled="False" Focusable="False"/>
+                				<Label Content="Turning Speed:" Height="23.5" Margin="3,0,84,43" VerticalAlignment="Bottom" FontSize="9.333"/>
+                				<Label Content="Speed:" Margin="3.5,0,0,89" FontSize="9.333" HorizontalAlignment="Left" Width="36" Height="23.5" VerticalAlignment="Bottom"/>
                 				<Label Content="Manual Mode" Height="26.5" Margin="-0.333,3.998,82.333,0" VerticalAlignment="Top" FontWeight="Bold"/>
-                				<GroupBox Header="SLAM Algorithm" HorizontalAlignment="Right" Height="183.5" VerticalAlignment="Bottom" Width="185.101" Margin="0,0,-2,-200.5" BorderBrush="#FF009DFB" BorderThickness="3">
+                				<GroupBox Header="SLAM Algorithm" HorizontalAlignment="Right" Height="183.5" VerticalAlignment="Bottom" Width="185.101" Margin="0,0,-2,-197.5" BorderBrush="#FF009DFB" BorderThickness="3">
                 					<StackPanel>
                 						<Label x:Name="lbl_scanSize" Content="Label"/>
                 						<Label x:Name="lbl_mapSize" Content="Label"/>
@@ -89,16 +89,18 @@
                 						<Label x:Name="lbl_mapUpdates" Content="Label"/>
                 					</StackPanel>
                 				</GroupBox>
-                				<GroupBox Header="Battery Status" HorizontalAlignment="Right" Height="140.667" VerticalAlignment="Bottom" Width="185.101" Margin="0,0,-2,-344.247" BorderBrush="#FF009DFB" BorderThickness="3">
+                				<GroupBox Header="Battery Status" HorizontalAlignment="Right" Height="152.334" VerticalAlignment="Bottom" Width="185.101" Margin="0,0,-2,-352.914" BorderBrush="#FF009DFB" BorderThickness="3">
                 					<StackPanel>
                 						<Label x:Name="lbl_voltage" Content="Label"/>
                 						<Label x:Name="lbl_current" Content="Label"/>
                 						<Label x:Name="lbl_perCent" Content="Label"/>
                 						<ProgressBar x:Name="batteryBar" Margin="0,0,4,0" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="163.768"/>            						
+										<Label x:Name="lbl_estimation" Content="Label"/>
                 					</StackPanel>
                 				</GroupBox>
                 			</Grid>
                 		</Border>
+                		<CheckBox x:Name="chkBox_path" Content="Draw rover path" HorizontalAlignment="Left" VerticalAlignment="Top" Width="111.101" Background="Black" BorderBrush="#FF0056FF" Foreground="Black" FontWeight="Bold" Margin="8,8,0,0" IsChecked="True"/>
                 		
                 	</Grid>
 				</AvalonDock:DocumentContent>                
@@ -118,6 +120,7 @@
                             <Label Content="L2" x:Name="L2" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                         </StackPanel>
                     </AvalonDock:DockableContent>
+					<!--
                     <AvalonDock:DockableContent IsCloseable="False" Title="IMU data" >
 
                         <Grid>
@@ -147,15 +150,15 @@
                                 <Label Content="TempZ" x:Name="TempZ" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             </StackPanel>
                         </Grid>
-                    </AvalonDock:DockableContent>
+                    </AvalonDock:DockableContent>-->
                     <AvalonDock:DockableContent IsCloseable="False" Title="Position" >
                         <StackPanel Orientation="Vertical" Background="White" Panel.ZIndex="4" Margin="0" >
                             <Label Content="xPos" x:Name="xPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="yPos" x:Name="yPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="anglePos" x:Name="anglePos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                            <Label Content="xVel" x:Name="xVel" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+                            <!--<Label Content="xVel" x:Name="xVel" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="yVel" x:Name="yVel" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                            <Label Content="timeL" x:Name="labelTime" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+                            <Label Content="timeL" x:Name="labelTime" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />-->
 
                         </StackPanel>
                     </AvalonDock:DockableContent>

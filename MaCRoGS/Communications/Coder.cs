@@ -154,23 +154,23 @@ namespace MaCRoGS.Communications
                 //            break;
                 //    }
                 //    break;
-                case 'v':
-                    switch ((char)tmpBuff[1])
-                    {
-                        case 'x':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetVelocityX((double)value);
-                            break;
-                        case 'y':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetVelocityY((double)value);
-                            break;
-                        case 't':
-                            value = ToDouble(tmpBuff, 2);
-                            display.SetTime((double)value);
-                            break;
-                    }
-                    break;
+                //case 'v':
+                //    switch ((char)tmpBuff[1])
+                //    {
+                //        case 'x':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetVelocityX((double)value);
+                //            break;
+                //        case 'y':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetVelocityY((double)value);
+                //            break;
+                //        case 't':
+                //            value = ToDouble(tmpBuff, 2);
+                //            display.SetTime((double)value);
+                //            break;
+                //    }
+                //    break;
                 //case 'A':
                 //    switch ((char)tmpBuff[1])
                 //    {
@@ -278,6 +278,11 @@ namespace MaCRoGS.Communications
                             //percent
                             ushort Rvoltage = ToUShort(tmpBuff,2);
                             display.setRVoltage(Rvoltage);
+                            break;
+                        case 'e':
+                            //estimation
+                            ushort estimation = ToUShort(tmpBuff, 2);
+                            display.setEstimation(estimation);
                             break;
                     }
                     break;

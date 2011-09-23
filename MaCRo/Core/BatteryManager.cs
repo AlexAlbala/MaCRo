@@ -11,7 +11,7 @@ namespace MaCRo.Core
 
         public BatteryManager()
         {
-            vcs = new VoltageCurrentSensor(11.1f, 9.5f, (ushort)4000);
+            vcs = new VoltageCurrentSensor(10.928f, 9.0f, (ushort)4000);
         }
 
         public double getBatteryVoltage()
@@ -27,6 +27,11 @@ namespace MaCRo.Core
         public double getBatteryCurrent()
         {
             return vcs.getActualCurrent();
+        }
+
+        public ushort getBatteryEstimation_minutes()
+        {
+            return vcs.getEstimation();
         }
     }
 }

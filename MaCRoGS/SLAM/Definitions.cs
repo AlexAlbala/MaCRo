@@ -147,7 +147,6 @@ namespace MaCRoGS.SLAM
 
     public class ts_randomizer_t
     {
-
         public ulong jz;
         public ulong jsr;
         public long hz;

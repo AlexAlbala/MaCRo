@@ -74,12 +74,18 @@ namespace MaCRoGS
             }
         }        
 
-        
+        /*
         public void SetVelocityX(double distance)
         {
             UpdaterD updater = new UpdaterD(_SetVelocityX);
             this.Dispatcher.Invoke(updater, distance);
 
+        }
+
+        private void _SetTime(double time)
+        {
+            actualTime = time;
+            labelTime.Content = "Current Time: " + time.ToString() + " seconds";
         }
 
         private void _SetVelocityX(double velX)
@@ -106,6 +112,7 @@ namespace MaCRoGS
             VelY.Add(velY);
 
         }
+         */ 
 
         private void UpdateLine(LineGraph line, double[] x, double[] y, Color color, string description, out LineGraph newLine)
         {
@@ -138,16 +145,11 @@ namespace MaCRoGS
             }
         }
 
+        /*
         public void SetTime(double time)
         {
             UpdaterD updater = new UpdaterD(_SetTime);
             this.Dispatcher.Invoke(updater, time);
-        }
-
-        private void _SetTime(double time)
-        {
-            actualTime = time;
-            labelTime.Content = "Current Time: " + time.ToString() + " seconds";
-        }
+        }*/
     }
 }

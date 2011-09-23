@@ -52,21 +52,21 @@ namespace MaCRo.Core
             coder = new Coder();
             coder.Start();
 
-            coder.Send(Message.Info, "Initializing System...");
+            Info("Initializing System...");
 
             navigation = new NavigationManager();
-            coder.Send(Message.Info, "Initialized NavigationManager");
+            Info("Initialized NavigationManager");
             sensors = new SensorManager();
-            coder.Send(Message.Info, "Initialized SensorManager");
+            Info("Initialized SensorManager");
             battery = new BatteryManager();
-            coder.Send(Message.Info, "Initialized BatteryManager");
+            Info("Initialized BatteryManager");
 
             currentMode = Mode.SearchingForWall;
 
             sensorTimer = new Timer(new TimerCallback(sensorTimer_tick), new object(), 0, GlobalVal.transmissionPeriodSensor_ms);
             positionTimer = new Timer(new TimerCallback(posTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodPosition_ms);
             batteryTimer = new Timer(new TimerCallback(batteryTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodBattery_ms);
-            coder.Send(Message.Info, "Initialized Timers");
+            Info("Initialized Timers");
             //IMUTimer = new Timer(new TimerCallback(imuTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodIMU_ms);
             //TempTimer = new Timer(new TimerCallback(tempTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodTemp_ms);
 
@@ -85,14 +85,21 @@ namespace MaCRo.Core
 
             navigation.manualSpeed = GlobalVal.speed;
             navigation.manualTurningSpeed = GlobalVal.turningSpeed;
-            coder.Send(Message.Info, "Ready");
+            Info("Ready");
         }
 
         void batteryTimer_Tick(Object state)
         {
-            coder.Send(Message.Current, battery.getBatteryCurrent());
+            double current = battery.getBatteryCurrent();
+            if (current > 0)
+                coder.Send(Message.Current, current);
+
             coder.Send(Message.Voltage, battery.getBatteryVoltage());
             coder.Send(Message.Capacity, battery.getBatteryCapacity());
+
+            ushort estimation = battery.getBatteryEstimation_minutes();
+            if (estimation > 0)
+                coder.Send(Message.Estimation, estimation);
         }
 
         void imuTimer_Tick(Object state)
@@ -155,22 +162,77 @@ namespace MaCRo.Core
 
             lock (coder)
             {
-                if (s1 > 40 && s1 < 300)
-                    coder.Send(Message.SensorS1, s1);
+                short value;
+                if (s1 > 300)
+                {
+                    value = -1;
+                }
+                else if (s1 < 40)
+                {
+                    value = -2;
+                }
                 else
-                    coder.Send(Message.SensorS1, (short)-1);
-                if (s2 > 40 && s2 < 300)
-                    coder.Send(Message.SensorS2, s2);
+                {
+                    value = s1;
+                }
+                coder.Send(Message.SensorS1, value);
+
+                ;
+                if (s2 > 300)
+                {
+                    value = -1;
+                }
+                else if (s2 < 40)
+                {
+                    value = -2;
+                }
                 else
-                    coder.Send(Message.SensorS2, (short)-1);
-                if (l1 > 100 && l1 < 800)
-                    coder.Send(Message.SensorL1, l1);
+                {
+                    value = s2;
+                }
+                coder.Send(Message.SensorS2, value);
+
+                if (l1 > 800)
+                {
+                    value = -1;
+                }
+                else if (l1 < 100)
+                {
+                    value = -2;
+                }
                 else
-                    coder.Send(Message.SensorL1, (short)-1);
-                if (l2 > 100 && l2 < 800)
-                    coder.Send(Message.SensorL2, l2);
+                {
+                    value = l1;
+                }
+                coder.Send(Message.SensorL1, value);
+
+                if (l2 > 800)
+                {
+                    value = -1;
+                }
+                else if (l2 < 100)
+                {
+                    value = -2;
+                }
                 else
-                    coder.Send(Message.SensorL2, (short)-1);
+                {
+                    value = l2;
+                }
+                coder.Send(Message.SensorL2, value);
+
+
+                //if (s2 > 40 && s2 < 300)
+                //    coder.Send(Message.SensorS2, s2);
+                //else
+                //    coder.Send(Message.SensorS2, (short)-1);
+                //if (l1 > 100 && l1 < 800)
+                //    coder.Send(Message.SensorL1, l1);
+                //else
+                //    coder.Send(Message.SensorL1, (short)-1);
+                //if (l2 > 100 && l2 < 800)
+                //    coder.Send(Message.SensorL2, l2);
+                //else
+                //    coder.Send(Message.SensorL2, (short)-1);
             }
         }
 
@@ -286,6 +348,21 @@ namespace MaCRo.Core
             //Thread.Sleep(1000);
         }
 
+        public void Info(string message)
+        {
+            coder.Send(Message.Info, message);
+        }
+
+        public void Debug(string message)
+        {
+            coder.Send(Message.Debug, message);
+        }
+
+        public void Error(string message)
+        {
+            coder.Send(Message.Error, message);
+        }
+
         public void Run()
         {
             if (workerThread != null)
@@ -313,12 +390,13 @@ namespace MaCRo.Core
 
         public void ManualMode()
         {
-            coder.Send(Message.Info, "Starting manual mode");
+            Info("Starting manual mode");
             this.Cancel();
             this.currentMode = Mode.Manual;
             navigation.resetDistance();
             navigation.disableContingency();
-            coder.Send(Message.Info, "Started manual mode");
+            Info("Started manual mode");
+            debug.Write(true);
         }
 
         public void StopManualMode()
@@ -328,8 +406,8 @@ namespace MaCRo.Core
                 this.currentMode = Mode.SearchingForWall;
                 this.Restart();
                 navigation.restartContingency();
-                coder.Send(Message.Info, "Stopped manual mode");
-                coder.Send(Message.Info, "Current mode: Searching a wall");
+                Info("Stopped manual mode");
+                Info("Current mode: Searching a wall");
             }
         }
 
@@ -382,21 +460,37 @@ namespace MaCRo.Core
         public void UpdatePosition(Position p)
         {
             Position _p = navigation.getActualPosition();
-            coder.Send(Message.Debug, "Position: " + _p.x + ":" + _p.y + ":" + _p.angle + " | " + p.x + ":" + p.y + ":" + p.angle);
+            Debug("Position: " + _p.x + " : " + _p.y + " : " + _p.angle + " | " + p.x + "  :" + p.y + " : " + p.angle);
             navigation.setActualPosition(p);
         }
 
         private void _Run()
         {
-            coder.Send(Message.Debug, "_Run method started");
             /****************** TEST CODE *********************/
-            //navigation.MoveForward(100, GlobalVal.speed);
-            //navigation.turnRight(90);
-            //navigation.MoveForward(100, GlobalVal.speed);
-            //navigation.turnRight(90);
-            //navigation.MoveForward(100, GlobalVal.speed);
-            //navigation.turnRight(90);
-            //navigation.MoveForward(100, GlobalVal.speed);
+            //navigation.MoveForward(2000, GlobalVal.speed);
+            //navigation.brake();
+            //Thread.Sleep(500);
+            //navigation.turnLeft(90);
+            //navigation.brake();
+            //Thread.Sleep(500);
+            //navigation.MoveForward(2000, GlobalVal.speed);
+            //navigation.brake();
+            //Thread.Sleep(500);
+            //navigation.turnLeft(90);
+            //navigation.brake();
+            //Thread.Sleep(500);
+            //navigation.MoveForward(2000, GlobalVal.speed);
+            //navigation.brake();
+            //Thread.Sleep(500);
+            //navigation.turnLeft(90);
+            //navigation.brake();
+            //Thread.Sleep(500);
+            //navigation.MoveForward(2000, GlobalVal.speed);
+            //navigation.brake();
+            //Thread.Sleep(500);
+            //navigation.turnLeft(90);
+            //navigation.brake();
+            //Thread.Sleep(500);
             //return;
             /****************** TEST CODE *********************/
             while (!cancel)
@@ -416,7 +510,7 @@ namespace MaCRo.Core
                         //WALL FOUND
                         navigation.TurnRightUntilWall(sensors);
                         currentMode = Mode.FollowWall;
-                        coder.Send(Message.Info, "Current mode: Follow Wall");
+                        Info("Current mode: Follow Wall");
                     }
                     continue;
                 }
@@ -458,7 +552,7 @@ namespace MaCRo.Core
                         }//CORRECT THE DEVIATION RESPECT TO THE WALL
                         else if (wall < wallback)
                         {
-                            if (wall < 6)
+                            if (wall < GlobalVal.minDistanceToFollowWall)
                             {
                                 navigation.turnRight(10);
                             }
@@ -480,7 +574,7 @@ namespace MaCRo.Core
                             }
                             else//THERE IS A CORNER
                             {
-                                coder.Send(Message.Debug, "LEFT CORNER");
+                                Debug("LEFT CORNER");
                                 navigation.TurnLeftUntilWall(sensors);
                             }
                         }

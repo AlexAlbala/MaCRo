@@ -91,10 +91,6 @@ namespace MaCRoGS
             xPos.Content = "Position in X axis: " + posX.ToString() + " meters";
             actualPosition.x = posX;
 
-            //actualPositionMap.x = StartingPositionMap.x + (1000 * actualPosition.x / this.mmperpixel_map);
-
-            //Canvas.SetLeft(macro, actualPositionMap.x - (Canvas.GetLeft(structure1) + structure1.ActualWidth / 2) * Math.Cos(actualPositionMap.angle) + (Canvas.GetTop(structure1) + structure1.ActualHeight * Math.Sin(actualPositionMap.angle)) / 2);
-
             timePX.Add(actualTime);
             PosX.Add(posX);
         }
@@ -134,28 +130,44 @@ namespace MaCRoGS
                 roverPath = new System.Windows.Shapes.Path();
                 map.Children.Add(roverPath);
                 roverPath.Stroke = System.Windows.Media.Brushes.Red;
+
+                DoubleCollection dashes = new DoubleCollection();
+                dashes.Add(2);
+                dashes.Add(2);
+                roverPath.StrokeDashArray = dashes;
+                roverPath.StrokeDashCap = PenLineCap.Flat;
+
                 roverPath.Stroke.Freeze();
-                roverPath.StrokeThickness = 2;
+                roverPath.StrokeThickness = 2   ;
             }
 
             PathGeometry geometry = new PathGeometry();
             PathFigure trackFigure = new PathFigure();
             trackFigure.StartPoint = new System.Windows.Point(map.ActualWidth / 2, map.ActualHeight / 2);
-
-            lock (positionHistory)
+            if ((bool)chkBox_path.IsChecked)
             {
-                for (int i = 0; i < positionHistory.Count; i++)
+                lock (positionHistory)
                 {
-                    Position p = positionHistory[i];
-                    double x = (p.x * 1000 * tinySLAM.MapScale() + SLAMAlgorithm.TS_MAP_SIZE / 2) * map.ActualWidth / tinySLAM.MapSize();
-                    double y = (p.y * 1000 * tinySLAM.MapScale() + SLAMAlgorithm.TS_MAP_SIZE / 2) * map.ActualHeight / tinySLAM.MapSize();
-                    System.Windows.Point _p = new System.Windows.Point(x, y);
-                    trackFigure.Segments.Add(new LineSegment(_p, true));
+                    for (int i = 0; i < positionHistory.Count; i++)
+                    {
+                        Position p = positionHistory[i];
+                        double x = (p.x * 1000 * tinySLAM.MapScale() + SLAMAlgorithm.TS_MAP_SIZE / 2) * map.ActualWidth / tinySLAM.MapSize();
+                        double y = (p.y * 1000 * tinySLAM.MapScale() + SLAMAlgorithm.TS_MAP_SIZE / 2) * map.ActualHeight / tinySLAM.MapSize();
+                        System.Windows.Point _p = new System.Windows.Point(x, y);
+                        trackFigure.Segments.Add(new LineSegment(_p, true));
+                    }
+                }
+
+                geometry.Figures.Add(trackFigure);
+                roverPath.Data = geometry;
+            }
+            else
+            {
+                if (roverPath != null)
+                {
+                    roverPath.Data = new PathGeometry();
                 }
             }
-
-            geometry.Figures.Add(trackFigure);
-            roverPath.Data = geometry;
 
             ushort _MapSizeValue = tinySLAM.MapSize();
             MapSize(_MapSizeValue);
@@ -163,7 +175,7 @@ namespace MaCRoGS
             byte[] buffer = new byte[NewMap.Length * 3];
             for (int i = 0; i < NewMap.Length; i++)
             {
-                if (NewMap[i] == 0)
+                if (NewMap[i] == (ushort)0)
                 {
                     buffer[3 * i] = 255;
                     buffer[3 * i + 1] = 0;

@@ -280,6 +280,11 @@ namespace MaCRo.Communications
                         buffer[0] = (byte)'b';
                         buffer[1] = (byte)'p';
                         break;
+                    case Message.Estimation:
+                        buffer = new byte[2 + 2];
+                        buffer[0] = (byte)'b';
+                        buffer[1] = (byte)'e';
+                        break;
                     default:
                         buffer = null;
                         break;

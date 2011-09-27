@@ -81,7 +81,7 @@ namespace MaCRoGS.SLAM
         internal static readonly ushort TS_DISTANCE_NO_DETECTION = 800;
         internal static readonly ushort TS_NO_OBSTACLE = 65500;
         internal static readonly ushort TS_OBSTACLE = 0;
-        internal static readonly ushort TS_HOLE_WIDTH = 400;
+        internal static readonly ushort TS_HOLE_WIDTH = 100;
 
         private ts_map_t map;
 

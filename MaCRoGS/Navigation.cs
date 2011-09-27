@@ -88,7 +88,7 @@ namespace MaCRoGS
 
         private void _SetPositionX(double posX)
         {
-            xPos.Content = "Position in X axis: " + posX.ToString() + " meters";
+            xPos.Content = "Position in X axis: " + Math.Round(posX * 1000, 3).ToString() + " millimeters";
             actualPosition.x = posX;
 
             timePX.Add(actualTime);
@@ -103,7 +103,8 @@ namespace MaCRoGS
 
         private void _SetPositionAngle(double angle)
         {
-            anglePos.Content = "Current angle: " + angle.ToString() + " rads";
+            anglePos.Content = "Current angle: " + Math.Round(angle, 5).ToString() + " rads";
+            angleDegPos.Content = "Current angle: " + Math.Round(angle * 180 / Math.PI, 3).ToString() + " º";
             this._SetHeading(angle);
         }
 
@@ -113,14 +114,14 @@ namespace MaCRoGS
             this.Dispatcher.Invoke(updater, distance);
         }
 
-        private void _SetPositionY(double Y)
+        private void _SetPositionY(double posY)
         {
-            yPos.Content = "Position in Y axis: " + Y.ToString() + " meters";
-            actualPosition.y = Y;
+            yPos.Content = "Position in Y axis: " + Math.Round(posY * 1000, 3).ToString() + " millimeters";
+            actualPosition.y = posY;
 
             timePY.Add(actualTime);
 
-            PosY.Add(Y);
+            PosY.Add(posY);
         }
 
         private void _UpdateFullMap(ushort[] NewMap)
@@ -138,7 +139,7 @@ namespace MaCRoGS
                 roverPath.StrokeDashCap = PenLineCap.Flat;
 
                 roverPath.Stroke.Freeze();
-                roverPath.StrokeThickness = 2   ;
+                roverPath.StrokeThickness = 2;
             }
 
             PathGeometry geometry = new PathGeometry();

@@ -7,8 +7,8 @@ namespace MaCRo.Core
 {
     public enum Sensor
     {
-        Central, //S1
-        wall_back,//L1
+        Central, //L1
+        wall_back,//S1
         Right,//L2
         Wall//S2
     }
@@ -31,37 +31,61 @@ namespace MaCRo.Core
         public float getDistance(Sensor type)
         {
             float value = 0;
+            float[] values = new float[5];
+            float[] auxValues = new float[5];
 
             switch (type)
             {
                 case Sensor.Central:
                     for (int i = 0; i < 5; i++)
                     {
-                        value += central.GetDistance_cm();
+                        //value += central.GetDistance_cm();
+                        values[i] = central.GetDistance_cm();
                     }
                     break;
                 case Sensor.Wall:
                     for (int i = 0; i < 5; i++)
                     {
-                        value += wall.GetDistance_cm();
+                        //value += wall.GetDistance_cm();
+                        values[i] = wall.GetDistance_cm();
                     }
                     break;
                 case Sensor.wall_back: for (int i = 0; i < 5; i++)
                     {
-                        value += wall_back.GetDistance_cm();
+                        //value += wall_back.GetDistance_cm();
+                        values[i] = wall_back.GetDistance_cm();
                     }
                     break;
                 case Sensor.Right: for (int i = 0; i < 5; i++)
                     {
-                        value += right.GetDistance_cm();
+                        //value += right.GetDistance_cm();
+                        values[i] = right.GetDistance_cm();
                     }
                     break;
                 default:
                     return 0;
 
             }
+            int count = 0;
 
-            return value / 5;
+            while (count < 5)
+            {
+                float min = float.MaxValue;
+                short lastMin = -1;
+                for (short i = 0; i < 5; i++)
+                {
+                    if (values[i] < min)
+                    {
+                        min = values[i];
+                        lastMin = i;
+                    }
+                }
+                auxValues[count++] = values[lastMin];
+                values[lastMin] = float.MaxValue;
+            }
+
+            //MEdIAN FILTER
+            return auxValues[2];
         }
 
 

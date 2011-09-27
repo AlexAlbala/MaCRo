@@ -28,8 +28,8 @@ namespace MaCRoGS.SLAM
                     //Check boundaries
                     if (x >= 0 && x < TS_MAP_SIZE && y >= 0 && y < TS_MAP_SIZE)
                     {
-                        //sum += map.map[y * TS_MAP_SIZE + x];
-                        sum += Math.Abs(scan.value[i] - map.map[y * TS_MAP_SIZE + x]);
+                        sum += map.map[y * TS_MAP_SIZE + x];
+                        //sum += Math.Abs(scan.value[i] - map.map[y * TS_MAP_SIZE + x]);
                         nb_points++;
                     }
                 }

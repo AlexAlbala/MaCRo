@@ -47,8 +47,8 @@ namespace MaCRoGS
 
             wallback_line.X1 = wallback_robotmap.x - (value / mmperpixel_robotmap);
             wallback_line.X2 = wallback_line.X1;
-            wallback_line.Y1 = wallback_robotmap.y + 10;
-            wallback_line.Y2 = wallback_robotmap.y - 10;
+            wallback_line.Y1 = wallback_robotmap.y;
+            wallback_line.Y2 = wallback_robotmap.y + 20;
 
             wallback_line.Stroke = Brushes.Red;
         }
@@ -66,8 +66,8 @@ namespace MaCRoGS
 
             wall_line.X1 = wall_robotmap.x - (value / mmperpixel_robotmap);
             wall_line.X2 = wall_line.X1;
-            wall_line.Y1 = wall_robotmap.y + 10;
-            wall_line.Y2 = wall_robotmap.y - 10;
+            wall_line.Y1 = wall_robotmap.y;
+            wall_line.Y2 = wall_robotmap.y + 20;
 
             wall_line.Stroke = Brushes.Blue;
         }
@@ -85,31 +85,33 @@ namespace MaCRoGS
 
             if (central_line != null)
             {
-                central_line.X1 = central_robotmap.x - 10;
-                central_line.X2 = central_robotmap.x + 10;
+                central_line.X1 = central_robotmap.x;
+                central_line.X2 = central_robotmap.x + 20;
                 central_line.Y1 = central_robotmap.y - (value / mmperpixel_robotmap);
                 central_line.Y2 = central_line.Y1;
 
                 central_line.Stroke = Brushes.Black;
             }
 
-            //PathFigure figure = new PathFigure();
-            //PathGeometry geometry = new PathGeometry();
+            /*
+            PathFigure figure = new PathFigure();
+            PathGeometry geometry = new PathGeometry();
 
-            //figure.StartPoint = new Point(central_robotmap.x - central_sensor.ActualWidth / 2, central_robotmap.y - central_sensor.ActualHeight/2);
+            figure.StartPoint = new Point(central_robotmap.x - central_sensor.ActualWidth / 2, central_robotmap.y - central_sensor.ActualHeight/2);
 
-            //double angleRad = 15*Math.PI/180;
+            double angleRad = 15*Math.PI/180;
 
-            //LineSegment s1 = new LineSegment(new Point(figure.StartPoint.X - Math.Sin(angleRad)*value / mmperpixel_robotmap, figure.StartPoint.Y - Math.Cos(angleRad)*value / mmperpixel_robotmap),true);
-            //ArcSegment s2 = new ArcSegment(new Point(s1.Point.X,s1.Point.Y),new Size(30,30),15.0,false,SweepDirection.Clockwise,true);
-            //LineSegment s3 = new LineSegment(new Point(s1.Point.X + central_sensor.ActualWidth,s1.Point.Y),true);
+            LineSegment s1 = new LineSegment(new Point(figure.StartPoint.X - Math.Sin(angleRad)*value / mmperpixel_robotmap, figure.StartPoint.Y - Math.Cos(angleRad)*value / mmperpixel_robotmap),true);
+            ArcSegment s2 = new ArcSegment(new Point(s1.Point.X,s1.Point.Y),new Size(30,30),15.0,false,SweepDirection.Clockwise,true);
+            LineSegment s3 = new LineSegment(new Point(s1.Point.X + central_sensor.ActualWidth,s1.Point.Y),true);
 
-            //figure.Segments.Add(s1);
-            //figure.Segments.Add(s2);
-            //figure.Segments.Add(s3);
+            figure.Segments.Add(s1);
+            figure.Segments.Add(s2);
+            figure.Segments.Add(s3);
 
-            //geometry.Figures.Add(figure);
-            //central_path.Data = geometry;
+            geometry.Figures.Add(figure);
+            central_path.Data = geometry;
+             */
         }
 
         public void UpdateL2(short value)//RIGHT
@@ -123,10 +125,10 @@ namespace MaCRoGS
             lastRight = value;
             L2.Content = "RIGHT: " + value.ToString() + " mm";
 
-            right_line.X1 = right_robotmap.x + (value / mmperpixel_robotmap - 10) * Math.Cos(right_robotmap.angle);
-            right_line.X2 = right_robotmap.x + (value / mmperpixel_robotmap + 10) * Math.Cos(right_robotmap.angle);
-            right_line.Y1 = right_robotmap.y - (value / mmperpixel_robotmap + 10) * Math.Sin(right_robotmap.angle);
-            right_line.Y2 = right_robotmap.y - (value / mmperpixel_robotmap - 10) * Math.Sin(right_robotmap.angle);
+            right_line.X1 = right_robotmap.x + (value / mmperpixel_robotmap) * Math.Cos(right_robotmap.angle);
+            right_line.X2 = right_robotmap.x + (value / mmperpixel_robotmap + 20) * Math.Cos(right_robotmap.angle);
+            right_line.Y1 = right_robotmap.y - (value / mmperpixel_robotmap) * Math.Sin(right_robotmap.angle);
+            right_line.Y2 = right_robotmap.y - (value / mmperpixel_robotmap - 20) * Math.Sin(right_robotmap.angle);
 
             right_line.Stroke = Brushes.Brown;
 

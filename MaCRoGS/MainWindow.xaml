@@ -15,14 +15,7 @@
 					</Grid.ColumnDefinitions>
                 		<Canvas x:Name="map" Margin="0,1.5,8.192,113.5" Grid.ColumnSpan="1" Grid.Column="0" Width="600" Height="600" Panel.ZIndex="1"/>
                 		<Image x:Name="mapImage" Margin="0,1.5,8.192,113.5" Width="600" Height="600"/>
-                		<RichTextBox x:Name="log" Height="93" Background="Black" Foreground="#FF08FF00" FontFamily="Consolas" Cursor="Arrow" ForceCursor="True" IsReadOnlyCaretVisible="True" Focusable="False" TextOptions.TextFormattingMode="Display" Margin="0,0,8.192,15" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" FontSize="13.333" FontWeight="Bold">
-                			<RichTextBox.BorderBrush>
-                				<LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                					<GradientStop Color="#FFABADB3" Offset="0.05"/>
-                					<GradientStop Color="#FFE2E3EA" Offset="0.07"/>
-                					<GradientStop Color="Black" Offset="1"/>
-                				</LinearGradientBrush>
-                			</RichTextBox.BorderBrush>
+                		<RichTextBox x:Name="log" Height="93" Background="Black" Foreground="#FF08FF00" FontFamily="Consolas" Cursor="Arrow" ForceCursor="True" IsReadOnlyCaretVisible="True" Focusable="False" TextOptions.TextFormattingMode="Display" Margin="0,0,8.192,15" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" FontSize="13.333" FontWeight="Bold" BorderBrush="{x:Null}" BorderThickness="1">
                 			<FlowDocument Focusable="False" IsEnabled="False">
                 				<Paragraph><Run Text="RichTextBox"/></Paragraph>
                 			</FlowDocument>
@@ -51,9 +44,9 @@
                 							</ToggleButton.Effect></ToggleButton>
                 					</StackPanel>
                 				</StackPanel>
-                				<Button x:Name="OnOff" Content="On" HorizontalAlignment="Left" Width="83.5" Click="Button_Click" Margin="3,35.832,0,0" Height="25.5" VerticalAlignment="Top"/>
-                				<Image x:Name="LEDImageOFF" HorizontalAlignment="Right" Margin="0,14,20,0" Width="50" Height="50" Source="LED_OFF.png" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
-                				<Image x:Name="LEDImageON" HorizontalAlignment="Right" Margin="0,14,20,0" Width="50" Height="50" Source="LED_ON.png" Visibility="Hidden" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
+                				<Button x:Name="OnOff" Content="On" HorizontalAlignment="Left" Width="83.5" Click="Button_Click" Margin="3,34.832,0,0" Height="25.5" VerticalAlignment="Top"/>
+                				<Image x:Name="LEDImageOFF" HorizontalAlignment="Right" Margin="0,20,20,0" Width="50" Height="50" Source="LED_OFF.png" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
+                				<Image x:Name="LEDImageON" HorizontalAlignment="Right" Margin="0,20,20,0" Width="50" Height="50" Source="LED_ON.png" Visibility="Hidden" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
                 				<Slider x:Name="Speed" Margin="1,0,0,72.5" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" HorizontalAlignment="Left" Width="108" ValueChanged="Speed_ValueChanged" Value="2.5" Focusable="False" Height="23" VerticalAlignment="Bottom">
                 					<Slider.RenderTransform>
                 						<TransformGroup>
@@ -94,7 +87,15 @@
                 						<Label x:Name="lbl_voltage" Content="Label"/>
                 						<Label x:Name="lbl_current" Content="Label"/>
                 						<Label x:Name="lbl_perCent" Content="Label"/>
-                						<ProgressBar x:Name="batteryBar" Margin="0,0,4,0" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="163.768"/>            						
+                						<ProgressBar x:Name="batteryBar" Margin="0,0,4,0" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="163.768">
+                							<ProgressBar.Background>
+                								<LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                									<GradientStop Color="#FFBABABA" Offset="0"/>
+                									<GradientStop Color="#FFC7C7C7" Offset="0.5"/>
+                									<GradientStop Color="#FFBABABA" Offset="1"/>
+                								</LinearGradientBrush>
+                							</ProgressBar.Background>
+                						</ProgressBar>            						
 										<Label x:Name="lbl_estimation" Content="Label"/>
                 					</StackPanel>
                 				</GroupBox>
@@ -156,6 +157,7 @@
                             <Label Content="xPos" x:Name="xPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="yPos" x:Name="yPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="anglePos" x:Name="anglePos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+							<Label Content="angleDeg" x:Name="angleDegPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <!--<Label Content="xVel" x:Name="xVel" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="yVel" x:Name="yVel" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="timeL" x:Name="labelTime" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />-->

@@ -70,7 +70,7 @@ namespace MaCRoGS
             //CENTRAL SENSOR *******************************
             central_robotmap = new Position();
             central_robotmap.angle = 0;
-            central_robotmap.x = (int)(Canvas.GetLeft(central_sensor) + central_sensor.ActualWidth / 2);
+            central_robotmap.x = (int)(Canvas.GetLeft(central_sensor));// + central_sensor.ActualWidth / 2);
             central_robotmap.y = (int)Canvas.GetTop(central_sensor);
 
             //RIGHT SENSOR *********************************
@@ -92,7 +92,7 @@ namespace MaCRoGS
             RotateTransform t_wrmap = (RotateTransform)wall_sensor.RenderTransform;
             wall_robotmap.angle = t_wrmap.Angle * Math.PI / 180;
             wall_robotmap.x = (int)(Canvas.GetLeft(wall_sensor));
-            wall_robotmap.y = (int)(Canvas.GetTop(wall_sensor) + wall_sensor.ActualWidth / 2);
+            wall_robotmap.y = (int)(Canvas.GetTop(wall_sensor));// + wall_sensor.ActualWidth / 2);
         }
 
         public void Init()
@@ -139,7 +139,7 @@ namespace MaCRoGS
 
             scanTimer = new Timer(new TimerCallback(Scan), new object(), 4000, 100);
             updateMap = new Timer(new TimerCallback(mapUpdate), new object(), 4000, 1500);
-            //updatePosition = new Timer(new TimerCallback(MonteCarlo_UpdatePosition), new object(), 30000, 4000);
+            updatePosition = new Timer(new TimerCallback(MonteCarlo_UpdatePosition), new object(), 10000, 5000);
             positionHistoryUpdate = new Timer(new TimerCallback(UpdatePositionHistory), new object(), 0, 250);
             /************************** TIMERS ***************************************/
 
@@ -159,7 +159,7 @@ namespace MaCRoGS
             this.updateIterationsLabel(0);
             this.updateMapUpdatesLabel(0);
             log.SelectAll();
-            log.Selection.Text = DateTime.Now.ToString() +  "- LOG:" ;
+            log.Selection.Text = DateTime.Now.ToString() + "- LOG:";
         }
 
         private void StartupMap()
@@ -219,7 +219,11 @@ namespace MaCRoGS
             p.y = (newPos.y - SLAMAlgorithm.TS_MAP_SIZE / (SLAMAlgorithm.TS_MAP_SCALE * 2)) * 1e-3;
             p.angle = newPos.theta * Math.PI / 180;
 
-            coder.Send(Message.UpdatePosition, p);
+            Position diff = p - actualPosition;
+
+            //Only the new position will be sent if is near of the actual position
+            if (diff.x < 3e-2 && diff.y < 3e-2 && diff.angle < 5 * Math.PI / 180)
+                coder.Send(Message.UpdatePosition, p);          
         }
 
         private ts_scan_t doScan()
@@ -601,5 +605,16 @@ namespace MaCRoGS
         public double x { get { return _x; } set { _x = value; } }
         public double y { get { return _y; } set { _y = value; } }
         public double angle { get { return _angle; } set { _angle = (value % (2 * Math.PI)); } }
+
+        public static Position operator -(Position p1, Position p2)
+        {
+            Position difference = new Position();
+            difference.x = Math.Abs(p1.x - p2.x);
+            difference.y = Math.Abs(p1.y - p2.y);
+            difference.angle = Math.Abs(p1.angle - p2.angle);
+
+            return difference;
+
+        }
     }
 }

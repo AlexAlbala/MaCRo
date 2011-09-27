@@ -356,6 +356,7 @@ namespace MaCRo.Communications
                     Position p = new Position();
                     double x = ToDouble(tmpBuff, readen, out temp);
                     readen += temp;
+                    Engine.getInstance().Debug("X: " + x.ToString());
 
                     double y = ToDouble(tmpBuff, readen, out temp);
                     readen += temp;
@@ -409,8 +410,12 @@ namespace MaCRo.Communications
         {
             string s;
             read = ToString(buffer, offset, out s);
+            Engine.getInstance().Debug("String: " + s);
 
             double d = double.Parse(s);
+
+            if (s[0] == '-' && d > 0)
+                d *= -1;
 
             return d;
         }

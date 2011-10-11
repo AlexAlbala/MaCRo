@@ -139,7 +139,7 @@ namespace MaCRoGS
 
             scanTimer = new Timer(new TimerCallback(Scan), new object(), 4000, 100);
             updateMap = new Timer(new TimerCallback(mapUpdate), new object(), 4000, 1500);
-            updatePosition = new Timer(new TimerCallback(MonteCarlo_UpdatePosition), new object(), 10000, 5000);
+            //updatePosition = new Timer(new TimerCallback(MonteCarlo_UpdatePosition), new object(), 10000, 5000);
             positionHistoryUpdate = new Timer(new TimerCallback(UpdatePositionHistory), new object(), 0, 250);
             /************************** TIMERS ***************************************/
 

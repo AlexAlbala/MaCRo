@@ -171,17 +171,17 @@ namespace MaCRo.Communications
                      */
 
                     case Message.Info:
-                        buffer = new byte[6 + (value as string).Length];
+                        buffer = new byte[4 + (value as string).Length];
                         buffer[0] = (byte)'L';
                         buffer[1] = (byte)'I';
                         break;
                     case Message.Debug:
-                        buffer = new byte[6 + (value as string).Length];
+                        buffer = new byte[4 + (value as string).Length];
                         buffer[0] = (byte)'L';
                         buffer[1] = (byte)'D';
                         break;
                     case Message.Error:
-                        buffer = new byte[6 + (value as string).Length];
+                        buffer = new byte[4 + (value as string).Length];
                         buffer[0] = (byte)'L';
                         buffer[1] = (byte)'E';
                         break;
@@ -266,12 +266,12 @@ namespace MaCRo.Communications
                                             buffer[1] = (byte)'S';
                                             break;*/
                     case Message.Voltage:
-                        buffer = new byte[((double)value).ToString().Length + 2 + 4];
+                        buffer = new byte[((double)value).ToString().Length + 2 + 2];
                         buffer[0] = (byte)'b';
                         buffer[1] = (byte)'v';
                         break;
                     case Message.Current:
-                        buffer = new byte[((double)value).ToString().Length + 2 + 4];
+                        buffer = new byte[((double)value).ToString().Length + 2 + 2];
                         buffer[0] = (byte)'b';
                         buffer[1] = (byte)'i';
                         break;
@@ -356,7 +356,7 @@ namespace MaCRo.Communications
                     Position p = new Position();
                     double x = ToDouble(tmpBuff, readen, out temp);
                     readen += temp;
-                    Engine.getInstance().Debug("X: " + x.ToString());
+                    //Engine.getInstance().Debug("X: " + x.ToString());
 
                     double y = ToDouble(tmpBuff, readen, out temp);
                     readen += temp;
@@ -410,7 +410,7 @@ namespace MaCRo.Communications
         {
             string s;
             read = ToString(buffer, offset, out s);
-            Engine.getInstance().Debug("String: " + s);
+            //Engine.getInstance().Debug("String: " + s);
 
             double d = double.Parse(s);
 
@@ -426,7 +426,7 @@ namespace MaCRo.Communications
 
             // Prefix string with int length
             FromShort((short)tmpBuffer.Length, buffer, offset);
-            int written = sizeof(int);
+            int written = sizeof(short);
 
             // Copy to output buffer
             Array.Copy(tmpBuffer, 0, buffer, offset + written, tmpBuffer.Length);

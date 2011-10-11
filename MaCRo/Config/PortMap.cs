@@ -21,6 +21,9 @@ namespace MaCRo.Config
         public readonly static FEZ_Pin.Digital encoderL_interrupt = FEZ_Pin.Digital.Di7;
         public readonly static FEZ_Pin.Digital encoderR_interrupt = FEZ_Pin.Digital.Di6;
 
+        public readonly static FEZ_Pin.Digital interrupt_magnetometer = FEZ_Pin.Digital.IO44;
+
+
         public readonly static FEZ_Pin.AnalogIn infraredS1 = FEZ_Pin.AnalogIn.An0;
         public readonly static FEZ_Pin.AnalogIn infraredS2 = FEZ_Pin.AnalogIn.An1;
         public readonly static FEZ_Pin.AnalogIn infraredL1 = FEZ_Pin.AnalogIn.An3;

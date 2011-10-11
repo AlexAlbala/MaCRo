@@ -25,7 +25,7 @@ namespace MaCRo.Config
         /// <summary>
         /// Correction factor of the distance between wheels
         /// </summary>
-        public readonly static float width_correction = 90 / (90 - 4.75f);
+        public readonly static float width_correction = 90 / (90 - 4.8f);
         ///// <summary>
         ///// Correction factor of the left wheel distance
         ///// </summary>

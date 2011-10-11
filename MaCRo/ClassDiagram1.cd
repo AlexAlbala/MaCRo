@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MaCRo.Core.EngineManager">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAEAAAAABAAAAEIAAAAAABAAAAAgAA=</HashCode>
+      <FileName>Core\EngineManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="dcm" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MaCRo.Program">
+    <Position X="16" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Drivers.DCMotorDriver">
+    <Position X="14.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAKAAAAAFAAAAAIAAAAAAABAAAAAgAAAAAAE=</HashCode>
+      <FileName>Drivers\DCMotorDriver.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="MaCRo.Drivers.Encoder">
+    <Position X="12.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAEAAAAAAAAABAEAAAAAAAAAAAAQAAIAI=</HashCode>
+      <FileName>Drivers\Encoder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Communications.Coder" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAACQAAAAEEEAAAAAAiAAMAAAAABQCAAAAAAA=</HashCode>
+      <FileName>Communications\Coder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Communications.TransportAddress" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAQABA=</HashCode>
+      <FileName>Communications\ITransportAddress.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Communications.SerialCRC" Collapsed="true">
+    <Position X="11.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Communications\SerialCRC.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Communications.SerialTransport" Collapsed="true">
+    <Position X="13" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIIAAAACACQBAAAAAEAAAAABAIAAASgQIwAAEAAAAAA=</HashCode>
+      <FileName>Communications\SerialTransport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Communications.SerialHeader" Collapsed="true">
+    <Position X="2.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CACAAAAAAAAAAAAAAMAAAAAAAACAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Communications\SerialTransport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Communications.SafeSerialHeader" Collapsed="true">
+    <Position X="2.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CACAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Communications\SerialTransport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Communications.SafeData" Collapsed="true">
+    <Position X="7.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAgAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Communications\SerialTransport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Communications.SerialTransportAddress" Collapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEgAIAAAAAAAACAIACAAAAAAAQABA=</HashCode>
+      <FileName>Communications\SerialTransportAddress.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Config.GlobalVal" Collapsed="true">
+    <Position X="18.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAgAgACACSgAAASA0AAEIBAAAAAQEAAAYEQAggACA=</HashCode>
+      <FileName>Config\GlobalVal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Config.PortMap" Collapsed="true">
+    <Position X="20" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAMgAACACIAAgAAAAAAAAAAAAJEAAAA=</HashCode>
+      <FileName>Config\PortMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Core.BatteryManager">
+    <Position X="20.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBAAAAAEAAAAAAAAAAAAAAABAAAAAAAAAAgAAAAAAI=</HashCode>
+      <FileName>Core\BatteryManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Core.Contingency">
+    <Position X="22.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAEAAAAAAAAAAAAAAAIAEQAAABhAAAAgEI=</HashCode>
+      <FileName>Core\Contingency.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Core.Engine">
+    <Position X="24.25" Y="2" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>EgpAEgIASAcAAaAAgACACAAAAABBACYEIABBAkIAAAo=</HashCode>
+      <FileName>Core\Engine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Core.NavigationManager">
+    <Position X="18.25" Y="2" Width="1.5" />
+    <Members>
+      <Method Name="_turnLeft" Hidden="true" />
+      <Method Name="_turnRight" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AWQAIAKAEABEACAEkAAAAJQAmQEYJAAAAABAAIIAiAk=</HashCode>
+      <FileName>Core\NavigationManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Core.SensorManager">
+    <Position X="16" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAQAAAAAAAAAAAAAEAAAAAAAAEAAAAgAA=</HashCode>
+      <FileName>Core\SensorManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Drivers.DistanceDetector" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="8.25" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="MaCRo.Drivers.DistanceDetector.SharpSensorType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Drivers\DistanceDetector.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAEAAAAAIABAAAAYAAAgAACAAA=</HashCode>
+      <FileName>Drivers\DistanceDetector.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="MaCRo.Drivers.Magnetometer">
+    <Position X="8" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACACAAAIAAAAACAAAAAIAAIBBAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Drivers\Magnetometer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Drivers.VoltageCurrentSensor">
+    <Position X="16.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAIAAAAIQAAAAAgACAIAAjAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Drivers\VoltageCurrentSensor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Drivers.IMU.nIMU" Collapsed="true">
+    <Position X="9.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEIQiAQCCAIAMAAQAAAggQIggIUCCEAIAQBBAEQRAI=</HashCode>
+      <FileName>Drivers\IMU\nIMU.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Resources" Collapsed="true">
+    <Position X="6" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAFAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Tools.BitConverter" Collapsed="true">
+    <Position X="7.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAIgAAAAA=</HashCode>
+      <FileName>Tools\BitConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Tools.Dictionary" Collapsed="true">
+    <Position X="13" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CEIAAAAAAAAEBBBADAAARAQAAAAAAAAQAAAgAAFAgAA=</HashCode>
+      <FileName>Tools\Dictionary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Tools.KeyValuePair" Collapsed="true">
+    <Position X="13" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Tools\Dictionary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Tools.exMath" Collapsed="true">
+    <Position X="9.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>kwACBAEEABAgABgEkAAUAAMJAC3AAgCgCCoQAkCAAMA=</HashCode>
+      <FileName>Tools\Math.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaCRo.Tools.Position" Collapsed="true">
+    <Position X="13" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAABAAAA=</HashCode>
+      <FileName>Tools\Utils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="MaCRo.Communications.TransportMode" Collapsed="true">
+    <Position X="6" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAIAAAAAAAAAABAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Communications\ITransportAddress.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MaCRo.Core.Sensor" Collapsed="true">
+    <Position X="13" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAAQBAACAAAAAAAA=</HashCode>
+      <FileName>Core\SensorManager.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MaCRo.Tools.Mode" Collapsed="true">
+    <Position X="9.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQIAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tools\Utils.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MaCRo.Tools.Axis" Collapsed="true">
+    <Position X="6" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAE=</HashCode>
+      <FileName>Tools\Utils.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MaCRo.Tools.Movement" Collapsed="true">
+    <Position X="11.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAgAAAAAAAAAAAAAAoAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Tools\Utils.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MaCRo.Tools.Message" Collapsed="true">
+    <Position X="7.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAggAQAApA4YEggCCCAAAKNAAAAAAAAmBADUAEEQc=</HashCode>
+      <FileName>Tools\Utils.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

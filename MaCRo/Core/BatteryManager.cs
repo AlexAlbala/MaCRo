@@ -9,6 +9,8 @@ namespace MaCRo.Core
     {
         private VoltageCurrentSensor vcs;
 
+        public bool lowBattery { get { return getBatteryCapacity() < 5 ? true : false; } }
+
         public BatteryManager()
         {
             vcs = new VoltageCurrentSensor(11.6f, 9.0f, (ushort)4000);

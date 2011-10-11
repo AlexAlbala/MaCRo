@@ -194,7 +194,7 @@
                                             <RotateTransform Angle="90"/>
                                         </Rectangle.RenderTransform>
                                     </Rectangle>
-                                    <Rectangle x:Name="Panda" Stroke="Black" Height="28.666" Panel.ZIndex="3" Fill="White" RenderTransformOrigin="-2.979,0.572" Canvas.Left="32.389" Canvas.Top="73.393" Width="26.459"/>
+                                    <Rectangle x:Name="Panda" Stroke="Black" Height="23.028" Panel.ZIndex="3" Fill="White" RenderTransformOrigin="-2.979,0.572" Canvas.Left="29.235" Canvas.Top="73.558" Width="31.683"/>
                                     <Rectangle x:Name="structure" Stroke="Black" RadiusY="2" RadiusX="2" Height="117.5" Panel.ZIndex="2" Width="74" Fill="#FF6A6A6A" Opacity="0.8" Canvas.Left="6.366" Canvas.Top="7.75"/>
                                 </Canvas>
                             </Canvas>

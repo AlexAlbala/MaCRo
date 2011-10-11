@@ -15,16 +15,24 @@ namespace MaCRo.Core
         private Encoder right = new Encoder(PortMap.encoderR_interrupt);
         private DCMotorDriver dcm = new DCMotorDriver();
         private Contingency contingency;
+        private Magnetometer magnetometer = new Magnetometer();
         private bool manualStop;
         public Movement movement;
         private object monitor;
+        private double initialHeading;
+        private Position actualPosition;
 
         public sbyte manualSpeed { set; get; }
         public sbyte manualTurningSpeed { set; get; }
 
         public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
 
+        public double MAG_Heading { get { return magnetometer.MAGHeadingRad; } }
+
+        public double Relative_MAG_Heading { get { return MAG_Heading - initialHeading; } }
+
         #region IMU
+        /*
         private nIMU imu;
         private Position actualPosition;
         private Position actualVelocity;
@@ -33,6 +41,9 @@ namespace MaCRo.Core
         private double integrationTimeConstant;
         private double lastTime;
         private double initialHeading;
+
+
+      
 
         //public double Yaw { get { return (double)exMath.ToDeg(imu.Yaw); } }
         //public double Pitch { get { return (double)exMath.ToDeg(imu.Roll); } }
@@ -172,12 +183,13 @@ namespace MaCRo.Core
                     return 0;
             }
         }
-
+        */
         #endregion
 
         public NavigationManager()
         {
             movement = Movement.stop;
+            /*
             imu = new nIMU();
             imu.Start();
             //integrationTimeConstant = GlobalVal.integrationPeriod / 1e3;
@@ -189,11 +201,25 @@ namespace MaCRo.Core
             lastTime = 0.0;
 
             //initialAcc = new double[3];
-            Thread.Sleep(1000);
+            Thread.Sleep(1000);*/
+
+            actualPosition = new Position();
             initialHeading = this.MAG_Heading;
 
             contingency = new Contingency(left, right, this);
             //integration = new Timer(new TimerCallback(this.Integrate), new object(), GlobalVal.integrationPeriod * 10, GlobalVal.integrationPeriod);
+        }
+
+        public Position getActualPosition()
+        {
+            return actualPosition;
+        }
+
+        public void setActualPosition(Position p)
+        {
+            this.actualPosition.x = p.x;
+            this.actualPosition.y = p.y;
+            this.actualPosition.angle = p.angle;
         }
 
         public void TurnRightUntilWall(SensorManager sensors)

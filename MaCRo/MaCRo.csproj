@@ -50,6 +50,7 @@
     <Compile Include="Drivers\DistanceDetector.cs" />
     <Compile Include="Drivers\Encoder.cs" />
     <Compile Include="Drivers\IMU\nIMU.cs" />
+    <Compile Include="Drivers\Magnetometer.cs" />
     <Compile Include="Drivers\VoltageCurrentSensor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

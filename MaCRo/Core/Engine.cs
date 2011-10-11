@@ -100,8 +100,18 @@ namespace MaCRo.Core
             ushort estimation = battery.getBatteryEstimation_minutes();
             if (estimation > 0)
                 coder.Send(Message.Estimation, estimation);
+
+            if (battery.lowBattery)
+            {
+                this.Cancel();
+                Info("LOW BATTERY!!: " + battery.getBatteryCapacity() + " %. System stopped for saving battery.");
+                sensorTimer = null;
+                positionTimer = null;
+                batteryTimer = null;
+            }
         }
 
+        /*
         void imuTimer_Tick(Object state)
         {
             //IMU Telemetry
@@ -123,14 +133,14 @@ namespace MaCRo.Core
             coder.Send(Message.IMUTempX, navigation.getTemp(Axis.X));
             coder.Send(Message.IMUTempY, navigation.getTemp(Axis.Y));
             coder.Send(Message.IMUTempZ, navigation.getTemp(Axis.Z));
-        }
+        }*/
 
         void posTimer_Tick(Object state)
         {
             lock (coder)
             {
                 Position pos = navigation.getActualPosition();
-                Position vel = navigation.getActualVelocity();
+                //Position vel = navigation.getActualVelocity();
 
                 coder.Send(Message.PositionX, pos.x);
                 coder.Send(Message.PositionY, pos.y);

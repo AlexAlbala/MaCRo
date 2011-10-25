@@ -608,7 +608,7 @@ namespace MaCRo.Core
             }
         }
 
-        public void manualBrake()
+        public void ManualBrake()
         {
             manualStop = true;
         }

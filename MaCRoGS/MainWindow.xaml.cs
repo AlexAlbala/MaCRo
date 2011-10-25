@@ -119,19 +119,9 @@ namespace MaCRoGS
 
             PosX = new List<double>();
             PosY = new List<double>();
-
-            VelX = new List<double>();
-            VelY = new List<double>();
-
-            AccelX = new List<double>();
-            AccelY = new List<double>();
-
+           
             timePX = new List<double>();
-            timeVX = new List<double>();
             timePY = new List<double>();
-            timeVY = new List<double>();
-            timeAX = new List<double>();
-            timeAY = new List<double>();
 
 
             /************************** TIMERS ***************************************/

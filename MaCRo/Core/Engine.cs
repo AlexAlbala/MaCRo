@@ -461,7 +461,7 @@ namespace MaCRo.Core
         {
             if (currentMode == Mode.Manual)
             {
-                Thread t = new Thread(new ThreadStart(navigation.manualBrake));
+                Thread t = new Thread(new ThreadStart(navigation.ManualBrake));
                 t.Start();
             }
         }

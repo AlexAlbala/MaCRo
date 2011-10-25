@@ -399,7 +399,7 @@ namespace MaCRo.Communications
                );
         }
 
-        public int FromDouble(double theDouble, byte[] buffer, int offset)
+        private int FromDouble(double theDouble, byte[] buffer, int offset)
         {
             int Write = FromString(theDouble.ToString(), buffer, offset);
 
@@ -420,7 +420,7 @@ namespace MaCRo.Communications
             return d;
         }
 
-        public int FromString(string theString, byte[] buffer, int offset)
+        private int FromString(string theString, byte[] buffer, int offset)
         {
             byte[] tmpBuffer = Encoding.UTF8.GetBytes(theString);
 

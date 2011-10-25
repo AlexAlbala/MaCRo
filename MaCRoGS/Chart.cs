@@ -14,31 +14,13 @@ namespace MaCRoGS
     public partial class MainWindow : Window
     {
         private List<double> PosX;
-        private List<double> PosY;
-
-        private List<double> VelX;
-        private List<double> VelY;
-
-        private List<double> AccelX;
-        private List<double> AccelY;
+        private List<double> PosY;        
 
         private List<double> timePX;
-        private List<double> timePY;
-
-        private List<double> timeVX;
-        private List<double> timeVY;
-
-        private List<double> timeAX;
-        private List<double> timeAY;
+        private List<double> timePY;       
 
         private LineGraph PosxLine;
-        private LineGraph PosyLine;
-
-        private LineGraph VelxLine;
-        private LineGraph VelyLine;
-
-        private LineGraph AccxLine;
-        private LineGraph AccyLine;
+        private LineGraph PosyLine;       
 
         private delegate LineGraph ChartUpdater(LineGraph line, double[] x, double[] y, Color color, string description);
 
@@ -55,23 +37,7 @@ namespace MaCRoGS
             if (PosY.Count > 0 && timePY.Count > 0)
             {
                 UpdateLine(PosyLine, timePY.ToArray(), PosY.ToArray(), Colors.Blue, "Position Y", out PosyLine);
-            }
-            if (VelX.Count > 0 && timeVX.Count > 0)
-            {
-                UpdateLine(VelxLine, timeVX.ToArray(), VelX.ToArray(), Colors.Red, "Velocity X", out VelxLine);
-            }
-            if (VelY.Count > 0 && timeVY.Count > 0)
-            {
-                UpdateLine(VelyLine, timeVY.ToArray(), VelY.ToArray(), Colors.DarkGreen, "Velocity Y", out VelyLine);
-            }
-            if (AccelX.Count > 0 && timeAX.Count > 0)
-            {
-                UpdateLine(AccxLine, timeAX.ToArray(), AccelX.ToArray(), Colors.DarkGray, "Acceleration X", out AccxLine);
-            }
-            if (AccelY.Count > 0 && timeAY.Count > 0)
-            {
-                UpdateLine(AccyLine, timeAY.ToArray(), AccelY.ToArray(), Colors.Brown, "Acceleration Y", out AccyLine);
-            }
+            }           
         }        
 
         /*

@@ -371,7 +371,7 @@ namespace MaCRoGS.Communications
             // Encoding's GetChars() converts an entire buffer, so extract just the string
             //part
             byte[] tmpBuffer = new byte[len];
-            int dst = offset + sizeof(int);
+            int dst = offset + sizeof(short);
 
             Array.Copy(buffer, dst, tmpBuffer, 0, len);
 

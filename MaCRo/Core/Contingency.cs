@@ -83,13 +83,13 @@ namespace MaCRo.Core
                             if (r.NextDouble() > 0.8)
                                 navigation.MoveForward(100);
                             else
-                                navigation.turnRight(10);
+                                navigation.turnRight(10, (sbyte)50);
                             break;
                         case Movement.right:
                             if (r.NextDouble() > 0.8)
                                 navigation.MoveForward(100);
                             else
-                                navigation.turnLeft(10);
+                                navigation.turnLeft(10, (sbyte)50);
                             break;
                     }
 

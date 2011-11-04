@@ -553,7 +553,7 @@ namespace MaCRo.Core
                                         navigation.turnRight(10);
                                 }
 
-                                navigation.MoveForward(30);
+                                navigation.MoveForward(20);
                             }
                             else
                             {

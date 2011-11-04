@@ -5,7 +5,7 @@ using System.Threading;
 using MaCRo.Drivers;
 using MaCRo.Config;
 using MaCRo.Tools;
-using MaCRo.Drivers.IMU;
+//using MaCRo.Drivers.IMU;
 
 namespace MaCRo.Core
 {
@@ -389,6 +389,7 @@ namespace MaCRo.Core
             this.brake();
 
             actualPosition.angle += (left.distance_mm + right.distance_mm) / (GlobalVal.width_correction * GlobalVal.distanceBetweenWheels_mm);
+            //actualPosition.angle = this.Relative_MAG_Heading;
         }
 
         public void turnRight(int angle, sbyte speed)
@@ -408,6 +409,7 @@ namespace MaCRo.Core
             this.brake();
 
             actualPosition.angle += (left.distance_mm + right.distance_mm) / (GlobalVal.width_correction * GlobalVal.distanceBetweenWheels_mm);
+            //actualPosition.angle = this.Relative_MAG_Heading;
         }
 
         private void turnRight()
@@ -441,6 +443,7 @@ namespace MaCRo.Core
             this.brake();
 
             actualPosition.angle -= (left.distance_mm + right.distance_mm) / (GlobalVal.width_correction * GlobalVal.distanceBetweenWheels_mm);
+            //actualPosition.angle = this.Relative_MAG_Heading;
         }
 
         public void turnLeft(int angle, sbyte speed)
@@ -460,6 +463,7 @@ namespace MaCRo.Core
             this.brake();
 
             actualPosition.angle -= (left.distance_mm + right.distance_mm) / (GlobalVal.width_correction * GlobalVal.distanceBetweenWheels_mm);
+            //actualPosition.angle = this.Relative_MAG_Heading;
         }
 
         private void turnLeft()

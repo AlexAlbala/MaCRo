@@ -86,7 +86,7 @@ namespace MaCRo.Communications
                         buffer = new byte[6 + ((double)value).ToString().Length];
                         buffer[0] = (byte)'a';
                         buffer[1] = (byte)'m';
-                        break;*/
+                        break;
 
                     case Message.VelocityX:
                         buffer = new byte[6 + ((double)value).ToString().Length];
@@ -99,7 +99,7 @@ namespace MaCRo.Communications
                         buffer[1] = (byte)'y';
                         break;
 
-                    /*
+                    
                 case Message.Time:
                     buffer = new byte[6 + ((double)value).ToString().Length];
                     buffer[0] = (byte)'v';

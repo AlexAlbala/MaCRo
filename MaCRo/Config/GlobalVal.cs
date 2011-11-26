@@ -25,7 +25,7 @@ namespace MaCRo.Config
         /// <summary>
         /// Correction factor of the distance between wheels
         /// </summary>
-        public readonly static float width_correction = 90 / (90 - 4.8f);
+        public readonly static float width_correction = 90 / (90 - 9.7f);
         ///// <summary>
         ///// Correction factor of the left wheel distance
         ///// </summary>
@@ -49,11 +49,11 @@ namespace MaCRo.Config
         /// <summary>
         /// Natural speed of the rover
         /// </summary>
-        public readonly static sbyte speed = 23;
+        public readonly static sbyte speed = 25;
         /// <summary>
         /// Velocity of the wheel during a turn
         /// </summary>
-        public readonly static sbyte turningSpeed = 30;
+        public readonly static sbyte turningSpeed = 32;
         /// <summary>
         /// Distance for an object to be detected. In centimeters
         /// </summary>

@@ -15,7 +15,7 @@ namespace MaCRo.Core
         private Encoder right = new Encoder(PortMap.encoderR_interrupt);
         private DCMotorDriver dcm = new DCMotorDriver();
         private Contingency contingency;
-        private Magnetometer magnetometer = new Magnetometer();
+        //private Magnetometer magnetometer = new Magnetometer();
         private bool manualStop;
         public Movement movement;
         private object monitor;
@@ -27,9 +27,9 @@ namespace MaCRo.Core
 
         public double distance_mm { get { return (left.distance_mm + right.distance_mm) / 2; } }
 
-        public double MAG_Heading { get { return magnetometer.MAGHeadingRad; } }
+        //public double MAG_Heading { get { return magnetometer.MAGHeadingRad; } }
 
-        public double Relative_MAG_Heading { get { return MAG_Heading - initialHeading; } }
+        //public double Relative_MAG_Heading { get { return MAG_Heading - initialHeading; } }
 
         #region IMU
         /*
@@ -196,15 +196,16 @@ namespace MaCRo.Core
             actualVelocity = new Position();
             actualPosition = new Position();
             manualStop = false;
-            monitor = new object();
 
             lastTime = 0.0;
 
             //initialAcc = new double[3];
             Thread.Sleep(1000);*/
 
+
+            monitor = new object();
             actualPosition = new Position();
-            initialHeading = this.MAG_Heading;
+            //initialHeading = this.MAG_Heading;
 
             contingency = new Contingency(left, right, this);
             //integration = new Timer(new TimerCallback(this.Integrate), new object(), GlobalVal.integrationPeriod * 10, GlobalVal.integrationPeriod);
@@ -262,7 +263,7 @@ namespace MaCRo.Core
                     }
                     else
                     {
-                        _turnLeft(10);
+                        turnLeft(10);
                         MoveForward(10, GlobalVal.speed);
                         continue;
                     }
@@ -481,6 +482,7 @@ namespace MaCRo.Core
         }
 
         #region NOT USED
+        /*
         public void _turnRight(int angle)
         {
             double angleRad = exMath.ToRad(angle);
@@ -535,6 +537,7 @@ namespace MaCRo.Core
             //actualPosition.angle = initialHeading - MAG_Heading;
             actualPosition.angle -= (left.distance_mm + right.distance_mm) / 2 * GlobalVal.distanceBetweenWheels_mm;
         }
+         */
         #endregion
 
         public void brake()

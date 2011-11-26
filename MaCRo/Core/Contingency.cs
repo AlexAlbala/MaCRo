@@ -58,36 +58,36 @@ namespace MaCRo.Core
                     switch (movement)
                     {
                         case Movement.forward:
-                            if (r.NextDouble() > 0.8)
-                                navigation.MoveBackward(100);
+                            if (r.NextDouble() < 0.8)
+                                navigation.MoveBackward(100, 40);
                             else
                             {
                                 if (r.NextDouble() > 0.5)
-                                    navigation.turnRight(10);
+                                    navigation.turnRight(10, 40);
                                 else
-                                    navigation.turnLeft(10);
+                                    navigation.turnLeft(10, 40);
                             }
                             break;
                         case Movement.backward:
-                            if (r.NextDouble() > 0.8)
-                                navigation.MoveForward(100);
+                            if (r.NextDouble() < 0.8)
+                                navigation.MoveForward(100, 40);
                             else
                             {
                                 if (r.NextDouble() > 0.5)
-                                    navigation.turnRight(10);
+                                    navigation.turnRight(10, 40);
                                 else
-                                    navigation.turnLeft(10);
+                                    navigation.turnLeft(10, 40);
                             }
                             break;
                         case Movement.left:
-                            if (r.NextDouble() > 0.8)
-                                navigation.MoveForward(100);
+                            if (r.NextDouble() < 0.8)
+                                navigation.MoveForward(100, 40);
                             else
                                 navigation.turnRight(10, (sbyte)50);
                             break;
                         case Movement.right:
-                            if (r.NextDouble() > 0.8)
-                                navigation.MoveForward(100);
+                            if (r.NextDouble() < 0.8)
+                                navigation.MoveForward(100, 40);
                             else
                                 navigation.turnLeft(10, (sbyte)50);
                             break;

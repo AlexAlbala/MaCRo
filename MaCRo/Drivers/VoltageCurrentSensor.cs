@@ -66,7 +66,7 @@ namespace MaCRo.Drivers
             double current = getActualCurrent();
 
             if (current > 0)
-                return (ushort)(mAh * perCent * 60 / (current * 100));
+                return (ushort)(mAh * perCent * 60 / (current * 100));//minutes
             else
                 return 0;
         }

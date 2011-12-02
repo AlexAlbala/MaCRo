@@ -13,36 +13,54 @@ namespace MaCRo.Core
         private Encoder right;
         private NavigationManager navigation;
         private Movement movement;
-        private Random r;
         public bool alarm;
         Thread th;
         Thread th2;
+        private int count;
+        private Timer t;
+        private object monitor;
+        private bool end;
 
         public Contingency(Encoder left, Encoder right, NavigationManager navigation)
         {
             alarm = false;
+            monitor = new object();
             this.left = left;
             this.right = right;
             this.navigation = navigation;
-            r = new Random();
+            count = 0;
+            end = false;
 
             th = new Thread(new ThreadStart(Run));
             th.Start();
 
             th2 = new Thread(new ThreadStart(Act));
             th2.Start();
+            t = new Timer(new TimerCallback(decount), new object(), 0, 5000);
+        }
+
+        public void decount(Object state)
+        {
+            lock (monitor)
+            {
+                if (count > 0)
+                    count--;
+            }
         }
 
         public void Disable()
         {
+            end = true;
             th.Abort();
             th2.Abort();
         }
 
         public void Restart()
         {
+            end = false;
             th = new Thread(new ThreadStart(Run));
             th.Start();
+            
 
             th2 = new Thread(new ThreadStart(Act));
             th2.Start();
@@ -50,46 +68,42 @@ namespace MaCRo.Core
 
         public void Act()
         {
-            while (true)
+            while (!end)
             {
                 if (alarm)
                 {
+                    lock (monitor)
+                    {
+                        if (count >= 5)
+                        {
+                            Engine.getInstance().Debug("Contingency count: " + count);
+                            if (count >= 10)
+                            {                                
+                                navigation.turnLeft(20, (sbyte)90);
+                            }
+                            else if (count >= 15)
+                            {
+                                navigation.turnRight(20, (sbyte)90);
+                                count = 10;
+                            }
+                            else
+                                navigation.MoveForward(100, (sbyte)90);
+                        }
+                    }
                     Engine.getInstance().Debug("Solving problem when moving " + movement.ToString());
                     switch (movement)
                     {
                         case Movement.forward:
-                            if (r.NextDouble() < 0.8)
-                                navigation.MoveBackward(100, 40);
-                            else
-                            {
-                                if (r.NextDouble() > 0.5)
-                                    navigation.turnRight(10, 40);
-                                else
-                                    navigation.turnLeft(10, 40);
-                            }
+                            navigation.MoveBackward(100, (sbyte)40);
                             break;
                         case Movement.backward:
-                            if (r.NextDouble() < 0.8)
-                                navigation.MoveForward(100, 40);
-                            else
-                            {
-                                if (r.NextDouble() > 0.5)
-                                    navigation.turnRight(10, 40);
-                                else
-                                    navigation.turnLeft(10, 40);
-                            }
+                            navigation.MoveForward(100, (sbyte)40);
                             break;
                         case Movement.left:
-                            if (r.NextDouble() < 0.8)
-                                navigation.MoveForward(100, 40);
-                            else
-                                navigation.turnRight(10, (sbyte)50);
+                            navigation.turnRight(10, (sbyte)40);
                             break;
                         case Movement.right:
-                            if (r.NextDouble() < 0.8)
-                                navigation.MoveForward(100, 40);
-                            else
-                                navigation.turnLeft(10, (sbyte)50);
+                            navigation.turnLeft(10, (sbyte)50);
                             break;
                     }
 
@@ -101,7 +115,7 @@ namespace MaCRo.Core
 
         public void Run()
         {
-            while (true)
+            while (!end)
             {
                 if (navigation.movement != Movement.stop && !alarm)
                 {
@@ -115,6 +129,10 @@ namespace MaCRo.Core
                         Engine.getInstance().Debug("Contingency alarm");
                         movement = navigation.movement;
                         alarm = true;
+                        lock (monitor)
+                        {
+                            count++;
+                        }
                         Engine.getInstance().Cancel();
                     }
                 }

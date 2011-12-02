@@ -49,15 +49,15 @@ namespace MaCRo.Config
         /// <summary>
         /// Natural speed of the rover
         /// </summary>
-        public readonly static sbyte speed = 25;
+        public readonly static sbyte speed = 23;
         /// <summary>
         /// Velocity of the wheel during a turn
         /// </summary>
-        public readonly static sbyte turningSpeed = 32;
+        public readonly static sbyte turningSpeed = 30;
         /// <summary>
         /// Distance for an object to be detected. In centimeters
         /// </summary>
-        public readonly static ushort distanceToDetect = 26;
+        public readonly static ushort distanceToDetect = 27;
         /// <summary>
         /// Distance which has to be respected when following the wall. In centimeters
         /// </summary>
@@ -65,7 +65,7 @@ namespace MaCRo.Config
         /// <summary>
         /// Centimeters of hysteresis when following the wall.
         /// </summary>
-        public readonly static ushort hysteresis = 2;
+        public readonly static ushort hysteresis = 1;
         /// <summary>
         /// Value of acceleration in m/s of 1g
         /// </summary>

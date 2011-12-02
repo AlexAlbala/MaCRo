@@ -226,7 +226,7 @@ namespace MaCRo.Core
         public void TurnRightUntilWall(SensorManager sensors)
         {
             brake();
-            turnRight(45);
+            turnRight(55);
             //Thread.Sleep(600);
             while (!contingency.alarm)
             {

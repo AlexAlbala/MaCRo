@@ -75,19 +75,5 @@ namespace MaCRo.Drivers
             _distance = 0;
         }
 
-        //void encoder_OnInterrupt(uint pin, uint value, DateTime time)
-        //{
-        //    //Debug.Print("Weba: " + pin + " " + time.ToString());
-        //    _distance += stepmm;
-
-        //    Debug.Print("PIN: " + pin.ToString() + " - " + _distance.ToString());
-        //    //TimeSpan ts = time - lastLecture;
-        //    //if (ts.Milliseconds > glitchFilterWidth_ms)
-        //    //{
-        //    //    lastLecture = time;
-        //    //    _distance += stepmm;
-        //    //}
-        //}
-
     }
 }

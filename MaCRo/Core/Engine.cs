@@ -6,7 +6,9 @@ using Microsoft.SPOT.Hardware;
 using MaCRo.Config;
 using MaCRo.Tools;
 using MaCRo.Communications;
-//using MaCRo.Core.SLAM;
+using MaCRo.Drivers;
+using MaCRo.Core;
+
 
 namespace MaCRo.Core
 {
@@ -17,6 +19,7 @@ namespace MaCRo.Core
         private OutputPort debug;
 
         private NavigationManager navigation;
+        //private Magnetometer magnetometer;
         private SensorManager sensors;
         private BatteryManager battery;
         private Coder coder;
@@ -30,12 +33,7 @@ namespace MaCRo.Core
         private Timer sensorTimer;
         private Timer positionTimer;
         private Timer batteryTimer;
-
-
-        //private Timer IMUTimer;
-        //private Timer TempTimer;
-        //private Timer mapTimer;
-        //private Timer mapTransmissionTimer;
+        private Timer magTimer;
 
         public static Engine getInstance()
         {
@@ -50,6 +48,7 @@ namespace MaCRo.Core
             debug.Write(true);
 
             coder = new Coder();
+            Thread.Sleep(17000);
             coder.Start();
 
             Info("Initializing System...");
@@ -66,19 +65,10 @@ namespace MaCRo.Core
             sensorTimer = new Timer(new TimerCallback(sensorTimer_tick), new object(), 0, GlobalVal.transmissionPeriodSensor_ms);
             positionTimer = new Timer(new TimerCallback(posTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodPosition_ms);
             batteryTimer = new Timer(new TimerCallback(batteryTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodBattery_ms);
+            magTimer = new Timer(new TimerCallback(magnetometer_Tick), new object(), 0, GlobalVal.trasmissionPeriodMagnetometer_ms);
+
             Info("Initialized Timers");
-            //IMUTimer = new Timer(new TimerCallback(imuTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodIMU_ms);
-            //TempTimer = new Timer(new TimerCallback(tempTimer_Tick), new object(), 0, GlobalVal.transmissionPeriodTemp_ms);
-
-            /*******SLAM**************/
-
-            //mapTransmissionTimer = new Timer(new TimerCallback(mapTransmission_Tick), new object(), GlobalVal.mapUpdatePeriod_ms * 5, GlobalVal.mapTransmissionPeriod_ms);
-            //mapTimer = new Timer(new TimerCallback(mapScan_tick), new object(), 0, GlobalVal.mapUpdatePeriod_ms);
-
-            //tinySLAM.Initialize();
-            //coder.Send(Message.MapSize, tinySLAM.MapSize());
-
-            /*******SLAM**************/
+            
 
             cancel = false;
             debug.Write(false);
@@ -101,64 +91,28 @@ namespace MaCRo.Core
             if (estimation > 0)
                 coder.Send(Message.Estimation, estimation);
 
-            if (battery.lowBattery)
+            if (battery.lowBattery)//TODO
             {
-                this.Cancel();
+                //this.Cancel();
                 Info("LOW BATTERY!!: " + battery.getBatteryCapacity() + " %. System stopped for saving battery.");
-                sensorTimer = null;
-                positionTimer = null;
-                batteryTimer = null;
+                //sensorTimer = null;
+                //positionTimer = null;
+                //batteryTimer = null;
+                //magTimer = null;
             }
         }
 
-        /*
-        void imuTimer_Tick(Object state)
-        {
-            //IMU Telemetry
-            coder.Send(Message.IMUMagX, navigation.getMag(Axis.X));
-            coder.Send(Message.IMUMagY, navigation.getMag(Axis.Y));
-            coder.Send(Message.IMUMagZ, navigation.getMag(Axis.Z));
-
-            coder.Send(Message.IMUGyrX, navigation.getGyro(Axis.X));
-            coder.Send(Message.IMUGyrY, navigation.getGyro(Axis.Y));
-            coder.Send(Message.IMUGyrZ, navigation.getGyro(Axis.Z));
-
-            coder.Send(Message.IMUAccX, navigation.getAccel(Axis.X));
-            coder.Send(Message.IMUAccY, navigation.getAccel(Axis.Y));
-            coder.Send(Message.IMUAccZ, navigation.getAccel(Axis.Z));
-        }
-
-        void tempTimer_Tick(Object state)
-        {
-            coder.Send(Message.IMUTempX, navigation.getTemp(Axis.X));
-            coder.Send(Message.IMUTempY, navigation.getTemp(Axis.Y));
-            coder.Send(Message.IMUTempZ, navigation.getTemp(Axis.Z));
-        }*/
+        
 
         void posTimer_Tick(Object state)
         {
             lock (coder)
             {
                 Position pos = navigation.getActualPosition();
-                //Position vel = navigation.getActualVelocity();
 
                 coder.Send(Message.PositionX, pos.x);
                 coder.Send(Message.PositionY, pos.y);
                 coder.Send(Message.Angle, pos.angle);
-
-                //coder.Send(Message.VelocityX, vel.x);
-                //coder.Send(Message.VelocityY, vel.y);
-
-                //coder.Send(Message.Time, navigation.getTime());
-
-                //coder.Send(Message.Pitch, navigation.Pitch);
-                //coder.Send(Message.Roll, navigation.Roll);
-                //coder.Send(Message.Yaw, navigation.Yaw);
-                //coder.Send(Message.MAGHeading, (double)exMath.ToDeg((float)navigation.MAG_Heading));
-
-                //Debug.Print("MAG:" + (double)exMath.ToDeg((float)navigation.MAG_Heading));
-                //Debug.Print("GYR: " + navigation.getGyro(Axis.X).ToString() + "X");
-                //Debug.Print("ACC: " + navigation.getAccel(Axis.X).ToString() + "X");
 
             }
         }
@@ -231,112 +185,35 @@ namespace MaCRo.Core
                 coder.Send(Message.SensorL2, value);
 
 
-                //if (s2 > 40 && s2 < 300)
-                //    coder.Send(Message.SensorS2, s2);
-                //else
-                //    coder.Send(Message.SensorS2, (short)-1);
-                //if (l1 > 100 && l1 < 800)
-                //    coder.Send(Message.SensorL1, l1);
-                //else
-                //    coder.Send(Message.SensorL1, (short)-1);
-                //if (l2 > 100 && l2 < 800)
-                //    coder.Send(Message.SensorL2, l2);
-                //else
-                //    coder.Send(Message.SensorL2, (short)-1);
             }
         }
 
-        /*
-        #region SLAM
-        private void mapTransmission_Tick(object state)
+        void magnetometer_Tick(Object state)
         {
-            ushort[] map = tinySLAM.Map().map;
-            int length = map.Length;
-
-            int l = length / 4;
-            int l4 = l + length % 4;
-            ushort[] m1, m2, m3, m4;
-
-            m1 = new ushort[l];
-            m2 = new ushort[l];
-            m3 = new ushort[l];
-            m4 = new ushort[l4];
-            for (int i = 0; i < l; i++)
+            lock (coder)
             {
-                m1[i] = map[i];
-                m2[i] = map[l + i];
-                m3[i] = map[2 * l + i];
-                m4[i] = map[3 * l + i];
+                coder.Send(Message.MagX, navigation.getMag(Axis.X));
+                coder.Send(Message.MagY, navigation.getMag(Axis.Y));
+                coder.Send(Message.MagZ, navigation.getMag(Axis.Z));
             }
-            for (int i = l; i < l4; i++)
-            {
-                m4[i] = map[3 * l + i];
-            }
-            map = null;
-
-            coder.Send(Message.MapUpdate1, m1);
-            m1 = null;
-            coder.Send(Message.MapUpdate2, m2);
-            m2 = null;
-            coder.Send(Message.MapUpdate3, m3);
-            m3 = null;
-            coder.Send(Message.MapUpdate4, m4);
-            m4 = null;
         }
 
-        private void mapScan_tick(Object state)
+        public void calibrarX(short cx)
         {
-            float wall = 10 * sensors.getDistance(Sensor.Wall);
-            float wall_back = 10 * sensors.getDistance(Sensor.wall_back);
-            float central = 10 * sensors.getDistance(Sensor.Central);
-            float right = 10 * sensors.getDistance(Sensor.Right);
-
-            ts_scan_t scan = new ts_scan_t();
-
-            int j = 0;
-            int angle = 0;
-            //CENTRAL SENSOR:
-            angle -= 15;
-            for (int i = 0; i < 30; angle++, i++, j++)
-            {
-                float angleRad = exMath.ToRad(angle);
-                float c = (float)exMath.Cos(angleRad);
-                float s = (float)exMath.Sin(angleRad);
-
-                scan.x[j] = 0 - central * s;
-                scan.y[j] = central * c + GlobalVal.length_mm / 2;
-                scan.value[j] = SLAMAlgorithm.TS_OBSTACLE;
-            }
-
-
-            //WALL SENSOR
-            angle = 270;
-            angle -= 15;
-            for (int i = 0; i < 30; angle++, i++, j++)
-            {
-                float angleRad = exMath.ToRad(angle);
-                float c = (float)exMath.Cos(angleRad);
-                float s = (float)exMath.Sin(angleRad);
-
-                scan.x[j] = -GlobalVal.width_mm / 2 - wall * c;
-                scan.y[j] = central * s + GlobalVal.length_mm / 2;
-                scan.value[j] = SLAMAlgorithm.TS_OBSTACLE;
-            }
-            scan.nb_points = (ushort)j;
-
-            ts_position_t position = new ts_position_t();
-            Position p = navigation.getActualPosition();
-
-            position.theta = exMath.ToDeg((float)p.angle);
-            position.x = p.x + SLAMAlgorithm.TS_MAP_SIZE / (SLAMAlgorithm.TS_MAP_SCALE * 2);
-            position.y = p.y + SLAMAlgorithm.TS_MAP_SIZE / (SLAMAlgorithm.TS_MAP_SCALE * 2);
-            tinySLAM.NewScan(scan, position);
+            Info("X=" + cx);
+            navigation.SetXOFF(cx);
         }
+        public void calibrarY(short cy)
+        {
+            Info("Y=" + cy);
+            navigation.SetYOFF(cy);
+        }
+        /*public short calibrarZ(short cz)
+         {
+           return cz;
+         }*/
 
-        #endregion
-         */
-
-        public Engine()
+        private Engine()
         {
             actualPosition = new Position();
         }
@@ -351,11 +228,8 @@ namespace MaCRo.Core
         {
             cancel = true;
             workerThread.Abort();
-            //Thread.Sleep(500);
             navigation.brake();
 
-
-            //Thread.Sleep(1000);
         }
 
         public void Info(string message)
@@ -414,7 +288,7 @@ namespace MaCRo.Core
             if (currentMode == Mode.Manual)
             {
                 this.currentMode = Mode.SearchingForWall;
-                this.Restart();
+                //this.Restart();
                 navigation.restartContingency();
                 Info("Stopped manual mode");
                 Info("Current mode: Searching a wall");
@@ -473,36 +347,9 @@ namespace MaCRo.Core
             Debug("Position: " + _p.x + " : " + _p.y + " : " + _p.angle + " | " + p.x + "  :" + p.y + " : " + p.angle);
             navigation.setActualPosition(p);
         }
-
         private void _Run()
         {
-            /****************** TEST CODE *********************/
-            //navigation.MoveForward(2000, GlobalVal.speed);
-            //navigation.brake();
-            //Thread.Sleep(500);
-            //navigation.turnLeft(90);
-            //navigation.brake();
-            //Thread.Sleep(500);
-            //navigation.MoveForward(2000, GlobalVal.speed);
-            //navigation.brake();
-            //Thread.Sleep(500);
-            //navigation.turnLeft(90);
-            //navigation.brake();
-            //Thread.Sleep(500);
-            //navigation.MoveForward(2000, GlobalVal.speed);
-            //navigation.brake();
-            //Thread.Sleep(500);
-            //navigation.turnLeft(90);
-            //navigation.brake();
-            //Thread.Sleep(500);
-            //navigation.MoveForward(2000, GlobalVal.speed);
-            //navigation.brake();
-            //Thread.Sleep(500);
-            //navigation.turnLeft(90);
-            //navigation.brake();
-            //Thread.Sleep(500);
-            //return;
-            /****************** TEST CODE *********************/
+            
             while (!cancel)
             {
                 debug.Write(true);
@@ -529,6 +376,7 @@ namespace MaCRo.Core
                     float central;
                     float wall;
                     float wallback;
+                    double error_distance, angle_error;
 
                     //FOLLOW LEFT WALL
                     while (!cancel)
@@ -536,6 +384,8 @@ namespace MaCRo.Core
                         wall = sensors.getDistance(Sensor.Wall);
                         wallback = sensors.getDistance(Sensor.wall_back);
                         central = sensors.getDistance(Sensor.Central);
+                        error_distance = 0;
+                        angle_error = 0;
 
                         if (central < GlobalVal.distanceToDetect)
                         {
@@ -562,16 +412,19 @@ namespace MaCRo.Core
                         }//CORRECT THE DEVIATION RESPECT TO THE WALL
                         else if (wall < wallback)
                         {
-                            if (wall < GlobalVal.minDistanceToFollowWall)
-                            {
-                                navigation.turnRight(10);
-                            }
-                            else
-                            {
-                                navigation.turnRight(1);
-                            }
+                            error_distance = wall - wallback;
 
-                            navigation.MoveForward(50);
+                            if (error_distance < 5)
+                            {
+                                angle_error = exMath.Atan2(error_distance * 10, GlobalVal.length_mm);
+                                navigation.turnLeft((int)(angle_error / 2));
+                                navigation.MoveForward(30);//50
+                            }
+                            else//THERE IS A CORNER
+                            {
+                                Debug("LEFT CORNER");
+                                navigation.TurnLeftUntilWall(sensors);
+                            }
                         }//IN THE FOLLOWING CASE:
                         //1-IS A WALL DEVIATION
                         //2-THERE IS A CORNER

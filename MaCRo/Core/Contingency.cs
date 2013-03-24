@@ -1,3 +1,4 @@
+
 using System;
 using Microsoft.SPOT;
 using MaCRo.Drivers;
@@ -107,7 +108,7 @@ namespace MaCRo.Core
                             break;
                     }
 
-                    Engine.getInstance().Restart();
+                   Engine.getInstance().Restart();
                     alarm = false;
                 }
             }
@@ -126,14 +127,14 @@ namespace MaCRo.Core
 
                     if (right.distance_mm == rightDistance && left.distance_mm == leftDistance)
                     {
-                        Engine.getInstance().Debug("Contingency alarm");
-                        movement = navigation.movement;
+                        //Engine.getInstance().Debug("Contingency alarm");
+                        //movement = navigation.movement;
                         alarm = true;
-                        lock (monitor)
-                        {
-                            count++;
-                        }
-                        Engine.getInstance().Cancel();
+                        //lock (monitor)
+                        //{
+                        //    count++;
+                        //}
+                       // Engine.getInstance().Cancel();
                     }
                 }
             }

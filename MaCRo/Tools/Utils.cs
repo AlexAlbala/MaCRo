@@ -64,7 +64,10 @@ namespace MaCRo.Tools
         Voltage,
         Current,
         Capacity,
-        Estimation
+        Estimation,
+        MagX,
+        MagY,
+        MagZ
     }
 
     public class Position

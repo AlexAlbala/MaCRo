@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Controls;
+using MaCRoGS;
 
 namespace MaCRoGS
 {
@@ -23,16 +24,14 @@ namespace MaCRoGS
         private Line right_line;
         private Line wallback_line;
 
-        /*private Path central_path;
-        private Path wall_path;
-        private Path right_path;
-        private Path wallback_path;
-         */
-
         private short lastCentral = -2;
         private short lastWall = -2;
         private short lastWallBack = -2;
         private short lastRight = -2;
+
+       // double[] array_1 = new double[1500];
+        //double[] array_2 = new double[1500];
+       // private int c1 = 0, c2=0;
 
         public void UpdateS1(short value)//LEFT
         {
@@ -133,6 +132,5 @@ namespace MaCRoGS
             right_line.Stroke = Brushes.Brown;
 
         }
-
     }
 }

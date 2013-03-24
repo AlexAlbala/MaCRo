@@ -20,7 +20,7 @@ namespace MaCRoGS
         private List<double> timePY;       
 
         private LineGraph PosxLine;
-        private LineGraph PosyLine;       
+        private LineGraph PosyLine;
 
         private delegate LineGraph ChartUpdater(LineGraph line, double[] x, double[] y, Color color, string description);
 
@@ -39,46 +39,6 @@ namespace MaCRoGS
                 UpdateLine(PosyLine, timePY.ToArray(), PosY.ToArray(), Colors.Blue, "Position Y", out PosyLine);
             }           
         }        
-
-        /*
-        public void SetVelocityX(double distance)
-        {
-            UpdaterD updater = new UpdaterD(_SetVelocityX);
-            this.Dispatcher.Invoke(updater, distance);
-
-        }
-
-        private void _SetTime(double time)
-        {
-            actualTime = time;
-            labelTime.Content = "Current Time: " + time.ToString() + " seconds";
-        }
-
-        private void _SetVelocityX(double velX)
-        {
-            xVel.Content = "Velocity in X axis: " + velX.ToString() + " m/s";
-
-            timeVX.Add(actualTime);
-            VelX.Add(velX);
-
-        }
-
-        public void SetVelocityY(double distance)
-        {
-            UpdaterD updater = new UpdaterD(_SetVelocityY);
-            this.Dispatcher.Invoke(updater, distance);
-
-        }
-
-        private void _SetVelocityY(double velY)
-        {
-            yVel.Content = "Velocity in Y axis: " + velY.ToString() + " m/s";
-
-            timeVY.Add(actualTime);
-            VelY.Add(velY);
-
-        }
-         */ 
 
         private void UpdateLine(LineGraph line, double[] x, double[] y, Color color, string description, out LineGraph newLine)
         {

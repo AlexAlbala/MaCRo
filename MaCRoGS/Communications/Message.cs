@@ -16,6 +16,12 @@ namespace MaCRoGS.Communications
         StopManual,
         Speed,
         TurningSpeed,
-        UpdatePosition
+        UpdatePosition,
+        ValorCalibrarX,
+        ValorCalibrarY,
+        SetMagX,
+        SetMagY,
+        setMagZ
+        //SendPID
     }
 }

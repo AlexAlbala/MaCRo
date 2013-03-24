@@ -67,109 +67,22 @@ namespace MaCRo.Communications
                         buffer[1] = (byte)'a';
                         break;
 
-                    /*case Message.Pitch:
-                        buffer = new byte[6 + ((double)value).ToString().Length];
-                        buffer[0] = (byte)'a';
-                        buffer[1] = (byte)'p';
-                        break;
-                    case Message.Roll:
-                        buffer = new byte[6 + ((double)value).ToString().Length];
-                        buffer[0] = (byte)'a';
-                        buffer[1] = (byte)'r';
-                        break;
-                    case Message.Yaw:
-                        buffer = new byte[6 + ((double)value).ToString().Length];
-                        buffer[0] = (byte)'a';
-                        buffer[1] = (byte)'y';
-                        break;
-                    case Message.MAGHeading:
-                        buffer = new byte[6 + ((double)value).ToString().Length];
-                        buffer[0] = (byte)'a';
-                        buffer[1] = (byte)'m';
-                        break;
-
-                    case Message.VelocityX:
-                        buffer = new byte[6 + ((double)value).ToString().Length];
-                        buffer[0] = (byte)'v';
+                    case Message.MagX:
+                        buffer = new byte[2+2];
+                        buffer[0] = (byte)'m';
                         buffer[1] = (byte)'x';
                         break;
-                    case Message.VelocityY:
-                        buffer = new byte[6 + ((double)value).ToString().Length];
-                        buffer[0] = (byte)'v';
+
+                     case Message.MagY:
+                        buffer = new byte[2+2];
+                        buffer[0] = (byte)'m';
                         buffer[1] = (byte)'y';
                         break;
-
-                    
-                case Message.Time:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'v';
-                    buffer[1] = (byte)'t';
-                    break;
-
-                case Message.IMUAccX:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'A';
-                    buffer[1] = (byte)'X';
-                    break;
-                case Message.IMUGyrX:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'G';
-                    buffer[1] = (byte)'X';
-                    break;
-                case Message.IMUMagX:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'M';
-                    buffer[1] = (byte)'X';
-                    break;
-                case Message.IMUTempX:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'T';
-                    buffer[1] = (byte)'X';
-                    break;
-
-                case Message.IMUAccY:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'A';
-                    buffer[1] = (byte)'Y';
-                    break;
-                case Message.IMUGyrY:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'G';
-                    buffer[1] = (byte)'Y';
-                    break;
-                case Message.IMUMagY:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'M';
-                    buffer[1] = (byte)'Y';
-                    break;
-                case Message.IMUTempY:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'T';
-                    buffer[1] = (byte)'Y';
-                    break;
-
-                case Message.IMUAccZ:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'A';
-                    buffer[1] = (byte)'Z';
-                    break;
-                case Message.IMUGyrZ:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'G';
-                    buffer[1] = (byte)'Z';
-                    break;
-                case Message.IMUMagZ:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'M';
-                    buffer[1] = (byte)'Z';
-                    break;
-                case Message.IMUTempZ:
-                    buffer = new byte[6 + ((double)value).ToString().Length];
-                    buffer[0] = (byte)'T';
-                    buffer[1] = (byte)'Z';
-                    break;
-                     */
-
+                    case Message.MagZ:
+                        buffer = new byte[4];
+                        buffer[0] = (byte)'m';
+                        buffer[1] = (byte)'z';
+                        break;
                     case Message.Info:
                         buffer = new byte[4 + (value as string).Length];
                         buffer[0] = (byte)'L';
@@ -185,86 +98,7 @@ namespace MaCRo.Communications
                         buffer[0] = (byte)'L';
                         buffer[1] = (byte)'E';
                         break;
-                    /*
-                                        case Message.MapUpdate1:
-                                            short size = (short)(value as ushort[]).Length;
-                                            buffer = new byte[3 + 2 + size * sizeof(ushort)];
-                                            buffer[0] = (byte)'U';
-                                            buffer[1] = (byte)'M';
-                                            buffer[2] = (byte)'1';
-
-                                            this.FromShort(size, buffer, 3);
-
-                                            ushort[] tmp = value as ushort[];
-                                            for (int i = 0; i < size; i++)
-                                            {
-                                                FromUShort(tmp[i], buffer, 3 + 2 + i * 2);
-                                            }
-                                            break;
-                                        case Message.MapUpdate2:
-                                            short size2 = (short)(value as ushort[]).Length;
-                                            buffer = new byte[3 + 2 + size2 * sizeof(ushort)];
-                                            buffer[0] = (byte)'U';
-                                            buffer[1] = (byte)'M';
-                                            buffer[2] = (byte)'2';
-
-                                            this.FromShort(size2, buffer, 3);
-
-                                            ushort[] tmp2 = value as ushort[];
-                                            for (int i = 0; i < size2; i++)
-                                            {
-                                                FromUShort(tmp2[i], buffer, 3 + 2 + i * 2);
-                                            }
-                                            break;
-                                        case Message.MapUpdate3:
-                                            short size3 = (short)(value as ushort[]).Length;
-                                            buffer = new byte[3 + 2 + size3 * sizeof(ushort)];
-                                            buffer[0] = (byte)'U';
-                                            buffer[1] = (byte)'M';
-                                            buffer[2] = (byte)'3';
-
-                                            this.FromShort(size3, buffer, 3);
-
-                                            ushort[] tmp3 = value as ushort[];
-                                            for (int i = 0; i < size3; i++)
-                                            {
-                                                FromUShort(tmp3[i], buffer, 3 + 2 + i * 2);
-                                            }
-                                            break;
-                                        case Message.MapUpdate4:
-                                            short size4 = (short)(value as ushort[]).Length;
-                                            buffer = new byte[3 + 2 + size4 * sizeof(ushort)];
-                                            buffer[0] = (byte)'U';
-                                            buffer[1] = (byte)'M';
-                                            buffer[2] = (byte)'4';
-
-                                            this.FromShort(size4, buffer, 3);
-
-                                            ushort[] tmp4 = value as ushort[];
-                                            for (int i = 0; i < size4; i++)
-                                            {
-                                                FromUShort(tmp4[i], buffer, 3 + 2 + i * 2);
-                                            }
-                                            break;
-                                        case Message.PosUpdate:
-                                            short _size = (short)(value as byte[]).Length;
-                                            buffer = new byte[2 + 2 + _size];
-                                            buffer[0] = (byte)'U';
-                                            buffer[1] = (byte)'P';
-
-                                            this.FromShort(_size, buffer, 2);
-
-                                            ushort[] _tmp = value as ushort[];
-                                            for (int i = 0; i < _size; i++)
-                                            {
-                                                FromUShort(_tmp[i], buffer, 2 + 2 + i * 2);
-                                            }
-                                            break;
-                                        case Message.MapSize:
-                                            buffer = new byte[4];
-                                            buffer[0] = (byte)'U';
-                                            buffer[1] = (byte)'S';
-                                            break;*/
+                    
                     case Message.Voltage:
                         buffer = new byte[((double)value).ToString().Length + 2 + 2];
                         buffer[0] = (byte)'b';
@@ -370,6 +204,22 @@ namespace MaCRo.Communications
 
                     Engine.getInstance().UpdatePosition(p);
                     break;
+                case 'c':
+                    short value = 0;
+                    switch ((char)tmpBuff[1])
+                    {
+                        case 'x':
+                            value = ToShort(tmpBuff, 2);
+                            Engine.getInstance().calibrarX(value);
+                            break;
+                        case 'y':
+                            value = ToShort(tmpBuff, 2);
+                            Engine.getInstance().calibrarY(value);
+                            break;
+                    }
+                    break;
+
+
             }
         }
 

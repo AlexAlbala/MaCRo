@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Threading;
 
 namespace MaCRoGS
 {
@@ -23,6 +24,10 @@ namespace MaCRoGS
         private Position actualPosition;
         private List<Position> positionHistory;
         System.Windows.Shapes.Path roverPath;
+
+        List<double> array_1 = new List<double>();
+        List<double> array_2 = new List<double>();
+        List<double> array_3 = new List<double>();
 
         private void _SetHeading(double heading)
         {
@@ -122,6 +127,31 @@ namespace MaCRoGS
             timePY.Add(actualTime);
 
             PosY.Add(posY);
+        }
+        public void SetMagX(double value)
+        {
+            if (calibrating == false)
+            {
+                array_1.Add(value);
+            }
+
+        }
+        public void SetMagY(double value)
+        {
+            if (calibrating == false)
+            {
+                array_2.Add(value);
+            }
+
+        }
+
+        public void SetMagZ(double value)
+        {
+            if (calibrating == false)
+            {
+                array_3.Add(value);
+            }
+
         }
 
         private void _UpdateFullMap(ushort[] NewMap)
@@ -224,3 +254,4 @@ namespace MaCRoGS
     }
 
 }
+

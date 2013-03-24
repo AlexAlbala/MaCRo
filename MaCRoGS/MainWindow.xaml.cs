@@ -17,6 +17,7 @@ using Microsoft.Research.DynamicDataDisplay.DataSources;
 using MaCRoGS.SLAM;
 using System.Threading;
 
+
 namespace MaCRoGS
 {
     /// <summary>
@@ -40,7 +41,15 @@ namespace MaCRoGS
         private Timer positionHistoryUpdate;
         private Timer updatePosition;
 
-        private bool activated;
+        private bool activated, calibrating=false;
+
+        int i = 0, v=0, zoom=1, count=0;
+        double total1 = 0, total2 = 0, escalarx=1, escalary=1;
+        double x = 0, y = 0, puntmigx = 0, puntmigy = 0;
+        short offset_x = 0, offset_y = 0;
+        double max_x = 0, max_y = 0, min_y = 0, min_x = 0;
+        double dx = 0, dy = 0;
+
 
         public MainWindow()
         {
@@ -119,7 +128,7 @@ namespace MaCRoGS
 
             PosX = new List<double>();
             PosY = new List<double>();
-           
+
             timePX = new List<double>();
             timePY = new List<double>();
 
@@ -213,7 +222,7 @@ namespace MaCRoGS
 
             //Only the new position will be sent if is near of the actual position
             if (diff.x < 3e-2 && diff.y < 3e-2 && diff.angle < 5 * Math.PI / 180)
-                coder.Send(Message.UpdatePosition, p);          
+                coder.Send(Message.UpdatePosition, p);
         }
 
         private ts_scan_t doScan()
@@ -378,7 +387,6 @@ namespace MaCRoGS
             position.y = 1000 * actualPosition.y + SLAMAlgorithm.TS_MAP_SIZE / (SLAMAlgorithm.TS_MAP_SCALE * 2);
             tinySLAM.NewScan(scan, position);
         }
-
         #region Handlers
         private void for_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -547,7 +555,6 @@ namespace MaCRoGS
             }
         }
         #endregion
-
         #region Log
         private void updateLog(string text)
         {
@@ -583,9 +590,204 @@ namespace MaCRoGS
         }
 
         #endregion
+        private void cal_Loaded_1(object sender, RoutedEventArgs e)
+        {
 
+        }
+
+        private void button_dibujar_Click(object sender, RoutedEventArgs e)
+        {
+            Rectangle rec_punt_mig = new Rectangle();
+            Rectangle linia_mx = new Rectangle();
+            Rectangle linia_Mx = new Rectangle();
+            Rectangle linia_my = new Rectangle();
+            Rectangle linia_My = new Rectangle();
+
+            i = 0;
+            v = 1;
+            min_x = 0;
+            min_y = 0;
+            max_x = 0;
+            max_y = 0;
+            while (v >= 1 && i < array_1.Count)
+            {
+                calibrating = true;
+                i = 2;
+                while (i < array_1.Count)
+                {
+                    x = array_1[i];
+                    y = array_2[i];
+                    if (i == 2)
+                    {
+                        min_x = x;
+                        max_y = y;
+
+                    }
+
+                    if (x > max_x) { max_x = x; }
+                    if (x < min_x) { min_x = x; }
+                    if (y > max_y) { max_y = y; }
+                    if (y < min_y) { min_y = y; }
+
+                    i++;
+                }
+
+                escalarx = 1;
+                escalary = 1;
+                dx = max_x - min_x;
+                dy = max_y - min_y;
+                if (dy < dx) //multiplicaremos los valores de y por un numero mayor de 1
+                {
+                    escalary = (dx / dy);
+                }
+
+                if (dx < dy)//multiplicaremos los valores de x por un numero mayor de 1
+                {
+                    escalarx = (dy / dx);
+
+                }
+                i = 2;
+                while (i < array_1.Count)
+                {
+                    x = array_1[i] * escalarx * zoom;
+                    y = array_2[i] * escalary * zoom;
+
+                    Rectangle rec_coordenades = new Rectangle();
+                    rec_coordenades.Width = 4;
+                    rec_coordenades.Height = 4;
+                    rec_coordenades.Fill = new SolidColorBrush(Colors.Red);
+                    cal.Children.Add(rec_coordenades);
+
+                    //cambiar los 5000 por 30000
+                    Canvas.SetTop(rec_coordenades, 315 - ((315 * y) / 6000));
+                    Canvas.SetLeft(rec_coordenades, 295.264 + ((295.264 * x) / 6000));
+
+                    i++;
+                }
+            }
+            v++;
+
+            if (i >= array_1.Count)
+            {
+                rec_punt_mig.Width = 4;
+                rec_punt_mig.Height = 4;
+                rec_punt_mig.Fill = new SolidColorBrush(Colors.Blue);
+                cal.Children.Add(rec_punt_mig);
+                rec_punt_mig.Opacity = 0;
+
+                linia_My.Width = 631;//550;
+                linia_My.Height = 1;
+                linia_My.Fill = new SolidColorBrush(Colors.Pink);
+                cal.Children.Add(linia_My);
+                linia_My.Opacity = 0;
+
+                linia_my.Width = 631;//550;
+                linia_my.Height = 1;
+                linia_my.Fill = new SolidColorBrush(Colors.Pink);
+                cal.Children.Add(linia_my);
+                linia_my.Opacity = 0;
+
+                linia_mx.Width = 1;
+                linia_mx.Height = 592.527393939;//750;
+                linia_mx.Fill = new SolidColorBrush(Colors.Pink);
+                cal.Children.Add(linia_mx);
+                linia_mx.Opacity = 0;
+
+                linia_Mx.Width = 1;
+                linia_Mx.Height = 592.527393939;//750;
+                linia_Mx.Fill = new SolidColorBrush(Colors.Pink);
+                cal.Children.Add(linia_Mx);
+                linia_Mx.Opacity = 0;
+
+                textBlock1.Text = Convert.ToString(0);
+                textBlock3.Text = Convert.ToString(0);
+                textBlock2.Text = Convert.ToString(0);
+                textBlock4.Text = Convert.ToString(0);
+
+                count = (array_1.Count - 2);
+                int distancia_vector = 2;
+                total1 = 0;
+                puntmigx = 0;
+                total2 = 0;
+                puntmigy = 0;
+                while (distancia_vector < array_1.Count)
+                {
+                    total1 += array_1[distancia_vector];
+                    total2 += array_2[distancia_vector];
+                    distancia_vector++;
+                }
+                puntmigx = total1 / count;
+                puntmigy = total2 / count;
+
+                textBlock1.Text = Convert.ToString(puntmigx);
+                textBlock3.Text = Convert.ToString(dx);
+                textBlock2.Text = Convert.ToString(puntmigy);
+                textBlock4.Text = Convert.ToString(dy);
+
+                rec_punt_mig.Opacity = 1;
+                linia_My.Opacity = 1;
+                linia_my.Opacity = 1;
+                linia_mx.Opacity = 1;
+                linia_Mx.Opacity = 1;
+                Canvas.SetTop(rec_punt_mig, Conversion.ToPixely(puntmigy * escalary * zoom));
+                Canvas.SetLeft(rec_punt_mig, Conversion.ToPixelx(puntmigx * escalarx * zoom));
+                Canvas.SetTop(linia_My, Conversion.ToPixely(max_y * escalary * zoom));
+                Canvas.SetTop(linia_my, 317 - ((315 * min_y * escalary * zoom) / 6000));
+                Canvas.SetLeft(linia_mx, Conversion.ToPixelx(min_x * escalarx * zoom));
+                Canvas.SetLeft(linia_Mx, 297.264 + ((295.264 * max_x * escalarx * zoom) / 6000));
+            }
+        }
+        private void button_calibrar_Click(object sender, RoutedEventArgs e)
+        {
+
+            offset_x = (short)puntmigx;
+            offset_y = (short)puntmigy;
+
+            zoom = 5;
+
+            coder.Send(Message.ValorCalibrarX, offset_x);
+            coder.Send(Message.ValorCalibrarY, offset_y);
+
+            cal.Children.Clear();
+            puntmigx = 0;
+            puntmigy = 0;
+            dx = 0;
+            dy = 0;
+
+            textBlock1.Text = Convert.ToString(puntmigx);
+            textBlock3.Text = Convert.ToString(dx);
+            textBlock2.Text = Convert.ToString(puntmigy);
+            textBlock4.Text = Convert.ToString(dy);
+
+            array_1.Clear();
+            array_2.Clear();
+            calibrating = false;
+        }
+        }
     }
 
+    public class Conversion
+    {
+        public static double ToPixelx(double value)
+        {
+            return (double)295.264 + ((295.264 * value) / 6000);
+        }
+
+        public static double ToPixely(double value)
+        {
+            return (double)315 - ((315 * value) / 6000);
+        }
+        public static short ToBitx(double value)
+        {
+            return (short)(((value - 295.264) * 6000) / 295.264);
+
+        }
+        public static short ToBity(double value)
+        {
+            return (short)(((315 - value) * 6000) / 315);
+            //return (short) ((((value) - 323) * 6000) / 323);
+        }
+    }
     public class Position
     {
         private double _x;
@@ -603,8 +805,8 @@ namespace MaCRoGS
             difference.y = Math.Abs(p1.y - p2.y);
             difference.angle = Math.Abs(p1.angle - p2.angle);
 
+
             return difference;
 
         }
     }
-}

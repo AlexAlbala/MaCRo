@@ -6,197 +6,205 @@
 
     <AvalonDock:DockingManager x:Name="DockManager" >
         <AvalonDock:ResizingPanel>
-            <AvalonDock:DocumentPane SelectedIndex="0" Background="White" Margin="0,0,64,0">
+            <AvalonDock:DocumentPane SelectedIndex="0" Background="White" Margin="0,8,64,-8">
                 <AvalonDock:DocumentContent IsCloseable="False" Title="Map" TabIndex="0">
-				<Grid Margin="0,0,5.152,-7">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="0.688*"/>
-						<ColumnDefinition Width="0.312*"/>
-					</Grid.ColumnDefinitions>
-                		<Canvas x:Name="map" Margin="0,1.5,8.192,113.5" Grid.ColumnSpan="1" Grid.Column="0" Width="600" Height="600" Panel.ZIndex="1"/>
-                		<Image x:Name="mapImage" Margin="0,1.5,8.192,113.5" Width="600" Height="600"/>
-                		<RichTextBox x:Name="log" Height="93" Background="Black" Foreground="#FF08FF00" FontFamily="Consolas" Cursor="Arrow" ForceCursor="True" IsReadOnlyCaretVisible="True" Focusable="False" TextOptions.TextFormattingMode="Display" Margin="0,0,8.192,15" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" FontSize="13.333" FontWeight="Bold" BorderBrush="{x:Null}" BorderThickness="1">
-                			<FlowDocument Focusable="False" IsEnabled="False">
-                				<Paragraph><Run Text="RichTextBox"/></Paragraph>
-                			</FlowDocument>
-                		</RichTextBox>
-                		<Border Grid.Column="1" Margin="46.04,8.5,41,0" BorderThickness="3" CornerRadius="6" BorderBrush="Black" Height="339.5" VerticalAlignment="Top">
-                			<Grid Margin="0,0,0,-3">
-                				<StackPanel Orientation="Vertical" Margin="12,91,0,0" HorizontalAlignment="Left" Width="167" Height="117.5" VerticalAlignment="Top">
-                					<StackPanel Orientation="Horizontal" >
-                						<ToggleButton x:Name="forw" Margin="50,0,0,0"  Height="50" Width="50" PreviewMouseDown="for_MouseLeftButtonDown" PreviewMouseUp="for_MouseLeftButtonUp" Focusable="False" Content="↑" FontSize="32" FontWeight="Bold">
-                							<ToggleButton.Effect>
-                								<DropShadowEffect Color="Black" ShadowDepth="3"/>
-                							</ToggleButton.Effect></ToggleButton>
-                					</StackPanel>
-                					<StackPanel Orientation="Horizontal" >
-                						<ToggleButton x:Name="left" Height="50" Width="50" PreviewMouseDown="left_MouseLeftButtonDown" PreviewMouseUp="left_MouseLeftButtonUp" Focusable="False" Content="←" FontSize="32" FontWeight="Bold">
-                							<ToggleButton.Effect>
-                								<DropShadowEffect Color="Black" ShadowDepth="3"/>
-                							</ToggleButton.Effect></ToggleButton>
-                						<ToggleButton x:Name="back"  Height="50" Width="50" PreviewMouseDown="back_MouseLeftButtonDown" PreviewMouseUp="back_MouseLeftButtonUp" Focusable="False" Content="↓" FontSize="32" FontWeight="Bold">
-                							<ToggleButton.Effect>
-                								<DropShadowEffect Color="Black" ShadowDepth="3"/>
-                							</ToggleButton.Effect></ToggleButton>
-                						<ToggleButton x:Name="right"  Height="50" Width="50" PreviewMouseDown="right_MouseLeftButtonDown" PreviewMouseUp="right_MouseLeftButtonUp" Focusable="False" Content="→" FontSize="32" FontWeight="Bold" >
-                							<ToggleButton.Effect>
-                								<DropShadowEffect Color="Black" ShadowDepth="3"/>
-                							</ToggleButton.Effect></ToggleButton>
-                					</StackPanel>
-                				</StackPanel>
-                				<Button x:Name="OnOff" Content="On" HorizontalAlignment="Left" Width="83.5" Click="Button_Click" Margin="3,34.832,0,0" Height="25.5" VerticalAlignment="Top"/>
-                				<Image x:Name="LEDImageOFF" HorizontalAlignment="Right" Margin="0,20,20,0" Width="50" Height="50" Source="LED_OFF.png" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
-                				<Image x:Name="LEDImageON" HorizontalAlignment="Right" Margin="0,20,20,0" Width="50" Height="50" Source="LED_ON.png" Visibility="Hidden" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
-                				<Slider x:Name="Speed" Margin="1,0,0,72.5" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" HorizontalAlignment="Left" Width="108" ValueChanged="Speed_ValueChanged" Value="2.5" Focusable="False" Height="23" VerticalAlignment="Bottom">
-                					<Slider.RenderTransform>
-                						<TransformGroup>
-                							<ScaleTransform ScaleY="-1"/>
-                							<SkewTransform/>
-                							<RotateTransform/>
-                							<TranslateTransform/>
-                						</TransformGroup>
-                					</Slider.RenderTransform>
-                				</Slider>
-                				<Slider x:Name="Turning_Speed" Height="23" Margin="0.133,0,74.634,27" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" Width="108" ValueChanged="Turning_Speed_ValueChanged" Value="2.5" Focusable="False">
-                					<Slider.RenderTransform>
-                						<TransformGroup>
-                							<ScaleTransform ScaleY="-1"/>
-                							<SkewTransform/>
-                							<RotateTransform/>
-                							<TranslateTransform/>
-                						</TransformGroup>
-                					</Slider.RenderTransform>
-                				</Slider>
-                				<TextBox x:Name="SpeedBox" HorizontalAlignment="Right" Height="19" Margin="0,0,20,72" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Bottom" Width="35.5" Initialized="SpeedBox_Initialized" IsEnabled="False" Focusable="False"/>
-                				<TextBox x:Name="TurningSpeedBox" HorizontalAlignment="Right" Height="19" Margin="0,0,20,28" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Bottom" Width="35.5" Initialized="TurningSpeedBox_Initialized" IsEnabled="False" Focusable="False"/>
-                				<Label Content="Turning Speed:" Height="23.5" Margin="3,0,84,43" VerticalAlignment="Bottom" FontSize="9.333"/>
-                				<Label Content="Speed:" Margin="3.5,0,0,89" FontSize="9.333" HorizontalAlignment="Left" Width="36" Height="23.5" VerticalAlignment="Bottom"/>
-                				<Label Content="Manual Mode" Height="26.5" Margin="-0.333,3.998,82.333,0" VerticalAlignment="Top" FontWeight="Bold"/>
-                				<GroupBox Header="SLAM Algorithm" HorizontalAlignment="Right" Height="183.5" VerticalAlignment="Bottom" Width="185.101" Margin="0,0,-2,-197.5" BorderBrush="#FF009DFB" BorderThickness="3">
-                					<StackPanel>
-                						<Label x:Name="lbl_scanSize" Content="Label"/>
-                						<Label x:Name="lbl_mapSize" Content="Label"/>
-                						<Label x:Name="lbl_mapScale" Content="Label"/>
-                						<Label x:Name="lbl_holeWidth" Content="Label"/>
-                						<Label x:Name="lbl_iterations" Content="Label"/>
-                						<Label x:Name="lbl_mapUpdates" Content="Label"/>
-                					</StackPanel>
-                				</GroupBox>
-                				<GroupBox Header="Battery Status" HorizontalAlignment="Right" Height="152.334" VerticalAlignment="Bottom" Width="185.101" Margin="0,0,-2,-352.914" BorderBrush="#FF009DFB" BorderThickness="3">
-                					<StackPanel>
-                						<Label x:Name="lbl_voltage" Content="Label"/>
-                						<Label x:Name="lbl_current" Content="Label"/>
-                						<Label x:Name="lbl_perCent" Content="Label"/>
-                						<ProgressBar x:Name="batteryBar" Margin="0,0,4,0" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="163.768">
-                							<ProgressBar.Background>
-                								<LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                									<GradientStop Color="#FFBABABA" Offset="0"/>
-                									<GradientStop Color="#FFC7C7C7" Offset="0.5"/>
-                									<GradientStop Color="#FFBABABA" Offset="1"/>
-                								</LinearGradientBrush>
-                							</ProgressBar.Background>
-                						</ProgressBar>            						
-										<Label x:Name="lbl_estimation" Content="Label"/>
-                					</StackPanel>
-                				</GroupBox>
-                			</Grid>
-                		</Border>
-                		<CheckBox x:Name="chkBox_path" Content="Draw rover path" HorizontalAlignment="Left" VerticalAlignment="Top" Width="111.101" Background="Black" BorderBrush="#FF0056FF" Foreground="Black" FontWeight="Bold" Margin="8,8,0,0" IsChecked="True"/>
-                		
-                	</Grid>
-				</AvalonDock:DocumentContent>                
+                    <Grid Margin="0,0,5.152,-7">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.688*"/>
+                            <ColumnDefinition Width="0.312*"/>
+                        </Grid.ColumnDefinitions>
+                        <Canvas x:Name="map" Margin="0,1.5,8.192,113.5" Grid.ColumnSpan="1" Grid.Column="0" Width="600" Height="600" Panel.ZIndex="1"/>
+                        <Image x:Name="mapImage" Margin="0,1.5,8.192,113.5" Width="600" Height="600"/>
+                        <RichTextBox x:Name="log" Height="93" Background="Black" Foreground="#FF08FF00" FontFamily="Consolas" Cursor="Arrow" ForceCursor="True" IsReadOnlyCaretVisible="True" Focusable="False" TextOptions.TextFormattingMode="Display" Margin="0,0,8.192,15" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Auto" FontSize="13.333" FontWeight="Bold" BorderBrush="{x:Null}" BorderThickness="1">
+                            <FlowDocument Focusable="False" IsEnabled="False">
+                                <Paragraph>
+                                    <Run Text="RichTextBox"/>
+                                </Paragraph>
+                            </FlowDocument>
+                        </RichTextBox>
+                        <Border Grid.Column="1" Margin="46.04,8.5,41,0" BorderThickness="3" CornerRadius="6" BorderBrush="Black" Height="339.5" VerticalAlignment="Top">
+                            <Grid Margin="0,0,0,-3">
+                                <StackPanel Orientation="Vertical" Margin="12,91,0,0" HorizontalAlignment="Left" Width="167" Height="117.5" VerticalAlignment="Top">
+                                    <StackPanel Orientation="Horizontal" >
+                                        <ToggleButton x:Name="forw" Margin="50,0,0,0"  Height="50" Width="50" PreviewMouseDown="for_MouseLeftButtonDown" PreviewMouseUp="for_MouseLeftButtonUp" Focusable="False" Content="↑" FontSize="32" FontWeight="Bold">
+                                            <ToggleButton.Effect>
+                                                <DropShadowEffect Color="Black" ShadowDepth="3"/>
+                                            </ToggleButton.Effect>
+                                        </ToggleButton>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" >
+                                        <ToggleButton x:Name="left" Height="50" Width="50" PreviewMouseDown="left_MouseLeftButtonDown" PreviewMouseUp="left_MouseLeftButtonUp" Focusable="False" Content="←" FontSize="32" FontWeight="Bold">
+                                            <ToggleButton.Effect>
+                                                <DropShadowEffect Color="Black" ShadowDepth="3"/>
+                                            </ToggleButton.Effect>
+                                        </ToggleButton>
+                                        <ToggleButton x:Name="back"  Height="50" Width="50" PreviewMouseDown="back_MouseLeftButtonDown" PreviewMouseUp="back_MouseLeftButtonUp" Focusable="False" Content="↓" FontSize="32" FontWeight="Bold">
+                                            <ToggleButton.Effect>
+                                                <DropShadowEffect Color="Black" ShadowDepth="3"/>
+                                            </ToggleButton.Effect>
+                                        </ToggleButton>
+                                        <ToggleButton x:Name="right"  Height="50" Width="50" PreviewMouseDown="right_MouseLeftButtonDown" PreviewMouseUp="right_MouseLeftButtonUp" Focusable="False" Content="→" FontSize="32" FontWeight="Bold" >
+                                            <ToggleButton.Effect>
+                                                <DropShadowEffect Color="Black" ShadowDepth="3"/>
+                                            </ToggleButton.Effect>
+                                        </ToggleButton>
+                                    </StackPanel>
+                                </StackPanel>
+                                <Button x:Name="OnOff" Content="On" HorizontalAlignment="Left" Width="83.5" Click="Button_Click" Margin="3,34.832,0,0" Height="25.5" VerticalAlignment="Top"/>
+                                <Image x:Name="LEDImageOFF" HorizontalAlignment="Right" Margin="0,20,20,0" Width="50" Height="50" Source="LED_OFF.png" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
+                                <Image x:Name="LEDImageON" HorizontalAlignment="Right" Margin="0,20,20,0" Width="50" Height="50" Source="LED_ON.png" Visibility="Hidden" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
+                                <Slider x:Name="Speed" Margin="1,0,0,72.5" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" HorizontalAlignment="Left" Width="108" ValueChanged="Speed_ValueChanged" Value="2.5" Focusable="False" Height="23" VerticalAlignment="Bottom">
+                                    <Slider.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleY="-1"/>
+                                            <SkewTransform/>
+                                            <RotateTransform/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </Slider.RenderTransform>
+                                </Slider>
+                                <Slider x:Name="Turning_Speed" Height="23" Margin="0.133,0,74.634,27" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" Background="#00FF0000" Foreground="#FFCC2121" Width="108" ValueChanged="Turning_Speed_ValueChanged" Value="2.5" Focusable="False">
+                                    <Slider.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleY="-1"/>
+                                            <SkewTransform/>
+                                            <RotateTransform/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </Slider.RenderTransform>
+                                </Slider>
+                                <TextBox x:Name="SpeedBox" HorizontalAlignment="Right" Height="19" Margin="0,0,20,72" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Bottom" Width="35.5" Initialized="SpeedBox_Initialized" IsEnabled="False" Focusable="False"/>
+                                <TextBox x:Name="TurningSpeedBox" HorizontalAlignment="Right" Height="19" Margin="0,0,20,28" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Bottom" Width="35.5" Initialized="TurningSpeedBox_Initialized" IsEnabled="False" Focusable="False"/>
+                                <Label Content="Turning Speed:" Height="23.5" Margin="3,0,84,43" VerticalAlignment="Bottom" FontSize="9.333"/>
+                                <Label Content="Speed:" Margin="3.5,0,0,89" FontSize="9.333" HorizontalAlignment="Left" Width="36" Height="23.5" VerticalAlignment="Bottom"/>
+                                <Label Content="Manual Mode" Height="26.5" Margin="-0.333,3.998,82.333,0" VerticalAlignment="Top" FontWeight="Bold"/>
+                                <GroupBox Header="SLAM Algorithm" HorizontalAlignment="Right" Height="183.5" VerticalAlignment="Bottom" Width="185.101" Margin="0,0,-2,-197.5" BorderBrush="#FF009DFB" BorderThickness="3">
+                                    <StackPanel>
+                                        <Label x:Name="lbl_scanSize" Content="Label"/>
+                                        <Label x:Name="lbl_mapSize" Content="Label"/>
+                                        <Label x:Name="lbl_mapScale" Content="Label"/>
+                                        <Label x:Name="lbl_holeWidth" Content="Label"/>
+                                        <Label x:Name="lbl_iterations" Content="Label"/>
+                                        <Label x:Name="lbl_mapUpdates" Content="Label"/>
+                                    </StackPanel>
+                                </GroupBox>
+                                <GroupBox Header="Battery Status" HorizontalAlignment="Right" Height="152.334" VerticalAlignment="Bottom" Width="185.101" Margin="0,0,-2,-352.914" BorderBrush="#FF009DFB" BorderThickness="3">
+                                    <StackPanel>
+                                        <Label x:Name="lbl_voltage" Content="Label"/>
+                                        <Label x:Name="lbl_current" Content="Label"/>
+                                        <Label x:Name="lbl_perCent" Content="Label"/>
+                                        <ProgressBar x:Name="batteryBar" Margin="0,0,4,0" Height="25" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="163.768">
+                                            <ProgressBar.Background>
+                                                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                    <GradientStop Color="#FFBABABA" Offset="0"/>
+                                                    <GradientStop Color="#FFC7C7C7" Offset="0.5"/>
+                                                    <GradientStop Color="#FFBABABA" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </ProgressBar.Background>
+                                        </ProgressBar>
+                                        <Label x:Name="lbl_estimation" Content="Label"/>
+                                    </StackPanel>
+                                </GroupBox>
+                            </Grid>
+                        </Border>
+                        <CheckBox x:Name="chkBox_path" Content="Draw rover path" HorizontalAlignment="Left" VerticalAlignment="Top" Width="111.101" Background="Black" BorderBrush="#FF0056FF" Foreground="Black" FontWeight="Bold" Margin="8,8,0,0" IsChecked="True"/>
+
+                    </Grid>
+                </AvalonDock:DocumentContent>
                 <AvalonDock:DocumentContent IsCloseable="False" Title="Graphs" TabIndex="1">
                     <d3:ChartPlotter Name="chart">
                         <d3:HorizontalAxisTitle>Time (seconds)</d3:HorizontalAxisTitle>
                     </d3:ChartPlotter>
-                </AvalonDock:DocumentContent>				
+                </AvalonDock:DocumentContent>
+                <AvalonDock:DocumentContent IsCloseable="False" Title="Magnetometer" TabIndex="2">
+                    <Grid Margin="10,10,10,10" ShowGridLines="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.722*"/>
+                            <ColumnDefinition Width="0.278*"/>
+                        </Grid.ColumnDefinitions>
+                        <Canvas Margin="24,21,11,36" Name="cal" Loaded="cal_Loaded_1" Background="White">
+                        </Canvas>
+                        <GroupBox Header="Calibración" VerticalAlignment="Top" Grid.Column="1" Height="289.666" Panel.ZIndex="3" Margin="10,22.667,0.532,0" d:LayoutOverrides="VerticalAlignment">
+                            <Grid Margin="0,0,0,0">
+                                <StackPanel Margin="0" Height="277" VerticalAlignment="Top" Orientation="Vertical">
+                                    <Button Grid.Column="0" Content="Calibrar" Height="23" HorizontalAlignment="Left" Margin="0" x:Name="button_calibrar" Width="75"  Panel.ZIndex="2" Click="button_calibrar_Click" />
+                                    <Button Grid.Column="0" Content="Dibujar" Height="23" HorizontalAlignment="Left" Margin="0" x:Name="button_dibujar" Width="75"  Panel.ZIndex="2" Click="button_dibujar_Click"/>
+                                    <Label Grid.Column="0" Content=" punt mig" HorizontalAlignment="Left" Margin="0" x:Name="label5" Width="63" Height="23" VerticalAlignment="Bottom" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Grid.Column="0" Height="17" Margin="0" x:Name="textBlock1" Text="" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="41" />
+                                        <TextBlock Grid.Column="0" Height="17" HorizontalAlignment="Right" Margin="0" x:Name="textBlock2" Text="" VerticalAlignment="Bottom" Width="38" />
+                                    </StackPanel>
+                                    <Label Grid.Column="0" Content="diametre" Height="29" HorizontalAlignment="Left" Margin="0" x:Name="label3" VerticalAlignment="Bottom" Width="76" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Grid.Column="0" Height="17" HorizontalAlignment="Left" Margin="0" x:Name="textBlock3" Text="" VerticalAlignment="Bottom" Width="37" />
+                                        <TextBlock Grid.Column="0" Height="17" HorizontalAlignment="Left" Margin="0" x:Name="textBlock4" Text="" VerticalAlignment="Bottom" Width="37" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+                        <Rectangle x:Name="rectangle1" Stroke="Black" Width="1"  RenderTransformOrigin="0.5,0.5" Margin="319.263,20.5,307.263,36.5" >
+                            <Rectangle.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleX="-1"/>
+                                    <SkewTransform/>
+                                    <RotateTransform/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+                        <Grid Height="1" Margin="24,336,11,0" VerticalAlignment="Top">
+                            <Rectangle x:Name="rectangle2" Stroke="Black" Panel.ZIndex="2" d:LayoutOverrides="VerticalAlignment" />
+                        </Grid>
+                    </Grid>
+                </AvalonDock:DocumentContent>
             </AvalonDock:DocumentPane>
             <AvalonDock:ResizingPanel Orientation="Vertical" AvalonDock:ResizingPanel.ResizeWidth="0.32*" Margin="-70,0,0,0">
                 <AvalonDock:DockablePane AvalonDock:ResizingPanel.ResizeHeight="0.3*" Background="{x:Null}">
                     <AvalonDock:DockableContent IsCloseable="False" Title="Sensors values" >
-                        <StackPanel Orientation="Vertical" Background="White" Panel.ZIndex="4" Margin="0" >
+                        <StackPanel Orientation="Vertical" Background="White" Panel.ZIndex="3" Margin="0" >
                             <Label Content="S1" x:Name="S1" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="S2" x:Name="S2" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="L1" x:Name="L1" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="L2" x:Name="L2" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                         </StackPanel>
                     </AvalonDock:DockableContent>
-					<!--
-                    <AvalonDock:DockableContent IsCloseable="False" Title="IMU data" >
-
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150" />
-                                <ColumnDefinition Width="150" />
-                            </Grid.ColumnDefinitions>
-
-
-                            <StackPanel Grid.Column="0" Orientation="Vertical" Background="White" Panel.ZIndex="4" >
-                                <Label Content="AccX" x:Name="AccX" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                                <Label Content="AccY" x:Name="AccY" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                                <Label Content="AccZ" x:Name="AccZ" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                                <Label Content="GyroX" x:Name="GyroX" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                                <Label Content="GyroY" x:Name="GyroY" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                                <Label Content="GyroZ" x:Name="GyroZ" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Orientation="Vertical" Background="White" Panel.ZIndex="4">
-                                <Label Content="MagX" x:Name="MagX" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                                <Label Content="MagY" x:Name="MagY" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                                <Label Content="MagZ" x:Name="MagZ" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                                <Label Content="TempX" x:Name="TempX" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                                <Label Content="TempY" x:Name="TempY" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                                <Label Content="TempZ" x:Name="TempZ" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                            </StackPanel>
-                        </Grid>
-                    </AvalonDock:DockableContent>-->
                     <AvalonDock:DockableContent IsCloseable="False" Title="Position" >
                         <StackPanel Orientation="Vertical" Background="White" Panel.ZIndex="4" Margin="0" >
                             <Label Content="xPos" x:Name="xPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="yPos" x:Name="yPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="anglePos" x:Name="anglePos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-							<Label Content="angleDeg" x:Name="angleDegPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+                            <Label Content="angleDeg" x:Name="angleDegPos" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
+                            <!--<CheckBox x:Name="PID" HorizontalAlignment="Left" Height="23" Margin="30.848,0,0,0" Width="107" Content="PID" FontSize="18" FontWeight="ExtraBold" FontFamily="Britannic" Checked="PID_Checked" />-->
                             <!--<Label Content="xVel" x:Name="xVel" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="yVel" x:Name="yVel" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
                             <Label Content="timeL" x:Name="labelTime" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />-->
 
                         </StackPanel>
                     </AvalonDock:DockableContent>
-					<!--<AvalonDock:DockableContent IsCloseable="False" Title="Angle Values" >
-                        <StackPanel Orientation="Vertical" Background="White" Panel.ZIndex="4" Margin="0" >
-                            <Label Content="Yaw" x:Name="aYaw" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                            <Label Content="Pitch" x:Name="aPitch" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                            <Label Content="Roll" x:Name="aRoll" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                            <Label Content="MAGHeading" x:Name="aMH" Background="#00F50606" Foreground="Black" FontSize="13.333" FontWeight="Bold" />
-                        </StackPanel>
-                    </AvalonDock:DockableContent>-->
                 </AvalonDock:DockablePane>
                 <AvalonDock:DockablePane  AvalonDock:ResizingPanel.ResizeHeight="0.7*" ClipToBounds="True" Background="White" Foreground="Black" SelectedIndex="0">
                     <AvalonDock:DockableContent IsCloseable="False" Title="DockRobotMap" ClipToBounds="True">
                         <Viewbox Margin="0" >
-                            <Canvas x:Name="robotMap" Background="White" Height="470" Width="375">
-                                <Canvas x:Name="robot"  Height="131.2" Canvas.Left="153.273" Canvas.Top="328.431" Width="86.6">
-                                    <Rectangle x:Name="central_sensor" Fill="Red" Height="7" Canvas.Left="34.89" Stroke="Black" Width="18.5" Panel.ZIndex="1" Canvas.Top="6"/>
-                                    <Rectangle x:Name="right_sensor" Fill="Red" Height="7" Canvas.Left="64.972" Stroke="Black" Canvas.Top="10.953" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
-                                        <Rectangle.RenderTransform>
-                                            <RotateTransform Angle="45"/>
-                                        </Rectangle.RenderTransform>
-                                    </Rectangle>
-                                    <Rectangle x:Name="wallback_sensor" Fill="Red" Height="7" Canvas.Left="0.918" Stroke="Black" Canvas.Top="107.111" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
-                                        <Rectangle.RenderTransform>
-                                            <RotateTransform Angle="90"/>
-                                        </Rectangle.RenderTransform>
-                                    </Rectangle>
-                                    <Rectangle x:Name="wall_sensor" Fill="Red" Height="7" Stroke="Black" Canvas.Top="16.501" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" Canvas.Left="0.835">
-                                        <Rectangle.RenderTransform>
-                                            <RotateTransform Angle="90"/>
-                                        </Rectangle.RenderTransform>
-                                    </Rectangle>
-                                    <Rectangle x:Name="Panda" Stroke="Black" Height="23.028" Panel.ZIndex="3" Fill="White" RenderTransformOrigin="-2.979,0.572" Canvas.Left="29.235" Canvas.Top="73.558" Width="31.683"/>
-                                    <Rectangle x:Name="structure" Stroke="Black" RadiusY="2" RadiusX="2" Height="117.5" Panel.ZIndex="2" Width="74" Fill="#FF6A6A6A" Opacity="0.8" Canvas.Left="6.366" Canvas.Top="7.75"/>
-                                </Canvas>
+                            <Canvas x:Name="robot"  Height="275.966" Width="165.149" RenderTransformOrigin="0.5,0.5">
+                                <Rectangle x:Name="central_sensor" Fill="Red" Height="7" Canvas.Left="71.596" Stroke="Black" Width="18.5" Panel.ZIndex="1" Canvas.Top="142.815"/>
+                                <Rectangle x:Name="right_sensor" Fill="Red" Height="7" Canvas.Left="101.678" Stroke="Black" Canvas.Top="147.768" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
+                                    <Rectangle.RenderTransform>
+                                        <RotateTransform Angle="45"/>
+                                    </Rectangle.RenderTransform>
+                                </Rectangle>
+                                <Rectangle x:Name="wallback_sensor" Fill="Red" Height="7" Canvas.Left="37.624" Stroke="Black" Canvas.Top="243.926" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5">
+                                    <Rectangle.RenderTransform>
+                                        <RotateTransform Angle="90"/>
+                                    </Rectangle.RenderTransform>
+                                </Rectangle>
+                                <Rectangle x:Name="wall_sensor" Fill="Red" Height="7" Stroke="Black" Canvas.Top="153.316" Width="18.5" Panel.ZIndex="1" RenderTransformOrigin="0.5,0.5" Canvas.Left="37.541">
+                                    <Rectangle.RenderTransform>
+                                        <RotateTransform Angle="90"/>
+                                    </Rectangle.RenderTransform>
+                                </Rectangle>
+                                <Rectangle x:Name="Panda" Stroke="Black" Height="23.028" Panel.ZIndex="3" Fill="White" RenderTransformOrigin="-2.979,0.572" Canvas.Left="65.941" Canvas.Top="210.373" Width="31.683"/>
+                                <Rectangle x:Name="structure" Stroke="Black" RadiusY="2" RadiusX="2" Height="117.5" Panel.ZIndex="2" Width="74" Fill="#FF6A6A6A" Opacity="0.8" Canvas.Left="43.072" Canvas.Top="144.565"/>
+                                <Canvas x:Name="robotMap" Background="White" Height="96.338" Width="80.962" Canvas.Left="36.706" Canvas.Top="168.516"/>
                             </Canvas>
                         </Viewbox>
                     </AvalonDock:DockableContent>
